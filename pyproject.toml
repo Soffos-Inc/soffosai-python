@@ -1,18 +1,19 @@
 [project]
-name = "example_package_YOUR_USERNAME_HERE"
+name = "soffos"
 version = "0.0.1"
 authors = [
-  { name="Example Author", email="author@example.com" },
+  { name="Franco Such", email="franco.such@Soffos.ai" },
+  { name="Andreas Christofi", email="andreas.christofi@Soffos.ai" }
 ]
-description = "A small example package"
+description = "Python SDK to access Soffos AI"
 readme = "README.md"
 requires-python = ">=3.7"
 classifiers = [
     "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
+    "License :: OSI Approved :: Soffos Ltd License",
     "Operating System :: OS Independent",
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/pypa/sampleproject"
-"Bug Tracker" = "https://github.com/pypa/sampleproject/issues"
+"Homepage" = "https://platform.soffos.ai"
+"Bug Tracker" = "https://platform.soffos.ai/contact"
