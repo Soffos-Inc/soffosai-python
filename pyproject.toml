@@ -17,3 +17,8 @@ classifiers = [
 [project.urls]
 "Homepage" = "https://platform.soffos.ai"
 "Bug Tracker" = "https://platform.soffos.ai/contact"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+requests = "^2.26.0"
+http3 = "^0.6.7"

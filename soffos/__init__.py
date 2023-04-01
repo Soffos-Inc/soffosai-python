@@ -1,1 +1,5 @@
-from .client.soffos import Client, Services
+'''
+Soffos Inc. Python SDK package
+'''
+
+from .client.soffos import Client

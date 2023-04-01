@@ -6,74 +6,15 @@ Purpose: The main module of Soffos
 '''
 
 import requests
-
-SOFFOS_SERVICE_URL = "https://dev-api.soffos.ai/service/"
-
-SERVICES_LIST = [
-    'ambiguity-detection',
-    'answer-scoring', 
-    'contradiction-detection', 
-    'discuss', 
-    'documents/ingest', 
-    'email-analysis', 
-    'emotion-detection', 
-    'file-converter', 
-    'flashcard-generation', 
-    'intent-classification/confirmation', 
-    'intent-classification', 
-    'language-detection', 
-    'microlesson', 
-    'ner', 
-    'paraphrase', 
-    'profanity',
-    'qna-generation',
-    'question-answering',
-    'review-tagger',
-    'search-recommendations',
-    'sentiment-analysis',
-    'simplify',
-    'string-similarity',
-    'summarization',
-    'tag',
-    'transcript-correction',
-    'batch-service/'
-]
-
-
-class Services:
-    '''
-    Contains the list of Soffos services assigned as attributes for better coding experience
-    '''
-    
-    AMBIGUITY_DETECTION = 'ambiguity-detection'
-    ANSWER_SCORING = 'answer-scoring'
-    CONTRADICTION_DETECTION = 'contradiction-detection'
-    LETS_DISCUSS = 'discuss'
-    DOCUMENTS_INGEST = 'documents/ingest'
-    EMAIL_ANALYSIS = 'email-analysis'
-    EMOTION_DETECTION = 'emotion-detection'
-    FILE_CONVERTER = 'file-converter'
-    FLASHCARD_GENERATION = 'flashcard-generation'
-    INTENT_CLASSIFICATION = 'intent-classification'
-    LANGUAGE_DETECTION = 'language-detection'
-    MICROLESSON = 'microlesson'
-    NER = 'ner'
-    PARAPHRASE = 'paraphrase'
-    PROFANITY = 'profanity'
-    QUESTION_AND_ANSWER_GENERATION = 'qna-generation'
-    QUESTION_ANSWERING = "question-answering"
-    REVIEW_TAGGER = 'review-tagger'
-    SEARCH_RECOMMENDATION = 'search-recommendations'
-    SENTIMENT_ANALYSIS = 'sentiment-analysis'
-    SIMPLIFY = 'simplify'
-    STRING_SIMILARITY = 'string-similarity'
-    SUMMARIZATION = 'summarization'
-    TAG_GENERATION = 'tag'
-    TRANSCRIPTION_CORRECTION = 'transcript-correction'
-    BATCH_SERVICE = 'batch-service2'
-
+import http3
+from soffos.common.constants import SERVICES_LIST, SOFFOS_SERVICE_URL
 
 class Client:
+    '''
+    Not finished yet -- Just warming up
+    ------------------------------------
+    handles Soffos API http requests
+    '''
 
     def __init__(self, apikey) -> dict:
 
@@ -91,6 +32,10 @@ class Client:
 
     @property
     def service(self):
+        '''
+        What do you want Soffos AI to think off?
+        ----------------------------------------
+        '''
         return self._service
 
 
@@ -104,6 +49,9 @@ class Client:
 
     @property
     def input(self):
+        '''
+        The source of truth for Soffos API Comprehension
+        '''
         return self._input
 
 
@@ -114,6 +62,9 @@ class Client:
 
     @property
     def question(self):
+        '''
+        What do want to know about the knowledge you ingested
+        '''
         return self._question
 
 
@@ -125,6 +76,9 @@ class Client:
 
     @property
     def knowledge(self):
+        '''
+        The data that Soffos AI will accept as truth and will find answer from
+        '''
         return self._knowledge
 
 
@@ -134,13 +88,17 @@ class Client:
 
 
     def get_response(self):
-        response = requests.post(
+        '''
+        Based on the knowledge/context, Soffos AI will now give you the data you need
+        '''
+        response = http3.post(
             url=SOFFOS_SERVICE_URL + self.service + "/",
             headers=self.headers,
             json={
                 "user": self._apikey,
                 "message": self.question,
                 "document_text": self.knowledge
-            }
+            },
+            timeout=30
         )
         return response.json()
