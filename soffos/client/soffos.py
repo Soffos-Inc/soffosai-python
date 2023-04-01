@@ -5,9 +5,12 @@ Purpose: The main module of Soffos
 -----------------------------------------------------
 '''
 
-import requests
-import http3
-from soffos.common.constants import SERVICES_LIST, SOFFOS_SERVICE_URL
+from soffos.common.constants import SERVICES_LIST, Services
+from soffos.core.services import QuestionAnsweringService
+
+SERVICE_CLASS_MAP = {
+    Services.QUESTION_ANSWERING: QuestionAnsweringService
+}
 
 class Client:
     '''
@@ -29,6 +32,8 @@ class Client:
         self._answer = None
         self._tags = None
         self._knowledge = None
+        self._service = None
+        self._output_key = None
 
     @property
     def service(self):
@@ -46,6 +51,13 @@ class Client:
 
         self._service = value
 
+    @property
+    def output_key(self):
+        return self._output_key
+
+    @output_key.setter
+    def output_key(self, value):
+        self._output_key = value
 
     @property
     def input(self):
@@ -91,14 +103,15 @@ class Client:
         '''
         Based on the knowledge/context, Soffos AI will now give you the data you need
         '''
-        response = http3.post(
-            url=SOFFOS_SERVICE_URL + self.service + "/",
-            headers=self.headers,
-            json={
-                "user": self._apikey,
-                "message": self.question,
-                "document_text": self.knowledge
-            },
-            timeout=30
+        if not self._service:
+            raise ValueError("Please provide the service type you need from Soffos AI.")
+
+        service = SERVICE_CLASS_MAP[self._service](
+            apikey=self._apikey,
+            output_key=self._output_key,
+            source=self.knowledge,
+            question=self.question
         )
-        return response.json()
+
+        response = service.process_request()
+        return response

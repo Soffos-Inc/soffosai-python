@@ -64,3 +64,4 @@ class Services:
     TAG_GENERATION = 'tag'
     TRANSCRIPTION_CORRECTION = 'transcript-correction'
     BATCH_SERVICE = 'batch-service2'
+
