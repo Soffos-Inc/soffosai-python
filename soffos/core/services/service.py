@@ -11,14 +11,14 @@ class SoffosAIService:
     '''
     Base service class for all Soffos Services
     '''
-    def __init__(self, apikey, output_key=None, source=None) -> None:
-        self.output_key = output_key
+    def __init__(self, apikey, src=None, concern=None) -> None:
         self.headers = {
             "x-api-key": apikey,
             "content-type": "application/json"
         }
         self._apikey = apikey
-        self._source = source
+        self._src = src
+        self._concern = concern
         self._service = None
 
     @abc.abstractmethod
@@ -30,9 +30,21 @@ class SoffosAIService:
     @abc.abstractmethod
     def provide_output_type(self):
         '''
-        Sends back the output type of the service
+        Sends back the output datatype of the service
         '''
     
+    @abc.abstractmethod
+    def provide_source_type(self):
+        '''
+        Sends back the accepted source datatype of the service
+        '''
+
+    @abc.abstractmethod
+    def provide_concern_type(self):
+        '''
+        Sends back the accepted concern datatype of the service
+        '''
+
     @abc.abstractmethod
     def get_default_output_key(self):
         '''
@@ -49,8 +61,8 @@ class SoffosAIService:
         '''
         Based on the knowledge/context, Soffos AI will now give you the data you need
         '''
-        if not self.output_key:
-            self.output_key = self.get_default_output_key()
+        # if not self.output_key:
+        #     self.output_key = self.get_default_output_key()
 
         response = http3.post(
             url=SOFFOS_SERVICE_URL + self._service + "/",
@@ -58,16 +70,16 @@ class SoffosAIService:
             json=self.get_json(),
             timeout=30
         )
-        return response.json()[self.output_key]
+        return response.json()
 
     def process_request(self):
         '''
         Based on the knowledge/context, Soffos AI will now give you the data you need
         '''
-        allow_input, input_type = self.allow_input(self._source)
+        allow_input, message = self.allow_input(self._src, self._concern)
         
         if not allow_input:
-            raise ValueError(f"Please provide a {input_type} as input for question-answering service")
+            raise ValueError(message)
         
         if not self._service:
             raise ValueError("Please provide a service you need from Soffos AI.")

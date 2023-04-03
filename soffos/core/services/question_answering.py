@@ -10,19 +10,28 @@ from soffos.common.constants import Services
 
 class QuestionAnsweringService(SoffosAIService):
 
-    def __init__(self, apikey, output_key=None, source=None, question=None) -> None:
-        super().__init__(apikey, output_key, source)
-        self._question = question
+    def __init__(self, apikey, src=None, concern=None) -> None:
+        super().__init__(apikey, src, concern)
+        self._question = concern
         self._service = Services.QUESTION_ANSWERING
         
 
-    def allow_input(self, value):
-        if not isinstance(value, str):
-            return False, str
+    def allow_input(self, source, concern):
+        if not isinstance(source, self.provide_source_type()):
+            return False, "Please provide string datatype on your source"
+        
+        if not isinstance(concern, self.provide_concern_type()):
+            return False, "Please provide string datatype on your question/concern"
         
         return True, str
 
     def provide_output_type(self):
+        return str
+    
+    def provide_source_type(self):
+        return str
+    
+    def provide_concern_type(self):
         return str
     
     def get_default_output_key(self):
@@ -32,5 +41,5 @@ class QuestionAnsweringService(SoffosAIService):
         return {
                 "user": self._apikey,
                 "message": self._question,
-                "document_text": self._source
+                "document_text": self._src
             }
