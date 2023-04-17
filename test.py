@@ -10,6 +10,3 @@ ai_client.question = "What is a canid?"
 ai_client.user = "MeAgain"
 print(ai_client.get_response())
 # print(f"CONTEXT: {ai_client.context}")
-
-ai_client.src = "anything"
-print(ai_client.context)

@@ -6,11 +6,12 @@ Purpose: The main module of Soffos
 '''
 
 from soffos.common.constants import SERVICES_LIST, Services
-from soffos.core.services import QuestionAnsweringService, FileConverterService
+from soffos.core.services import QuestionAnsweringService, FileConverterService, AmbiguityDetectionService
 
 SERVICE_CLASS_MAP = {
     Services.QUESTION_ANSWERING: QuestionAnsweringService,
-    Services.FILE_CONVERTER: FileConverterService
+    Services.FILE_CONVERTER: FileConverterService,
+    Services.AMBIGUITY_DETECTION: AmbiguityDetectionService
 }
 
 class Client:
@@ -35,6 +36,9 @@ class Client:
         self._service = None
         self._output_key = None
         self._user = user
+        self._normalize = False
+        self._sentence_split = 4
+        self._sentence_overlap = False
         
         # read-only attributes
         self._context = None
@@ -56,6 +60,39 @@ class Client:
         View the raw response of the last soffos api called
         '''
         return self._raw
+    
+    @property
+    def sentence_overlap(self) -> bool:
+        return self._sentence_overlap
+
+    @sentence_overlap.setter
+    def sentence_overlap(self, value) -> bool:
+        self._sentence_overlap = value
+
+    @property
+    def sentence_split(self):
+        '''
+        how many sentences per evaluation of ambiguity
+        '''
+        return self._sentence_split
+
+    @sentence_split.setter
+    def sentence_split (self,value):
+        self._sentence_split = value
+
+    @property
+    def normalize(self)->bool:
+        '''
+        returns the normalize flag value of file converter
+        '''
+        return self._normalize
+
+    @normalize.setter
+    def normalize(self,value)->int:
+        '''
+        sets the normalize flag value of file converter
+        '''
+        self._normalize = value
     
     @property
     def cost(self) -> dict:
@@ -174,7 +211,9 @@ class Client:
             apikey=self._apikey,
             user=self._user,
             src=self._src,
-            concern=self._concern
+            concern=self._concern,
+            normalize=self._normalize,
+            sentence_split = self._sentence_split
         )
 
         if not output_key:

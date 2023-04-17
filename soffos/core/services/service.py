@@ -11,7 +11,7 @@ class SoffosAIService:
     '''
     Base service class for all Soffos Services
     '''
-    def __init__(self, apikey, user, src=None, concern=None) -> None:
+    def __init__(self, apikey, user, src=None, concern=None, **kwargs) -> None:
         self.headers = {
             "x-api-key": apikey,
             "content-type": "application/json"
@@ -76,19 +76,17 @@ class SoffosAIService:
         '''
         response = None
         if self.get_json():
-            print("json input")
             response = http3.post(
                 url=SOFFOS_SERVICE_URL + self._service + "/",
                 headers=self.headers,
                 json=self.get_json(),
                 timeout=30
             )
+            
         elif self.get_data():
-            print("form data")
             data = self.get_data()
             filename = str(os.path.basename(self._src))
             mime_type, _ = mimetypes.guess_type(self._src)
-            print(self._src)
             with open(self._src, 'rb') as file:
                 files = {
                     "file": (filename, file, mime_type)
@@ -100,10 +98,13 @@ class SoffosAIService:
                     url=SOFFOS_SERVICE_URL + self._service + "/",
                     headers=self.headers,
                     data=data,
-                    files=files
+                    files=files,
                 )
+        try:
+            return response.json()
+        except requests.exceptions.JSONDecodeError as err:
+            raise ValueError(response)
 
-        return response.json()
 
     def process_request(self):
         '''

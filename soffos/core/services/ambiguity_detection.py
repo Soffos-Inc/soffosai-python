@@ -1,49 +1,50 @@
 '''
 Copyright (c)2022 - Soffos.ai - All rights reserved
-Created at: 2023-04-01
-Purpose: Handler of Question Answering Service
+Created at: 2023-04-17
+Purpose: Handler of Ambiguity Detection Service
 -----------------------------------------------------
 '''
-
+import os
 from .service import SoffosAIService
 from soffos.common.constants import Services
 
-class QuestionAnsweringService(SoffosAIService):
+class AmbiguityDetectionService(SoffosAIService):
 
-    def __init__(self, apikey, user, src=None, concern=None, **kwargs) -> None:
+    def __init__(self, apikey, user, sentence_split=4,src=None, sentence_overlap=False, concern=None, **kwargs) -> None:
         super().__init__(apikey, user, src, concern)
-        self._question = concern
-        self._service = Services.QUESTION_ANSWERING
+        self._sentence_split = sentence_split
+        self._service = Services.AMBIGUITY_DETECTION
+        self._sentence_overlap = sentence_overlap
         
 
     def allow_input(self, source, concern):
+
         if not isinstance(source, self.provide_source_type()):
             return False, "Please provide string datatype on your source"
-        
-        if not isinstance(concern, self.provide_concern_type()):
-            return False, "Please provide string datatype on your question/concern"
         
         return True, str
 
     def provide_output_type(self):
-        return str
+        return list
     
     def provide_source_type(self):
         return str
     
     def provide_concern_type(self):
-        return str
+        return None
     
     def get_default_output_key(self):
-        return "answer"
+        return "ambiguities"
     
     def get_default_secondary_output_key(self):
         return None
-    
+
     def get_json(self):
         request_data = {
-                "user": self._user,
-                "message": self._question,
-                "document_text": self._src
-            }
+            "user": self._user,
+            "text": self._src,
+            "sentence_split": self._sentence_split,
+            "sentence_overlap": self._sentence_overlap
+        }
+
         return request_data
