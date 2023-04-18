@@ -10,3 +10,8 @@ ai_client.question = "What is a canid?"
 ai_client.user = "MeAgain"
 print(ai_client.get_response())
 # print(f"CONTEXT: {ai_client.context}")
+
+# l = dict
+# src = {"e": 1}
+# print(type(src))
+# print(isinstance(src, l))

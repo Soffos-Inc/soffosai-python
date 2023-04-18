@@ -6,12 +6,13 @@ Purpose: The main module of Soffos
 '''
 
 from soffos.common.constants import SERVICES_LIST, Services
-from soffos.core.services import QuestionAnsweringService, FileConverterService, AmbiguityDetectionService
+from soffos.core.services import *
 
 SERVICE_CLASS_MAP = {
     Services.QUESTION_ANSWERING: QuestionAnsweringService,
     Services.FILE_CONVERTER: FileConverterService,
-    Services.AMBIGUITY_DETECTION: AmbiguityDetectionService
+    Services.AMBIGUITY_DETECTION: AmbiguityDetectionService,
+    Services.ANSWER_SCORING: AnswerScoringService
 }
 
 class Client:
@@ -39,6 +40,7 @@ class Client:
         self._normalize = False
         self._sentence_split = 4
         self._sentence_overlap = False
+        self._user_answer = None
         
         # read-only attributes
         self._context = None
@@ -61,6 +63,19 @@ class Client:
         '''
         return self._raw
     
+    @property
+    def user_answer(self) -> str:
+        '''
+        The answer of an end user to be evaluated on answer scoring
+        '''
+        return self._user_answer
+    
+    @user_answer.setter
+    def user_answer(self, value):
+        self._user_answer = value
+        self._concern = value
+        self._context = None
+
     @property
     def sentence_overlap(self) -> bool:
         return self._sentence_overlap
@@ -155,12 +170,11 @@ class Client:
         self._output_key = value
 
     @property
-    def src(self) -> str:
+    def src(self):
         '''
         The source of truth for Soffos API Comprehension
         '''
         return self._src
-
 
     @src.setter
     def src(self, value):
