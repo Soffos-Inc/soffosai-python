@@ -15,9 +15,10 @@ class DocumentsIngestService(SoffosAIService):
     https://dev-platform.soffos.ai/playground/docs#/documents
     '''
 
-    def __init__(self, apikey, user, src={}, concern=None, **kwargs) -> None:
+    def __init__(self, apikey, user, src={}, tagged_elements={},concern=None, **kwargs) -> None:
         super().__init__(apikey, user, src, concern)
         self._service = Services.DOCUMENTS_INGEST
+        self._tagged_elements = tagged_elements
     
     def allow_input(self, source, concern):
         if not isinstance(source, self.provide_source_type()):
@@ -58,7 +59,7 @@ class DocumentsIngestService(SoffosAIService):
                 "user": self._user,
                 "name": self._src['name'],
                 "meta": self._src['meta'],
-                "tagged_elements": self._src['tagged_elements']
+                "tagged_elements": self._tagged_elements
             }
         
         else:

@@ -7,6 +7,8 @@ Purpose: The main module of Soffos
 import uuid
 from soffos.common.constants import SERVICES_LIST, Services
 from soffos.core.services import *
+from .ai_response import SoffosAiResponse
+
 
 SERVICE_CLASS_MAP = {
     Services.QUESTION_ANSWERING: QuestionAnsweringService,
@@ -52,27 +54,9 @@ class Client:
         self._sentence_overlap = False
         self._user_answer = None
         self._document_ids = None
+        self._tagged_elements = None
         
         # read-only attributes
-        self._context = None
-        self._raw = None
-        self._cost = None
-        self._charged_character_count = 0
-        self._response = None
-    
-    @property
-    def response(self) -> str:
-        '''
-        The main response[key] is saved here
-        '''
-        return self._response
-
-    @property
-    def raw_response(self) -> dict:
-        '''
-        View the raw response of the last soffos api called
-        '''
-        return self._raw
     
     @property
     def document_ids(self) -> list:
@@ -85,6 +69,14 @@ class Client:
     def document_id(self, value):
         self._document_id = value
         self.concern = value
+
+    @property
+    def tagged_elements(self):
+        return self._tagged_elements
+
+    @tagged_elements.setter
+    def tagged_elements(self, value):
+        self._tagged_elements = value
 
     @property
     def user_answer(self) -> str:
@@ -130,13 +122,6 @@ class Client:
         sets the normalize flag value of file converter
         '''
         self._normalize = value
-    
-    @property
-    def cost(self) -> dict:
-        '''
-        The costing detail of the last get_response() call
-        '''
-        return self._cost
 
     @property
     def charged_character_count(self) -> int:
@@ -157,14 +142,6 @@ class Client:
         self._user = value
 
     @property
-    def context(self) -> str:
-        '''
-        The context where the response is based off.  When the document is ingested, only part of it
-        has the context and only that will be included on billing not the whole document.
-        '''
-        return self._context
-
-    @property
     def service(self) -> str:
         '''
         What do you want Soffos AI to think off?
@@ -177,7 +154,6 @@ class Client:
         if value not in SERVICES_LIST:
             raise KeyError(f"Invalid Service please choose from {SERVICES_LIST} or import Services for faster coding")
         
-        self._context = None
         self._service = value
         
     @property
@@ -197,7 +173,6 @@ class Client:
 
     @src.setter
     def src(self, value):
-        self._context = None
         self._src = value
         if isinstance(value, dict):
             if "document_id" in value.keys():
@@ -217,7 +192,6 @@ class Client:
 
     @concern.setter
     def concern(self, value):
-        self._context = None
         self._concern = value
 
     @property
@@ -229,14 +203,13 @@ class Client:
 
     @question.setter
     def question(self, value):
-        self._context = None
         self._question = value
         self._concern = value
 
 
     def get_response(self, output_key=None) -> str:
         '''
-        Based on the source/context, Soffos AI will now give you the data you need
+        Based on the source/concern, Soffos AI will now give you the data you need
         '''
         if not self._service:
             raise AttributeError("Please provide the service type you need from Soffos AI.")
@@ -251,7 +224,8 @@ class Client:
             concern=self._concern,
             document_ids=self._document_ids,
             normalize=self._normalize,
-            sentence_split = self._sentence_split
+            sentence_split = self._sentence_split,
+            tagged_elements = self._tagged_elements
         )
 
         json_response:dict = service.process_request()
@@ -264,15 +238,18 @@ class Client:
             secondary_output_key = service.get_default_secondary_output_key()
             output_key = primary_output_key if primary_output_key in json_response.keys() else secondary_output_key
 
-        self._raw = json_response
         try:
-            self._response = json_response[output_key]
+            response = json_response[output_key]
         except KeyError:
             print("Error on Response. Output key is not found")
-            self._response = json_response
+            response = json_response
 
-        self._context = json_response.get('context')
-        self._cost = json_response.get('cost')
-        self._charged_character_count = json_response.get('charged_character_count')
-
-        return self._response
+        return SoffosAiResponse(
+            raw = json_response,
+            response = response,
+            context = json_response.get('context'),
+            cost = json_response.get('cost'),
+            charged_character_count = json_response.get('charged_character_count'),
+            tagged_elements = json_response.get("tagged_elements"),
+            document_ids=json_response.get("document_ids")
+        )

@@ -1,5 +1,4 @@
-from soffos import Client
-from soffos.common.constants import Services
+from soffos import Client, Services
 
 
 api_key = "Token a1739a8f-c2cf-45e0-9bb1-0fd88beb717d"
