@@ -12,3 +12,4 @@ ai_client.src = 'Epidemiology.docx'
 ai_client.normalize = 0
 response = ai_client.get_response()
 print(ai_client.response)
+print(ai_client.raw_response)

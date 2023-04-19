@@ -9,6 +9,10 @@ from .service import SoffosAIService
 from soffos.common.constants import Services
 
 class FileConverterService(SoffosAIService):
+    '''
+    For service description please go to:
+    https://dev-platform.soffos.ai/playground/docs#/file-converter
+    '''
 
     def __init__(self, apikey, user, normalize=False,src=None, concern=None, **kwargs) -> None:
         super().__init__(apikey, user, src, concern)
@@ -21,7 +25,7 @@ class FileConverterService(SoffosAIService):
         if not os.path.isfile(source):
             return False, "Please provide the correct path to the file"
         
-        return True, str
+        return True, None
 
     def provide_output_type(self):
         return str

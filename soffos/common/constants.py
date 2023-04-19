@@ -43,6 +43,8 @@ class Services:
     CONTRADICTION_DETECTION = 'contradiction-detection'
     LETS_DISCUSS = 'discuss'
     DOCUMENTS_INGEST = 'documents/ingest'
+    DOCUMENTS_DELETE = 'documents/delete'
+    DOCUMENTS_SEARCH = 'documents/search'
     EMAIL_ANALYSIS = 'email-analysis'
     EMOTION_DETECTION = 'emotion-detection'
     FILE_CONVERTER = 'file-converter'

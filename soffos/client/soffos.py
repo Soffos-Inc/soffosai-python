@@ -4,7 +4,7 @@ Created at: 2023-03-23
 Purpose: The main module of Soffos
 -----------------------------------------------------
 '''
-
+import uuid
 from soffos.common.constants import SERVICES_LIST, Services
 from soffos.core.services import *
 
@@ -12,8 +12,18 @@ SERVICE_CLASS_MAP = {
     Services.QUESTION_ANSWERING: QuestionAnsweringService,
     Services.FILE_CONVERTER: FileConverterService,
     Services.AMBIGUITY_DETECTION: AmbiguityDetectionService,
-    Services.ANSWER_SCORING: AnswerScoringService
+    Services.ANSWER_SCORING: AnswerScoringService,
+    Services.CONTRADICTION_DETECTION: ContradictionDetectionService
 }
+
+
+def is_valid_uuid(uuid_string):
+    try:
+        uuid_obj = uuid.UUID(uuid_string)
+    except ValueError:
+        return False
+    return str(uuid_obj) == uuid_string
+
 
 class Client:
     '''
@@ -41,6 +51,7 @@ class Client:
         self._sentence_split = 4
         self._sentence_overlap = False
         self._user_answer = None
+        self._document_ids = None
         
         # read-only attributes
         self._context = None
@@ -64,6 +75,18 @@ class Client:
         return self._raw
     
     @property
+    def document_ids(self) -> list:
+        '''
+        The document id of the ingested document to be used as Soffos AI source
+        '''
+        return self._document_ids
+
+    @document_ids.setter
+    def document_id(self, value):
+        self._document_id = value
+        self.concern = value
+
+    @property
     def user_answer(self) -> str:
         '''
         The answer of an end user to be evaluated on answer scoring
@@ -73,8 +96,7 @@ class Client:
     @user_answer.setter
     def user_answer(self, value):
         self._user_answer = value
-        self._concern = value
-        self._context = None
+        self.concern = value
 
     @property
     def sentence_overlap(self) -> bool:
@@ -122,7 +144,6 @@ class Client:
         The character count that is billed. It depends on which is higher: the request or the response.
         '''
         return self._charged_character_count
-
     
     @property
     def user(self) -> str:
@@ -151,7 +172,6 @@ class Client:
         '''
         return self._service
 
-
     @service.setter
     def service(self, value):
         if value not in SERVICES_LIST:
@@ -160,7 +180,6 @@ class Client:
         self._context = None
         self._service = value
         
-
     @property
     def output_key(self) -> str:
         return self._output_key
@@ -180,7 +199,14 @@ class Client:
     def src(self, value):
         self._context = None
         self._src = value
-
+        if isinstance(value, dict):
+            if "document_id" in value.keys():
+                self._document_id = value['document_id']
+        
+        elif isinstance(value, str):
+            if is_valid_uuid(value):
+                self._document_id = value
+                
 
     @property
     def concern(self) -> str:
@@ -189,20 +215,17 @@ class Client:
         '''
         return self._concern
 
-
     @concern.setter
     def concern(self, value):
         self._context = None
         self._concern = value
 
-    
     @property
     def question(self) -> str:
         '''
         The data that Soffos AI will accept as truth and will find answer from
         '''
         return self._question
-
 
     @question.setter
     def question(self, value):
@@ -221,26 +244,31 @@ class Client:
         if not self._user:
             raise AttributeError("user is required")
 
-        service = SERVICE_CLASS_MAP[self._service](
+        service:SoffosAIService = SERVICE_CLASS_MAP[self._service](
             apikey=self._apikey,
             user=self._user,
             src=self._src,
             concern=self._concern,
+            document_ids=self._document_ids,
             normalize=self._normalize,
             sentence_split = self._sentence_split
         )
 
+        json_response:dict = service.process_request()
+
+        if not output_key:
+            output_key = self._output_key
+
         if not output_key:
             primary_output_key = service.get_default_output_key()
             secondary_output_key = service.get_default_secondary_output_key()
-
-        json_response = service.process_request()
+            output_key = primary_output_key if primary_output_key in json_response.keys() else secondary_output_key
 
         self._raw = json_response
-        output_key = primary_output_key if primary_output_key in json_response.keys() else secondary_output_key
         try:
             self._response = json_response[output_key]
         except KeyError:
+            print("Error on Response. Output key is not found")
             self._response = json_response
 
         self._context = json_response.get('context')

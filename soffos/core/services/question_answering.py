@@ -9,11 +9,16 @@ from .service import SoffosAIService
 from soffos.common.constants import Services
 
 class QuestionAnsweringService(SoffosAIService):
+    '''
+    For service description please go to:
+    https://dev-platform.soffos.ai/playground/docs#/question-answering
+    '''
 
-    def __init__(self, apikey, user, src=None, concern=None, **kwargs) -> None:
+    def __init__(self, apikey, user, document_ids=None, src=None, concern=None, **kwargs) -> None:
         super().__init__(apikey, user, src, concern)
         self._question = concern
         self._service = Services.QUESTION_ANSWERING
+        self._document_ids = document_ids
         
 
     def allow_input(self, source, concern):
@@ -23,7 +28,7 @@ class QuestionAnsweringService(SoffosAIService):
         if not isinstance(concern, self.provide_concern_type()):
             return False, "Please provide string datatype on your question/concern"
         
-        return True, str
+        return True, None
 
     def provide_output_type(self):
         return str
@@ -41,7 +46,14 @@ class QuestionAnsweringService(SoffosAIService):
         return None
     
     def get_json(self):
-        request_data = {
+        if self._document_id:
+            request_data = {
+                "user": self._user,
+                "message": self._question,
+                "document_id": self._document_ids
+            }
+        else:
+            request_data = {
                 "user": self._user,
                 "message": self._question,
                 "document_text": self._src
