@@ -46,7 +46,7 @@ class QuestionAnsweringService(SoffosAIService):
         return None
     
     def get_json(self):
-        if self._document_id:
+        if self._document_ids:
             request_data = {
                 "user": self._user,
                 "message": self._question,

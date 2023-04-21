@@ -1,5 +1,8 @@
 '''
-Organization of constant lists and dictionaries
+Copyright (c)2022 - Soffos.ai - All rights reserved
+Created at: 2023-04-19
+Purpose: Organize the constants
+-----------------------------------------------------
 '''
 
 SOFFOS_SERVICE_URL = "https://dev-api.soffos.ai/service/"
@@ -41,7 +44,10 @@ class Services:
     AMBIGUITY_DETECTION = 'ambiguity-detection'
     ANSWER_SCORING = 'answer-scoring'
     CONTRADICTION_DETECTION = 'contradiction-detection'
+    LETS_DISCUSS_CREATE = 'discuss/create'
     LETS_DISCUSS = 'discuss'
+    LETS_DISCUSS_RETRIEVE = 'discuss/count'
+    LETS_DISCUSS_DELETE = 'discuss/delete'
     DOCUMENTS_INGEST = 'documents/ingest'
     DOCUMENTS_DELETE = 'documents/delete'
     DOCUMENTS_SEARCH = 'documents/search'
@@ -51,6 +57,7 @@ class Services:
     FLASHCARD_GENERATION = 'flashcard-generation'
     INTENT_CLASSIFICATION = 'intent-classification'
     LANGUAGE_DETECTION = 'language-detection'
+    LOGICAL_ERROR_DETECTION = 'logical-error-detection'
     MICROLESSON = 'microlesson'
     NER = 'ner'
     PARAPHRASE = 'paraphrase'
@@ -63,6 +70,7 @@ class Services:
     SIMPLIFY = 'simplify'
     STRING_SIMILARITY = 'string-similarity'
     SUMMARIZATION = 'summarization'
+    TABLE_GENERATOR = 'table-generator'
     TAG_GENERATION = 'tag'
     TRANSCRIPTION_CORRECTION = 'transcript-correction'
     BATCH_SERVICE = 'batch-service2'

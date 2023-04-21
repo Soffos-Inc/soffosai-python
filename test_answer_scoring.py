@@ -11,5 +11,6 @@ ai.src = {
 }
 ai.user_answer = "20,000 years ago."
 ai.user = "me again"
-ai.get_response()
-print(ai.response)
+response = ai.get_response()
+
+print(response.response)

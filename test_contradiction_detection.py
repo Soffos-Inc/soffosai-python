@@ -6,6 +6,6 @@ contradiction_ai.service = Services.CONTRADICTION_DETECTION
 
 contradiction_ai.src = "The source noted that the Shaheen-2, with a range of 2400 km, has never been tested by Pakistan. Pakistan has said that it performed several tests of its 2300 km-range Shaheen-2 missile in September 2004."
 contradiction_ai.user = "Meeeee"
-contradiction_ai.get_response()
-print(contradiction_ai.response)
-print(contradiction_ai.raw_response)
+response = contradiction_ai.get_response()
+print(response.response)
+print(response.raw_response)
