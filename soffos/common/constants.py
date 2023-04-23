@@ -11,8 +11,13 @@ SERVICES_LIST = [
     'ambiguity-detection',
     'answer-scoring', 
     'contradiction-detection', 
+    'discuss/create',
     'discuss', 
+    'discuss/count',
+    'discuss/delete',
     'documents/ingest', 
+    'documents/delete',
+    'documents/search',
     'email-analysis', 
     'emotion-detection', 
     'file-converter', 
@@ -20,6 +25,7 @@ SERVICES_LIST = [
     'intent-classification/confirmation', 
     'intent-classification', 
     'language-detection', 
+    'logical-error-detection',
     'microlesson', 
     'ner', 
     'paraphrase', 
@@ -32,6 +38,7 @@ SERVICES_LIST = [
     'simplify',
     'string-similarity',
     'summarization',
+    'table-generator',
     'tag',
     'transcript-correction',
     'batch-service/'
@@ -74,4 +81,3 @@ class Services:
     TAG_GENERATION = 'tag'
     TRANSCRIPTION_CORRECTION = 'transcript-correction'
     BATCH_SERVICE = 'batch-service2'
-

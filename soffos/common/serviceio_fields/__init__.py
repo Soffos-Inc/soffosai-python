@@ -1,3 +1,4 @@
+from .service_io import ServiceIO
 from .ambiguity_detection_io import AmbiguityDetectionIO
 from .answer_scoring_io import AnswerScoringIO
 from .contradiction_detection_io import ContradictionDetectionIO

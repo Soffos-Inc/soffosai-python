@@ -92,6 +92,11 @@ class Client:
 
     @property
     def sentence_overlap(self) -> bool:
+        '''
+        Whether to overlap adjacent chunks by 1 sentence. 
+        For example, with sentence_split 3 and sentence_overlap=true :
+        [[s1, s2, s3], [s3, s4, s5], [s5, s6, s7]]
+        '''
         return self._sentence_overlap
 
     @sentence_overlap.setter
@@ -182,7 +187,6 @@ class Client:
             if is_valid_uuid(value):
                 self._document_id = value
                 
-
     @property
     def concern(self) -> str:
         '''
@@ -225,6 +229,7 @@ class Client:
             document_ids=self._document_ids,
             normalize=self._normalize,
             sentence_split = self._sentence_split,
+            sentence_overlap = self._sentence_overlap,
             tagged_elements = self._tagged_elements
         )
 
