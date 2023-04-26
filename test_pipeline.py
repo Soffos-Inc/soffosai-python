@@ -17,4 +17,6 @@ my_pipeline = SoffosPipeline(
 )
 
 response = my_pipeline.run()
-print(json.dumps(response, indent=4))
+# print(json.dumps(response, indent=4))
+with open("output.txt", "w", encoding="utf-8") as target:
+    target.writelines(json.dumps(response, indent=4))

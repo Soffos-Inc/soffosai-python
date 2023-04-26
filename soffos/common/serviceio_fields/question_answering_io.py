@@ -5,9 +5,8 @@ from ..constants import Services
 class QuestionAnsweringIO(ServiceIO):
     service = Services.QUESTION_ANSWERING
     required_input_fields = ["message"]
-    require_one_of_choice = [["document_ids", "document_text"]]
-    optional_input_fields = ["docuement_text", "document_ids", "check_ambiguity", 
-                            "check_query_type", "generic_responses"]
+    require_one_of_choice = [["document_text", "document_ids"]]
+    optional_input_fields = ["check_ambiguity", "check_query_type", "generic_responses"]
     input_structure = {
         "message": str,
         "document_ids": [

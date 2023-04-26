@@ -108,7 +108,6 @@ class SoffosPipeline:
                     self._concern = self._sources[required_input]
             
             for group_choices in _serviceio.require_one_of_choice:
-                print(f"group choices: {group_choices}")
                 for field in group_choices:
                     if field in self._sources.keys():
                         prepared_input[field]= self._sources[field]

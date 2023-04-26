@@ -14,7 +14,8 @@ SERVICE_CLASS_MAP = {
     Services.FILE_CONVERTER: FileConverterService,
     Services.AMBIGUITY_DETECTION: AmbiguityDetectionService,
     Services.ANSWER_SCORING: AnswerScoringService,
-    Services.CONTRADICTION_DETECTION: ContradictionDetectionService
+    Services.CONTRADICTION_DETECTION: ContradictionDetectionService,
+    Services.DOCUMENTS_INGEST: DocumentsIngestService
 }
 
 
@@ -226,7 +227,7 @@ class Client:
         self._concern = value
 
 
-    def get_response(self, output_key=None) -> str:
+    def get_response(self, output_key=None) -> SoffosAiResponse:
         '''
         Based on the source/concern, Soffos AI will now give you the data you need
         '''

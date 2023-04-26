@@ -19,12 +19,14 @@ class DocumentsIngestService(SoffosAIService):
         super().__init__(apikey, user, src, concern)
         self._service = Services.DOCUMENTS_INGEST
         self._tagged_elements = tagged_elements
+        if not tagged_elements and "tagged_elements" in src.keys():
+            self._tagged_elements = src['tagged_elements']
     
     def allow_input(self, source, concern):
         if not isinstance(source, self.provide_source_type()):
             return False, "Please provide a dictionary on your source"
         
-        if "tagged_elements" not in source.keys() and "text" not in source.keys():
+        if not self._tagged_elements and "text" not in source.keys():
             return False, "Please provice either tagged_elements or text fields"
 
         if "tagged_elements" in source.keys() and "text" in source.keys():
@@ -33,8 +35,8 @@ class DocumentsIngestService(SoffosAIService):
         if "name" not in source.keys():
             return False, "Please provide the name field on the source <src>"
 
-        if "meta" not in source.keys():
-            self._src['meta'] = {"name": source['name']} # just to provide default value for meta, this will be ignored
+        # if "meta" not in source.keys():
+        #     self._src['meta'] = {"name": source['name']} # just to provide default value for meta, this will be ignored
 
         return True, None
 
@@ -54,21 +56,35 @@ class DocumentsIngestService(SoffosAIService):
         return "success"
     
     def get_json(self):
-        if "tagged_elements" in self._src.keys():
-            request_data = {
-                "user": self._user,
-                "name": self._src['name'],
-                "meta": self._src['meta'],
-                "tagged_elements": self._tagged_elements
-            }
+        if self._tagged_elements:
+            if 'meta' in self._src.keys():
+                request_data = {
+                    "user": self._user,
+                    "name": self._src['name'],
+                    "meta": self._src['meta'],
+                    "tagged_elements": self._tagged_elements
+                }
+            else:
+                request_data = {
+                    "user": self._user,
+                    "name": self._src['name'],
+                    "tagged_elements": self._tagged_elements
+                }
         
         else:
-            request_data = {
-                "user": self._user,
-                "name": self._src['name'],
-                "meta": self._src['meta'],
-                "text": self._src['text']
-            }
+            if 'meta' in self._src.keys():
+                request_data = {
+                    "user": self._user,
+                    "name": self._src['name'],
+                    "meta": self._src['meta'],
+                    "text": self._src['text']
+                }
+            else:
+                request_data = {
+                    "user": self._user,
+                    "name": self._src['name'],
+                    "text": self._src['text']
+                }
 
         return request_data
     

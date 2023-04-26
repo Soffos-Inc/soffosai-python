@@ -90,7 +90,6 @@ class SoffosAIService:
         Based on the knowledge/context, Soffos AI will now give you the data you need
         '''
         response = None
-        print(json.dumps(self.get_json(), indent=4))
         if self.get_json():
             response = requests.post(
                 url=SOFFOS_SERVICE_URL + self._service + "/",
