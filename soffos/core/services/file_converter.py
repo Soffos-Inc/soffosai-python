@@ -14,13 +14,21 @@ class FileConverterService(SoffosAIService):
     https://dev-platform.soffos.ai/playground/docs#/file-converter
     '''
 
-    def __init__(self, apikey, user, normalize=False,src=None, concern=None, **kwargs) -> None:
+    def __init__(self, apikey, user, normalize=0,src=None, concern=None, **kwargs) -> None:
         super().__init__(apikey, user, src, concern)
         self._normalize = normalize
         self._service = Services.FILE_CONVERTER
         
 
     def allow_input(self, source, concern):
+
+        if isinstance(source, dict):
+            self._document_id = source.get("document_id")
+            source = source.get("file")
+            if self._document_id:
+                self._src = self._document_id
+            else:
+                self._src = source
 
         if not os.path.isfile(source):
             return False, "Please provide the correct path to the file"

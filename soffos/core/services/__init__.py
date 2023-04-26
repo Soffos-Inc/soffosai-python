@@ -6,3 +6,4 @@ from .ambiguity_detection import AmbiguityDetectionService
 from .answer_scoring import AnswerScoringService
 from .contradiction_detection import ContradictionDetectionService
 from .documents import DocumentsIngestService, DocumentsSearchService, DocumentsDeleteService
+from .service import is_valid_uuid

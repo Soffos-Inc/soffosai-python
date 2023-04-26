@@ -10,5 +10,5 @@ ai_client.service = Services.FILE_CONVERTER
 ai_client.src = 'Epidemiology.docx'
 ai_client.normalize = 0
 response = ai_client.get_response()
-print(ai_client.response)
-print(ai_client.raw_response)
+print(response.response)
+# print(response.raw_response)

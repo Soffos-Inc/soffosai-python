@@ -22,12 +22,28 @@ class QuestionAnsweringService(SoffosAIService):
         
 
     def allow_input(self, source, concern):
+
+        if isinstance(source, dict):
+            if "document_id" in source.keys():
+                self._document_id = source['document_id']
+                
+            if not concern:
+                concern = source.get("question")
+            if not concern:
+                concern = source.get("message")
+
+            source = source.get("text") if source.get("text") else source.get("document_text")
+        
+        if not source:
+            return False, "src is not specified."
+
         if not isinstance(source, self.provide_source_type()):
             return False, "Please provide string datatype on your source"
         
         if not isinstance(concern, self.provide_concern_type()):
             return False, "Please provide string datatype on your question/concern"
         
+        self._src = source
         return True, None
 
     def provide_output_type(self):

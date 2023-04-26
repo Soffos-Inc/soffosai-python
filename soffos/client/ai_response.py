@@ -12,13 +12,21 @@ class SoffosAiResponse:
     '''
     def __init__(self, context=None, raw=None, cost=None, charged_character_count=0, response=None, tagged_elements=None, document_ids=None,**kwargs) -> None:
         self._context = context
-        self._raw = raw
+        self._raw:dict = raw
         self._cost = cost
         self._charged_character_count = charged_character_count
         self._response = response
         self._tagged_elements = tagged_elements
         self._document_ids = document_ids
-
+        other_document_ids = self.look_for_document_ids(self._raw)
+        if len(other_document_ids) > 0:
+            if self._document_ids:
+                self._document_ids.append(other_document_ids)
+            else:
+                self._document_ids = [other_document_ids]
+            
+            self._raw['document_ids'] = self._document_ids
+        
     @property
     def context(self):
         '''
@@ -65,6 +73,24 @@ class SoffosAiResponse:
     @property
     def document_ids(self):
         return self._document_ids
+    
+    def look_for_document_ids(self, raw:dict):
+        document_ids = []
+        if "document_id" in raw:
+            document_ids.append(raw['document_id'])
+        
+        if "document_ids" in raw:
+            document_ids.append(raw['document_ids'])
+
+        for key in raw.keys():
+            if isinstance(raw[key], dict):
+                if "document_id" in raw[key]:
+                    document_ids.append(raw[key])
+                if "document_ids" in raw[key]:
+                    document_ids.append(raw[key])
+        
+        return document_ids
+
 
     def __str__(self) -> str:
         return self._response if isinstance(self._response, str) else json.dumps(self._response)

@@ -18,4 +18,8 @@ class ServiceIO:
     optional_input_fields = []
     output_structure = {}
     def __init__(self) -> None:
-        self.output_fields = list(self.output_structure.keys())
+        self._output_fields = list(self.output_structure.keys())
+    
+    @property
+    def output_fields(self):
+        return self._output_fields

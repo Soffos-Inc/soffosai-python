@@ -4,14 +4,23 @@ Created at: 2023-04-01
 Purpose: The base Service class
 -----------------------------------------------------
 '''
-import abc, http3, requests, os, mimetypes
+import abc, http3, requests, os, mimetypes, uuid, json
 from soffos.common.constants import SOFFOS_SERVICE_URL
+
+
+def is_valid_uuid(uuid_string):
+    try:
+        uuid_obj = uuid.UUID(uuid_string)
+    except ValueError:
+        return False
+    return str(uuid_obj) == uuid_string
+
 
 class SoffosAIService:
     '''
     Base service class for all Soffos Services
     '''
-    def __init__(self, apikey, user, src=None, concern=None, **kwargs) -> None:
+    def __init__(self, apikey, user, src=None, concern=None, document_id=None, **kwargs) -> None:
         self.headers = {
             "x-api-key": apikey,
             "content-type": "application/json"
@@ -21,6 +30,12 @@ class SoffosAIService:
         self._concern = concern
         self._service = None
         self._user = user
+        self._document_id = document_id
+        if isinstance(src, dict):
+            for key in src.keys():
+                if isinstance(src[key], str):
+                    if is_valid_uuid(src[key]):
+                        self._document_id = src[key]
 
     @abc.abstractmethod
     def allow_input(self, value):
@@ -75,12 +90,13 @@ class SoffosAIService:
         Based on the knowledge/context, Soffos AI will now give you the data you need
         '''
         response = None
+        print(json.dumps(self.get_json(), indent=4))
         if self.get_json():
-            response = http3.post(
+            response = requests.post(
                 url=SOFFOS_SERVICE_URL + self._service + "/",
                 headers=self.headers,
                 json=self.get_json(),
-                timeout=30
+                # timeout=30
             )
             
         elif self.get_data():

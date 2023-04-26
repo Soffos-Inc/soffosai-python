@@ -4,7 +4,6 @@ Created at: 2023-03-23
 Purpose: The main module of Soffos
 -----------------------------------------------------
 '''
-import uuid
 from soffos.common.constants import SERVICES_LIST, Services
 from soffos.core.services import *
 from .ai_response import SoffosAiResponse
@@ -19,42 +18,47 @@ SERVICE_CLASS_MAP = {
 }
 
 
-def is_valid_uuid(uuid_string):
-    try:
-        uuid_obj = uuid.UUID(uuid_string)
-    except ValueError:
-        return False
-    return str(uuid_obj) == uuid_string
+# def is_valid_uuid(uuid_string):
+#     try:
+#         uuid_obj = uuid.UUID(uuid_string)
+#     except ValueError:
+#         return False
+#     return str(uuid_obj) == uuid_string
 
 
 class Client:
     '''
-    Not finished yet -- Just warming up
+    Will handle API http requests' complexity
     ------------------------------------
     handles Soffos API http requests
     '''
 
-    def __init__(self, apikey, user=None) -> dict:
+    def __init__(
+        self, apikey, user=None,
+        src=None, question=None, concern=None, answer=None, tags=None, service=None,
+        output_key = None, normalize=0, sentence_split=False, sentence_overlap=False,
+        user_answer=None, document_ids=None, tagged_elements=None, **kwargs
+        ) -> dict:
 
         self._apikey = apikey
         self.headers = {
             "x-api-key": apikey,
             "content-type": "application/json"
         }
-        self._src = None
-        self._question = None
-        self._concern = None
-        self._answer = None
-        self._tags = None
-        self._service = None
-        self._output_key = None
+        self._src = src
+        self._question = question
+        self._concern = concern
+        self._answer = answer
+        self._tags = tags
+        self._service = service
+        self._output_key = output_key
         self._user = user
-        self._normalize = False
-        self._sentence_split = 4
-        self._sentence_overlap = False
-        self._user_answer = None
-        self._document_ids = None
-        self._tagged_elements = None
+        self._normalize = normalize
+        self._sentence_split = sentence_split
+        self._sentence_overlap = sentence_overlap
+        self._user_answer = user_answer
+        self._document_ids = document_ids
+        self._tagged_elements = tagged_elements
         
         # read-only attributes
     
@@ -77,6 +81,17 @@ class Client:
     @tagged_elements.setter
     def tagged_elements(self, value):
         self._tagged_elements = value
+
+    @property
+    def answer(self):
+        '''
+        The correct answer used in answer_scoring service where the score of user_answer will be based upon
+        '''
+        return self._answer
+    
+    @answer.setter
+    def answer(self, value):
+        self._answer = value
 
     @property
     def user_answer(self) -> str:
@@ -115,7 +130,7 @@ class Client:
         self._sentence_split = value
 
     @property
-    def normalize(self)->bool:
+    def normalize(self)->int:
         '''
         returns the normalize flag value of file converter
         '''

@@ -5,7 +5,7 @@ from ..constants import Services
 class DocumentsIngestIO(ServiceIO):
     service = Services.DOCUMENTS_INGEST
     required_input_fields = ["name", ]
-    require_one_of_choice = [["text", "tagged_elements"],]
+    require_one_of_choice = [["tagged_elements", "text"]]
     optional_input_fields = ["meta"]
     input_structure = {
         "name": str,
