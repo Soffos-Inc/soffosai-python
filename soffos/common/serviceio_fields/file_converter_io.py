@@ -1,8 +1,8 @@
 from .service_io import ServiceIO
-from ..constants import Services
+from ..constants import ServiceString
 
 class FileConverterIO(ServiceIO):
-    service = Services.FILE_CONVERTER
+    service = ServiceString.FILE_CONVERTER
     required_input_fields = ["file"]
     optional_input_fields = ["normalize"]
     input_structure = {

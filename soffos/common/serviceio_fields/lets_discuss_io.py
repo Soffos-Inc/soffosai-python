@@ -1,9 +1,9 @@
 from .service_io import ServiceIO
-from ..constants import Services
+from ..constants import ServiceString
 
 
 class LetsDiscussCreateIO(ServiceIO):
-    service = Services.LETS_DISCUSS_CREATE
+    service = ServiceString.LETS_DISCUSS_CREATE
     required_input_fields = ["context"]
     input_structure = {
         "context": str
@@ -14,7 +14,7 @@ class LetsDiscussCreateIO(ServiceIO):
 
 
 class LetsDiscussIO(ServiceIO):
-    service = Services.LETS_DISCUSS
+    service = ServiceString.LETS_DISCUSS
     required_input_fields = ["session_id", "query"]
     input_structure = {
         "session_id": str,
@@ -33,7 +33,7 @@ class LetsDiscussIO(ServiceIO):
 
 
 class LetsDiscussRetrieveIO(ServiceIO):
-    service = Services.LETS_DISCUSS_RETRIEVE
+    service = ServiceString.LETS_DISCUSS_RETRIEVE
     required_input_fields = ["return_messages"]
     input_structure = {
         "return_messages": bool
@@ -63,7 +63,7 @@ class LetsDiscussRetrieveIO(ServiceIO):
 
 
 class LetsDiscussDeleteIO(ServiceIO):
-    service = Services.LETS_DISCUSS_DELETE
+    service = ServiceString.LETS_DISCUSS_DELETE
     required_input_fields = ["session_ids"]
     input_structure = {
         "session_ids": str

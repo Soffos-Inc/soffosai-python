@@ -1,9 +1,9 @@
 from .service_io import ServiceIO
-from ..constants import Services
+from ..constants import ServiceString
 
 
 class TranscriptCorrectionIO(ServiceIO):
-    service = Services.TRANSCRIPTION_CORRECTION
+    service = ServiceString.TRANSCRIPTION_CORRECTION
     required_input_fields = ["text"]
     input_structure = {
         "text": str

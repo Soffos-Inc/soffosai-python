@@ -6,7 +6,7 @@ Purpose: Handler of Document Processing Service
 '''
 
 from .service import SoffosAIService
-from soffos.common.constants import Services
+from soffos.common.constants import ServiceString
 
 
 class DocumentsIngestService(SoffosAIService):
@@ -17,7 +17,7 @@ class DocumentsIngestService(SoffosAIService):
 
     def __init__(self, apikey, user, src={}, tagged_elements={},concern=None, **kwargs) -> None:
         super().__init__(apikey, user, src, concern)
-        self._service = Services.DOCUMENTS_INGEST
+        self._service = ServiceString.DOCUMENTS_INGEST
         self._tagged_elements = tagged_elements
         if not tagged_elements and "tagged_elements" in src.keys():
             self._tagged_elements = src['tagged_elements']
@@ -97,7 +97,7 @@ class DocumentsSearchService(SoffosAIService):
 
     def __init__(self, apikey, user, src=None, concern=None, **kwargs) -> None:
         super().__init__(apikey, user, src, concern)
-        self._service = Services.DOCUMENTS_SEARCH
+        self._service = ServiceString.DOCUMENTS_SEARCH
         self._concern = concern
         if not isinstance(concern, dict):
             raise ValueError("concern should be a dictionary")
@@ -171,7 +171,7 @@ class DocumentsDeleteService(SoffosAIService):
 
     def __init__(self, apikey, user, src=None, concern=None, **kwargs) -> None:
         super().__init__(apikey, user, src, concern)
-        self._service = Services.DOCUMENTS_DELETE
+        self._service = ServiceString.DOCUMENTS_DELETE
     
     def allow_input(self, source, concern):
         if not isinstance(concern, self.provide_concern_type()):

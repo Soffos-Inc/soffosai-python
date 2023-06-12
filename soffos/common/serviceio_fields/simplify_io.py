@@ -1,9 +1,9 @@
 from .service_io import ServiceIO
-from ..constants import Services
+from ..constants import ServiceString
 
 
 class SimplifyIO(ServiceIO):
-    service = Services.SIMPLIFY
+    service = ServiceString.SIMPLIFY
     required_input_fields = ["text"]
     input_structure = {
         "text": str

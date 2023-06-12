@@ -6,7 +6,7 @@ Purpose: Handler of Ambiguity Detection Service
 '''
 import os
 from .service import SoffosAIService
-from soffos.common.constants import Services
+from soffos.common.constants import ServiceString
 
 class AmbiguityDetectionService(SoffosAIService):
     '''
@@ -14,10 +14,10 @@ class AmbiguityDetectionService(SoffosAIService):
     https://dev-platform.soffos.ai/playground/docs#/ambiguity-detection
     '''
 
-    def __init__(self, apikey, user, sentence_split=4,src=None, sentence_overlap=False, concern=None, **kwargs) -> None:
+    def __init__(self, apikey, user, sentence_split=4, src=None, sentence_overlap=False, concern=None, **kwargs) -> None:
         super().__init__(apikey, user, src, concern)
         self._sentence_split = sentence_split
-        self._service = Services.AMBIGUITY_DETECTION
+        self._service = ServiceString.AMBIGUITY_DETECTION
         self._sentence_overlap = sentence_overlap
         
 

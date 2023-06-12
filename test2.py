@@ -1,16 +1,15 @@
-import json
-from soffos import Client, Services, SoffosAiResponse
+import requests
 
-api_key = "Token a1739a8f-c2cf-45e0-9bb1-0fd88beb717d"
+url = "http://localhost:8000/service/file-converter/"
 
-franco_ai = Client(apikey=api_key)
+payload = {'user': 'b5601df8-6af3-4c1a-9ded-b7df4c506eab'}
+files=[
+  ('file',('matrix.pdf',open('C:/Users/Administrator/Downloads/matrix.pdf','rb'),'application/pdf'))
+]
+headers = {
+  'x-api-key': 'Token 3465f9a9-dcf9-4cf9-851e-f8cbb1f275b4'
+}
 
-franco_ai.service = Services.QUESTION_ANSWERING
-franco_ai.src = "The dog or domestic dog (Canis familiaris[4][5] or Canis lupus familiaris[5]) is a domesticated descendant of the wolf, and is characterized by an upturning tail. The dog is derived from an ancient, extinct wolf,[6][7] and the modern wolf is the dog's nearest living relative.[8] The dog was the first species to be domesticated,[9][8] by hunter–gatherers over 15,000 years ago,[7] before the development of agriculture.[1] Due to their long association with humans, dogs have expanded to a large number of domestic individuals[10] and gained the ability to thrive on a starch-rich diet that would be inadequate for other canids.[11]"
-franco_ai.question = "What are the other terms for dog"
-franco_ai.user = "IamFranco"
-response:SoffosAiResponse = franco_ai.get_response()
+response = requests.request("POST", url, headers=headers, data=payload, files=files)
 
-print(response)
-# print(franco_ai.context)
-print(json.dumps(response.raw_response, indent=4))
+print(response.text)

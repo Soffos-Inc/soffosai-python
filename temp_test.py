@@ -7,8 +7,11 @@
 
 # print(isinstance(str,type))
 # my_pipe = SoffosPipeline([Services.AMBIGUITY_DETECTION, Services.CONTRADICTION_DETECTION])
-from soffos import Services
-from soffos.common.service_io_map import SERVICE_IO_MAP
+# from soffos import Services
+# from soffos.common.service_io_map import SERVICE_IO_MAP
 
 
-print(SERVICE_IO_MAP[Services.EMOTION_DETECTION].required_input_fields)
+# print(SERVICE_IO_MAP[Services.EMOTION_DETECTION].required_input_fields)
+output = None
+output_char_count = len(output) if output else 0
+print(output_char_count)

@@ -5,19 +5,20 @@ Purpose: Hold the output response of Soffos API in an object
 -----------------------------------------------------
 '''
 import json
+from soffos.common.service_io_map import SERVICE_IO_MAP
 
 class SoffosAiResponse:
     '''
     Holds the Soffos AI response
     '''
-    def __init__(self, context=None, raw=None, cost=None, charged_character_count=0, response=None, tagged_elements=None, document_ids=None,**kwargs) -> None:
-        self._context = context
+    def __init__(self, service, raw,**kwargs) -> None:
         self._raw:dict = raw
-        self._cost = cost
-        self._charged_character_count = charged_character_count
-        self._response = response
-        self._tagged_elements = tagged_elements
-        self._document_ids = document_ids
+        self._context = self._raw.get("context")
+        self._cost = self._raw.get("cost")
+        self._charged_character_count = self._raw.get("charged_character_count")
+        self._response = self._raw.get(SERVICE_IO_MAP[service].primary_output_key)
+        self._tagged_elements = self._raw.get("tagged_elements")
+        self._document_ids = self._raw.get("document_ids")
         other_document_ids = self.look_for_document_ids(self._raw)
         if len(other_document_ids) > 0:
             if self._document_ids:
@@ -80,17 +81,17 @@ class SoffosAiResponse:
             document_ids.append(raw['document_id'])
         
         if "document_ids" in raw:
-            document_ids.append(raw['document_ids'])
+            document_ids.extend(raw['document_ids'])
 
         for key in raw.keys():
             if isinstance(raw[key], dict):
                 if "document_id" in raw[key]:
-                    document_ids.append(raw[key])
+                    document_ids.append(raw[key]['document_id'])
                 if "document_ids" in raw[key]:
-                    document_ids.append(raw[key])
+                    document_ids.extend(raw[key]['document_ids'])
         
         return document_ids
 
 
     def __str__(self) -> str:
-        return self._response if isinstance(self._response, str) else json.dumps(self._response)
+        return self._response if isinstance(self._response, str) else json.dumps(self._response, indent=4)

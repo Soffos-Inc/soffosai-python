@@ -5,14 +5,14 @@ Purpose: Define the basic pipeline object
 -----------------------------------------------------
 '''
 from soffos.common import serviceio_fields as serviceio
-from soffos.common.constants import Services, SERVICES_LIST
+from soffos.common.constants import ServiceString, SERVICES_LIST
 from soffos.common.service_io_map import SERVICE_IO_MAP
 from soffos.common.serviceio_fields import ServiceIO
 from soffos.client import Client, SoffosAiResponse
 
 
 class SoffosPipeline:
-    def __init__(self, apikey, user, stages:list, sources=dict) -> None:
+    def __init__(self, apikey, user, stages:list, sources:dict, use_defaults:bool=True) -> None:
         self._apikey = apikey
         self._stages = stages
         self._user = user
@@ -139,3 +139,6 @@ class SoffosPipeline:
             print(f"updated sources keys: {updated_src_keys}")
         
         return collected_responses
+
+    def add_node(self):
+        pass

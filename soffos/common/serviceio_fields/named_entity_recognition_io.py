@@ -1,9 +1,9 @@
 from .service_io import ServiceIO
-from ..constants import Services
+from ..constants import ServiceString
 
 
 class NamedEntityRecognitionIO(ServiceIO):
-    service = Services.NER
+    service = ServiceString.NER
     required_input_fields = ["text"]
     input_structure = {
         "text": str

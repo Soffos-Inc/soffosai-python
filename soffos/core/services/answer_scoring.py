@@ -5,7 +5,7 @@ Purpose: Handler of Answer Scoring Service
 -----------------------------------------------------
 '''
 from .service import SoffosAIService
-from soffos.common.constants import Services
+from soffos.common.constants import ServiceString
 
 class AnswerScoringService(SoffosAIService):
     '''
@@ -15,7 +15,7 @@ class AnswerScoringService(SoffosAIService):
 
     def __init__(self, apikey, user, src=None, concern=None, **kwargs) -> None:
         super().__init__(apikey, user, src, concern)
-        self._service = Services.ANSWER_SCORING
+        self._service = ServiceString.ANSWER_SCORING
         
 
     def allow_input(self, source, concern):
@@ -24,7 +24,11 @@ class AnswerScoringService(SoffosAIService):
             return False, "Please provide a dictionary on your source <src>"
         
         if not concern:
-            return False, "Please provide user_answer"
+            if "user_answer" in source.keys():
+                self._concern = source['user_answer']
+                concern = self._concern
+            else:
+                return False, "Please provide user_answer"
 
         if not isinstance(concern, str):
             return False, "Please provide a string datatype for user_answer"

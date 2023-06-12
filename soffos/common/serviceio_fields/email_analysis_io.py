@@ -1,9 +1,9 @@
 from .service_io import ServiceIO
-from ..constants import Services
+from ..constants import ServiceString
 
 
 class EmailAnalysisIO(ServiceIO):
-    service = Services.EMAIL_ANALYSIS
+    service = ServiceString.EMAIL_ANALYSIS
     required_input_fields = ["text"]
     input_structure = {
         "text": str

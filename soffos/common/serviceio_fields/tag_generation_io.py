@@ -1,9 +1,9 @@
 from .service_io import ServiceIO
-from ..constants import Services
+from ..constants import ServiceString
 
 
 class TagGenerationIO(ServiceIO):
-    service = Services.TAG_GENERATION
+    service = ServiceString.TAG_GENERATION
     required_input_fields = ["text"]
     optional_input_fields = ["options"]
     input_structure = {

@@ -1,9 +1,9 @@
 from .service_io import ServiceIO
-from ..constants import Services
+from ..constants import ServiceString
 
 
 class MicrolessonIO(ServiceIO):
-    service = Services.MICROLESSON
+    service = ServiceString.MICROLESSON
     required_input_fields = ["content"]
     input_structure = {
     "content": [

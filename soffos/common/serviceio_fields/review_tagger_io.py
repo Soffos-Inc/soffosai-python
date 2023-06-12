@@ -1,9 +1,9 @@
 from .service_io import ServiceIO
-from ..constants import Services
+from ..constants import ServiceString
 
 
 class ReviewTaggerIO(ServiceIO):
-    service = Services.REVIEW_TAGGER
+    service = ServiceString.REVIEW_TAGGER
     required_input_fields = ["text"]
     input_structure = {
         "text": str

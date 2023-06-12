@@ -1,9 +1,9 @@
 from .service_io import ServiceIO
-from ..constants import Services
+from ..constants import ServiceString
 
 
 class EmotionDetectionIO(ServiceIO):
-    service = Services.EMOTION_DETECTION
+    service = ServiceString.EMOTION_DETECTION
     required_input_fields = ["text"]
     optional_input_fields = ["sentence_split", "sentence_overlap", "emotion_choices"]
     input_structure = {

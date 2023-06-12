@@ -4,9 +4,12 @@ Created at: 2023-04-01
 Purpose: The base Service class
 -----------------------------------------------------
 '''
+import soffos
 import abc, http3, requests, os, mimetypes, uuid, json
 from soffos.common.constants import SOFFOS_SERVICE_URL
-
+from soffos.client.http_client import HttpClient
+from soffos.common.service_io_map import SERVICE_IO_MAP
+from soffos.common.serviceio_fields import ServiceIO
 
 def is_valid_uuid(uuid_string):
     try:
@@ -20,22 +23,44 @@ class SoffosAIService:
     '''
     Base service class for all Soffos Services
     '''
-    def __init__(self, apikey, user, src=None, concern=None, document_id=None, **kwargs) -> None:
+    def __init__(self, user, src=None, concern=None, document_ids=None, **kwargs) -> None:
+        if kwargs.get("apikey"):
+            apikey = kwargs['apikey']
+        else:
+            apikey = soffos.api_key
+            
         self.headers = {
             "x-api-key": apikey,
-            "content-type": "application/json"
         }
         self._apikey = apikey
         self._src = src
         self._concern = concern
-        self._service = None
+        # self._service = None
         self._user = user
-        self._document_id = document_id
+        self._document_ids = document_ids
         if isinstance(src, dict):
+            self._document_ids = src.get("document_ids")
+            if not self._document_ids:
+                self._document_ids = []
+            
             for key in src.keys():
                 if isinstance(src[key], str):
                     if is_valid_uuid(src[key]):
-                        self._document_id = src[key]
+                        self._document_ids.append(src[key])
+        
+        self.service_io:ServiceIO = SERVICE_IO_MAP.get(self._service)()
+        if len(self.service_io.required_input_fields) > 1:
+            self._source_type = dict
+        else:
+            self._source_type = type(self.service_io.required_input_fields[0])
+
+    @property
+    def src(self):
+        return self._src
+
+    @src.setter
+    def src(self, value):
+        self._src = value
 
     @abc.abstractmethod
     def allow_input(self, value):
@@ -85,17 +110,22 @@ class SoffosAIService:
         '''
         return None
 
-    def _get_response(self):
+    def get_response(self):
         '''
         Based on the knowledge/context, Soffos AI will now give you the data you need
         '''
+        self.prepare_request()
+        
         response = None
-        if self.get_json():
-            response = requests.post(
+        json_input = self.get_json()
+
+        if json_input:
+            self.headers["content-type"] = "application/json"
+            response = http3.post(
                 url=SOFFOS_SERVICE_URL + self._service + "/",
                 headers=self.headers,
-                json=self.get_json(),
-                # timeout=30
+                json=json_input,
+                timeout=60
             )
             
         elif self.get_data():
@@ -106,9 +136,7 @@ class SoffosAIService:
                 files = {
                     "file": (filename, file, mime_type)
                 }
-                self.headers = {
-                    'x-api-key': self._apikey
-                }
+
                 response = requests.post(
                     url=SOFFOS_SERVICE_URL + self._service + "/",
                     headers=self.headers,
@@ -121,7 +149,7 @@ class SoffosAIService:
             raise ValueError(response)
 
 
-    def process_request(self):
+    def prepare_request(self):
         '''
         Based on the knowledge/context, Soffos AI will now give you the data you need
         '''
@@ -133,4 +161,4 @@ class SoffosAIService:
         if not self._service:
             raise ValueError("Please provide a service you need from Soffos AI.")
 
-        return self._get_response()
+        return allow_input

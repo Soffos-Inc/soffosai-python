@@ -6,7 +6,7 @@ Purpose: Handler of File Converter Service
 '''
 import os
 from .service import SoffosAIService
-from soffos.common.constants import Services
+from soffos.common.constants import ServiceString
 
 class FileConverterService(SoffosAIService):
     '''
@@ -17,7 +17,7 @@ class FileConverterService(SoffosAIService):
     def __init__(self, apikey, user, normalize=0,src=None, concern=None, **kwargs) -> None:
         super().__init__(apikey, user, src, concern)
         self._normalize = normalize
-        self._service = Services.FILE_CONVERTER
+        self._service = ServiceString.FILE_CONVERTER
         
 
     def allow_input(self, source, concern):

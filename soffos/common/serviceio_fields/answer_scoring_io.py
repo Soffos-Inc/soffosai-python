@@ -1,9 +1,9 @@
 from .service_io import ServiceIO
-from ..constants import Services
+from ..constants import ServiceString
 
 
 class AnswerScoringIO(ServiceIO):
-    service = Services.ANSWER_SCORING
+    service = ServiceString.ANSWER_SCORING
     required_input_fields = ["context", "question", "user_answer"]
     optional_input_fields = ["answer"]
     input_structure = {
@@ -16,3 +16,4 @@ class AnswerScoringIO(ServiceIO):
         "score": float,
         "reasoning": str
     }
+ 

@@ -1,6 +1,7 @@
 from soffos import Client, Services
+from apikey import api_key
 
-api_key = "Token a1739a8f-c2cf-45e0-9bb1-0fd88beb717d"
+
 contradiction_ai =  Client(apikey=api_key)
 contradiction_ai.service = Services.CONTRADICTION_DETECTION
 
@@ -8,4 +9,4 @@ contradiction_ai.src = "The source noted that the Shaheen-2, with a range of 240
 contradiction_ai.user = "Meeeee"
 response = contradiction_ai.get_response()
 print(response.response)
-print(response.raw_response)
+print(response.cost)

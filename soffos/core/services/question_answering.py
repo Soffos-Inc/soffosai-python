@@ -6,7 +6,7 @@ Purpose: Handler of Question Answering Service
 '''
 
 from .service import SoffosAIService
-from soffos.common.constants import Services
+from soffos.common.constants import ServiceString
 
 class QuestionAnsweringService(SoffosAIService):
     '''
@@ -14,16 +14,18 @@ class QuestionAnsweringService(SoffosAIService):
     https://dev-platform.soffos.ai/playground/docs#/question-answering
     '''
 
-    def __init__(self, apikey, user, document_ids=None, src=None, concern=None, **kwargs) -> None:
-        super().__init__(apikey, user, src, concern)
+    def __init__(self, user, src=None, document_ids=None, concern=None, document_text=None,**kwargs) -> None:
         self._question = concern
-        self._service = Services.QUESTION_ANSWERING
+        self._service = ServiceString.QUESTION_ANSWERING
         self._document_ids = document_ids
-        
+        self._document_text = document_text
+        self._src = src
+        super().__init__(user, src, concern)
 
     def allow_input(self, source, concern):
 
         if isinstance(source, dict):
+            self.src = self._src
             if "document_id" in source.keys():
                 self._document_id = source['document_id']
                 
@@ -32,9 +34,10 @@ class QuestionAnsweringService(SoffosAIService):
             if not concern:
                 concern = source.get("message")
 
+            self._question = concern
             source = source.get("text") if source.get("text") else source.get("document_text")
         
-        if not source:
+        if not source and not self._document_ids:
             return False, "src is not specified."
 
         if not isinstance(source, self.provide_source_type()):
@@ -62,6 +65,8 @@ class QuestionAnsweringService(SoffosAIService):
         return None
     
     def get_json(self):
+        # if self.src:
+        #     return self.src
         if self._document_ids:
             request_data = {
                 "user": self._user,
@@ -74,4 +79,5 @@ class QuestionAnsweringService(SoffosAIService):
                 "message": self._question,
                 "document_text": self._src
             }
+        
         return request_data

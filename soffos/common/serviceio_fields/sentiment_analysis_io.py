@@ -1,9 +1,9 @@
 from .service_io import ServiceIO
-from ..constants import Services
+from ..constants import ServiceString
 
 
 class SentimentAnalysisIO(ServiceIO):
-    service = Services.SENTIMENT_ANALYSIS
+    service = ServiceString.SENTIMENT_ANALYSIS
     required_input_fields = ["text"]
     optional_input_fields = ["sentence_split", "sentence_overlap"]
     input_structure = {

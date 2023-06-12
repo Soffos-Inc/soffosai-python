@@ -44,7 +44,7 @@ SERVICES_LIST = [
     'batch-service/'
 ]
 
-class Services:
+class ServiceString:
     '''
     Contains the list of Soffos services as attributes
     '''

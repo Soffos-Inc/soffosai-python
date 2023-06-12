@@ -1,9 +1,9 @@
 from .service_io import ServiceIO
-from ..constants import Services
+from ..constants import ServiceString
 
 
 class LogicalErrorDetectionIO(ServiceIO):
-    service = Services.LOGICAL_ERROR_DETECTION
+    service = ServiceString.LOGICAL_ERROR_DETECTION
     required_input_fields = ["text"]
     input_structure = {
         "text": str

@@ -1,9 +1,9 @@
 from .service_io import ServiceIO
-from ..constants import Services
+from ..constants import ServiceString
 
 
 class LanguageDetectionIO(ServiceIO):
-    service = Services.LANGUAGE_DETECTION
+    service = ServiceString.LANGUAGE_DETECTION
     required_input_fields = ["text"]
     input_structure = {
         "text": str

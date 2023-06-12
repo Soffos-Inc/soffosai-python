@@ -1,9 +1,9 @@
 from .service_io import ServiceIO
-from ..constants import Services
+from ..constants import ServiceString
 
 
 class TableGeneratorIO(ServiceIO):
-    service = Services.TABLE_GENERATOR
+    service = ServiceString.TABLE_GENERATOR
     required_input_fields = ["table_format", "text"]
     input_structure = {
         "table_format": str, # markdown or CSV

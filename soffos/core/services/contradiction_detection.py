@@ -6,7 +6,7 @@ Purpose: Handler of Contradiction Detection Service
 '''
 
 from .service import SoffosAIService
-from soffos.common.constants import Services
+from soffos.common.constants import ServiceString
 
 class ContradictionDetectionService(SoffosAIService):
     '''
@@ -16,7 +16,7 @@ class ContradictionDetectionService(SoffosAIService):
 
     def __init__(self, apikey, user, src=None, concern=None, **kwargs) -> None:
         super().__init__(apikey, user, src, concern)
-        self._service = Services.CONTRADICTION_DETECTION
+        self._service = ServiceString.CONTRADICTION_DETECTION
         
 
     def allow_input(self, source, concern):

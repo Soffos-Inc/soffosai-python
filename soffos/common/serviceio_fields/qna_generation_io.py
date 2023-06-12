@@ -1,8 +1,8 @@
 from .service_io import ServiceIO
-from ..constants import Services
+from ..constants import ServiceString
 
 class QuestionAndAnswerGenerationIO(ServiceIO):
-    service = Services.QUESTION_AND_ANSWER_GENERATION
+    service = ServiceString.QUESTION_AND_ANSWER_GENERATION
     required_input_fields = ["text"]
     optional_input_fields = ["sentence_split", "sentence_overlap"]
     input_structure = {

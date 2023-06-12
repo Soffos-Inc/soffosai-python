@@ -1,11 +1,12 @@
 from .service_io import ServiceIO
-from ..constants import Services
+from ..constants import ServiceString
 
 
 class DocumentsIngestIO(ServiceIO):
-    service = Services.DOCUMENTS_INGEST
+    service = ServiceString.DOCUMENTS_INGEST
     required_input_fields = ["name", ]
-    require_one_of_choice = [["tagged_elements", "text"]]
+    require_one_of_choice = [["text", "tagged_elements"]]
+    defaults = ["text"]
     optional_input_fields = ["meta"]
     input_structure = {
         "name": str,
@@ -17,11 +18,14 @@ class DocumentsIngestIO(ServiceIO):
         "success": bool,
         "document_id": str
     }
+    primary_output_field = "document_id"
+
 
 class DocumentSearchIO(ServiceIO):
-    service = Services.DOCUMENTS_SEARCH
+    service = ServiceString.DOCUMENTS_SEARCH
     required_input_fields = []
     require_one_of_choice = [["query", "filters", "document_ids"]]
+    defaults = ["query"]
     optional_input_fields = [
         "query", "filters", "document_ids", "top_n_keywords", 
         "top_n_natural_language", "date_from", "date_until"
@@ -53,7 +57,7 @@ class DocumentSearchIO(ServiceIO):
 
 
 class DocumentDeleteIO(ServiceIO):
-    service = Services.DOCUMENTS_DELETE
+    service = ServiceString.DOCUMENTS_DELETE
     required_input_fields = ["document_ids"]
     input_structure = {
         "document_ids": [str, str]
