@@ -14,9 +14,9 @@ src = {
 
 node = ServiceNode(
     service = services.QuestionAnsweringService,
-    source = src
+    # source = src
 )
 
-response = node.run()
+response = node.run(src)
 
 print(response)

@@ -10,10 +10,11 @@ from soffos.core.services import SoffosAIService
 class ServiceNode:
     _service_io: ServiceIO
 
-    def __init__(self, service:SoffosAIService, source) -> None:
+    def __init__(self, service:SoffosAIService, source=None) -> None:
         self.source = source
         self.service:SoffosAIService = service
-        self.validate()
+        if source is not None:
+            self.validate()
 
 
     def validate(self):
@@ -21,21 +22,27 @@ class ServiceNode:
         Will check if the Node will run from the given source. Will also create the proper 
         source for the SoffosAIService
         '''
-        validated_data = {}
+        self.validated_data = {}
         for key,value in self.source.items():
             if not isinstance(value, tuple):
-                validated_data[key] = value
+                self.validated_data[key] = value
             elif value[0] == 0:
-                validated_data[key] = value[1]
+                self.validated_data[key] = value[1]
             else:
                 raise ValueError(f"This is a single node, cannot reference {value[0]}th node")
         
-        return validated_data
-        
+        return self.validated_data
 
 
-    def run(self):
-        args = self.validate()
+    def run(self, source=None):
+        if source is not None:
+            self.source = source
+            self.validate()
+        try:
+            args = self.validated_data
+        except AttributeError as e:
+            raise AttributeError("Please provide a source either in the constructor or in the run arguments") from e
+
         user = args.pop('user')
         service = self.service(user=user, src=args)
         return service.get_response()

@@ -6,10 +6,15 @@ Purpose: The base Service class
 '''
 import soffos
 import abc, http3, requests, os, mimetypes, uuid, json
-from soffos.common.constants import SOFFOS_SERVICE_URL
+from soffos.common.constants import SOFFOS_SERVICE_URL, ServiceString
 from soffos.client.http_client import HttpClient
 from soffos.common.service_io_map import SERVICE_IO_MAP
 from soffos.common.serviceio_fields import ServiceIO
+
+
+visit_docs_message = "Kindly visit https://platform.soffos.ai/playground/docs#/ for guidance."
+input_structure_message = "To learn what the input dictionary should look like, access it by <your_service_instance>.input_structure"
+
 
 def is_valid_uuid(uuid_string):
     try:
@@ -23,7 +28,7 @@ class SoffosAIService:
     '''
     Base service class for all Soffos Services
     '''
-    def __init__(self, user, src=None, concern=None, document_ids=None, **kwargs) -> None:
+    def __init__(self, service, user=None, src=None, **kwargs) -> None:
         if kwargs.get("apikey"):
             apikey = kwargs['apikey']
         else:
@@ -34,25 +39,24 @@ class SoffosAIService:
         }
         self._apikey = apikey
         self._src = src
-        self._concern = concern
-        # self._service = None
         self._user = user
-        self._document_ids = document_ids
-        if isinstance(src, dict):
-            self._document_ids = src.get("document_ids")
-            if not self._document_ids:
-                self._document_ids = []
-            
-            for key in src.keys():
-                if isinstance(src[key], str):
-                    if is_valid_uuid(src[key]):
-                        self._document_ids.append(src[key])
-        
-        self.service_io:ServiceIO = SERVICE_IO_MAP.get(self._service)()
-        if len(self.service_io.required_input_fields) > 1:
-            self._source_type = dict
-        else:
-            self._source_type = type(self.service_io.required_input_fields[0])
+        self._service = service
+        self._serviceio:ServiceIO = SERVICE_IO_MAP.get(service)
+
+    @property
+    def input_structure(self):
+        '''
+        These are the valid fields of the src dictionary for this service. Take note that some of the fields should not exist at the same time.
+        To view fields that cannot co-exist, access the 'choose_one' property.
+        '''
+        return self._serviceio.input_structure
+    
+    @property
+    def choose_one(self):
+        '''
+        These keys cannot co-exist in this service's src.
+        '''
+        return self._serviceio.require_one_of_choice
 
     @property
     def src(self):
@@ -62,11 +66,48 @@ class SoffosAIService:
     def src(self, value):
         self._src = value
 
-    @abc.abstractmethod
-    def allow_input(self, value):
+    def allow_input(self):
         '''
         checks if the input type is allowed for the service
         '''
+        user_from_src = self._src.get('user')
+        if user_from_src:
+            self._user = user_from_src
+        
+        if not self._user:
+            return False, "user argument is not provided as constructor argument nor in the src keys"
+
+        if len(self._serviceio.required_input_fields) > 0:
+            missing_requirements = []
+            for required in self._serviceio.required_input_fields:
+                if required not in self._src:
+                    missing_requirements.append(required)
+            if len(missing_requirements) > 0:
+                return False, f"Please provide {missing_requirements} on your src. {visit_docs_message}. {input_structure_message}"
+        
+        if len(self._serviceio.require_one_of_choice) > 0:
+            group_error = []
+            for group in self._serviceio.require_one_of_choice:
+                found_choices = []
+                for choice in group:
+                    if choice in self._src:
+                        found_choices.append(choice)
+                if len(found_choices) == 0:
+                    group_error.append(f"Please provide one of these values on your source: {group}")
+                elif len(found_choices) > 1:
+                    group_error.append(f"Please only include one of these values: {group}")
+
+            if len(group_error) > 0:
+                return False, group_error
+        
+        if "document_ids" in self._src:
+            for _id in self._src["document_ids"]:
+                valid_uuid = is_valid_uuid(_id)
+                if not valid_uuid:
+                    return False, f"{_id} is invalid document_id"
+        
+        return True, None
+
 
     @abc.abstractmethod
     def provide_output_type(self):
@@ -81,23 +122,11 @@ class SoffosAIService:
         '''
 
     @abc.abstractmethod
-    def provide_concern_type(self):
-        '''
-        Sends back the accepted concern datatype of the service
-        '''
-
-    @abc.abstractmethod
     def get_default_output_key(self):
         '''
         Sends back the output type of the service
         '''
     
-    @abc.abstractmethod
-    def get_default_secondary_output_key(self):
-        '''
-        Sends back a secondary output type of the service if existing
-        '''
-
     def get_json(self):
         '''
         Prepare json input of the service
@@ -110,12 +139,20 @@ class SoffosAIService:
         '''
         return None
 
-    def get_response(self):
+    def get_response(self, src=None):
         '''
         Based on the knowledge/context, Soffos AI will now give you the data you need
         '''
-        self.prepare_request()
+        if src:
+            self._src = src
+
+        allow_input, message = self.allow_input()
+        if not allow_input:
+            raise ValueError(message)
         
+        if not self._service:
+            raise ValueError("Please provide a service you need from Soffos AI.")
+
         response = None
         json_input = self.get_json()
 
@@ -146,19 +183,6 @@ class SoffosAIService:
         try:
             return response.json()
         except requests.exceptions.JSONDecodeError as err:
-            raise ValueError(response)
-
-
-    def prepare_request(self):
-        '''
-        Based on the knowledge/context, Soffos AI will now give you the data you need
-        '''
-        allow_input, message = self.allow_input(self._src, self._concern)
-        
-        if not allow_input:
-            raise ValueError(message)
-        
-        if not self._service:
-            raise ValueError("Please provide a service you need from Soffos AI.")
-
-        return allow_input
+            raise ValueError(response) from err
+        except AttributeError as err2:
+            raise AttributeError(str(err2)) from err2
