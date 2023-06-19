@@ -50,7 +50,7 @@ if you are going to use this user on multiple service calls
 - Call the service:
 `response = service.get_response(src=src)`
 
-- You can call the same service again by just changing the source:
+- You can call the same service again for a different response by just changing the source:
 ```
 src = {
     "user": "b5601df8-6af3-4c1a-9ded-b7df4c506eab",`
