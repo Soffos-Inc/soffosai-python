@@ -1,4 +1,4 @@
-from soffos.core.services import QuestionAnsweringService, SoffosAIService
+from soffos.core.services import SoffosAIService
 from soffos.common.constants import ServiceString
 
 

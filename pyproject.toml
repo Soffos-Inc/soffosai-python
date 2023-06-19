@@ -5,7 +5,7 @@ authors = [
   { name="Franco Such", email="franco.such@Soffos.ai" },
   { name="Andreas Christofi", email="andreas.christofi@Soffos.ai" }
 ]
-description = "Python SDK to access Soffos AI"
+description = "Python SDK to access Soffos AI's API"
 readme = "README.md"
 requires-python = ">=3.7"
 classifiers = [
