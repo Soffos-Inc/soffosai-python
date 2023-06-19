@@ -2,9 +2,7 @@ import soffos
 from soffos.nodes.node import ServiceNode
 from soffos.core import services
 from soffos.client import SoffosAiResponse
-
-
-soffos.api_key = "c7ddde25-a5a1-4cfe-9cf1-4c5c6005525f"
+from soffos.common.constants import ServiceString
 
 src = {
     "user": "test_user",
@@ -13,8 +11,7 @@ src = {
 }
 
 node = ServiceNode(
-    service = services.QuestionAnsweringService,
-    # source = src
+    service = ServiceString.QUESTION_ANSWERING,
 )
 
 response = node.run(src)

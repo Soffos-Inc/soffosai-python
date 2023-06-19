@@ -21,16 +21,6 @@ class AmbiguityDetectionService(SoffosAIService):
         self._sentence_overlap = sentence_overlap
         
 
-    def allow_input(self, source, concern):
-        if isinstance(source, dict):
-            source = source.get("text")
-        if not source:
-            return False, "The provided src dictionary does not have the required field 'text'."
-        if not isinstance(source, self.provide_source_type()):
-            return False, "Please provide string datatype on your source"
-        
-        return True, None
-
     def provide_output_type(self):
         return list
     

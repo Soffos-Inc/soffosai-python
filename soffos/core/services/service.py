@@ -6,7 +6,7 @@ Purpose: The base Service class
 '''
 import soffos
 import abc, http3, requests, os, mimetypes, uuid, json
-from soffos.common.constants import SOFFOS_SERVICE_URL, ServiceString
+from soffos.common.constants import SOFFOS_SERVICE_URL, ServiceString, FORM_DATA_REQUIRED
 from soffos.client.http_client import HttpClient
 from soffos.common.service_io_map import SERVICE_IO_MAP
 from soffos.common.serviceio_fields import ServiceIO
@@ -28,7 +28,7 @@ class SoffosAIService:
     '''
     Base service class for all Soffos Services
     '''
-    def __init__(self, service, user=None, src=None, **kwargs) -> None:
+    def __init__(self, service, user=None, src=None, **kwargs) -> None:            
         if kwargs.get("apikey"):
             apikey = kwargs['apikey']
         else:
@@ -70,6 +70,9 @@ class SoffosAIService:
         '''
         checks if the input type is allowed for the service
         '''
+        if not isinstance(self._src, dict):
+            raise TypeError("src should be a dictionary")
+
         user_from_src = self._src.get('user')
         if user_from_src:
             self._user = user_from_src
@@ -127,17 +130,21 @@ class SoffosAIService:
         Sends back the output type of the service
         '''
     
-    def get_json(self):
-        '''
-        Prepare json input of the service
-        '''
-        return None
-    
+
     def get_data(self):
         '''
-        Prepare the form data input of the service
+        Prepare the json or form data input of the service
         '''
-        return None
+        
+        request_data = {
+            "user": self._user
+        }
+        for key, value in self._src.items():
+            if key != 'file':
+                request_data[key] = value
+
+        return request_data
+
 
     def get_response(self, src=None):
         '''
@@ -145,40 +152,43 @@ class SoffosAIService:
         '''
         if src:
             self._src = src
+        
+        if 'user' in src.keys():
+            self._user = src['user']
 
         allow_input, message = self.allow_input()
         if not allow_input:
             raise ValueError(message)
         
         if not self._service:
-            raise ValueError("Please provide a service you need from Soffos AI.")
+            raise ValueError("Please provide the service you need from Soffos AI.")
 
         response = None
-        json_input = self.get_json()
+        data = self.get_data()
 
-        if json_input:
+        if self._service not in FORM_DATA_REQUIRED:
             self.headers["content-type"] = "application/json"
             response = http3.post(
-                url=SOFFOS_SERVICE_URL + self._service + "/",
-                headers=self.headers,
-                json=json_input,
-                timeout=60
+                url = SOFFOS_SERVICE_URL + self._service + "/",
+                headers = self.headers,
+                json = data,
+                timeout = 60
             )
             
-        elif self.get_data():
-            data = self.get_data()
-            filename = str(os.path.basename(self._src))
-            mime_type, _ = mimetypes.guess_type(self._src)
-            with open(self._src, 'rb') as file:
+        else:
+            file_path = self._src.get('file')
+            filename = str(os.path.basename(file_path))
+            mime_type, _ = mimetypes.guess_type(file_path)
+            with open(file_path, 'rb') as file:
                 files = {
                     "file": (filename, file, mime_type)
                 }
 
                 response = requests.post(
-                    url=SOFFOS_SERVICE_URL + self._service + "/",
-                    headers=self.headers,
-                    data=data,
-                    files=files,
+                    url = SOFFOS_SERVICE_URL + self._service + "/",
+                    headers = self.headers,
+                    data = data,
+                    files = files,
                 )
         try:
             return response.json()

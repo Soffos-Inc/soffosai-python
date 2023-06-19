@@ -6,13 +6,16 @@ Purpose: Soffos Service base Node
 '''
 from soffos.common.serviceio_fields import ServiceIO
 from soffos.core.services import SoffosAIService
+from soffos.common.constants import ServiceString
+
 
 class ServiceNode:
     _service_io: ServiceIO
 
-    def __init__(self, service:SoffosAIService, source=None) -> None:
+    def __init__(self, service:ServiceString, user:str=None, source:dict=None) -> None:
         self.source = source
-        self.service:SoffosAIService = service
+        self.service:SoffosAIService = SoffosAIService(service=service)
+        self._user = user
         if source is not None:
             self.validate()
 
@@ -22,27 +25,25 @@ class ServiceNode:
         Will check if the Node will run from the given source. Will also create the proper 
         source for the SoffosAIService
         '''
-        self.validated_data = {}
+        validated_data = {}
         for key,value in self.source.items():
             if not isinstance(value, tuple):
-                self.validated_data[key] = value
+                validated_data[key] = value
             elif value[0] == 0:
-                self.validated_data[key] = value[1]
+                validated_data[key] = value[1]
             else:
                 raise ValueError(f"This is a single node, cannot reference {value[0]}th node")
+            
+            if 'user' not in validated_data.keys() and self._user:
+                validated_data['user'] = self._user
         
-        return self.validated_data
+        return validated_data
 
 
     def run(self, source=None):
         if source is not None:
             self.source = source
-            self.validate()
-        try:
-            args = self.validated_data
-        except AttributeError as e:
-            raise AttributeError("Please provide a source either in the constructor or in the run arguments") from e
+            
+        args = self.validate()
 
-        user = args.pop('user')
-        service = self.service(user=user, src=args)
-        return service.get_response()
+        return self.service.get_response(src=args)

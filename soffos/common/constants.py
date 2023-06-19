@@ -81,3 +81,6 @@ class ServiceString:
     TAG_GENERATION = 'tag'
     TRANSCRIPTION_CORRECTION = 'transcript-correction'
     BATCH_SERVICE = 'batch-service2'
+
+
+FORM_DATA_REQUIRED = [ServiceString.FILE_CONVERTER,]
