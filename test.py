@@ -13,16 +13,7 @@ src = {
         "session_id": "69cb9520-885b-4f81-ae6c-79b8d63ff25c"
     }
 }
-# service = QuestionAnsweringService(
-#     user = src.get("user"),
-#     src=src
-# )
-# src = {
-#   "user": "b5601df8-6af3-4c1a-9ded-b7df4c506eab",
-#   "text": "I saw her duck",
-#   "sentence_split": 3,
-#   "sentence_overlap": True
-# }
+
 service = SoffosAIService(
     service= ServiceString.QUESTION_ANSWERING
 )
