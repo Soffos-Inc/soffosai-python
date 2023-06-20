@@ -8,6 +8,7 @@ A Python software development kit for easy use of Soffos AI's APIs.
 - Click on the key icon in the project you created and you will find the API Keys for that project.
   - An API key will automatically be provided for you on Project creation but you can still create more when your account is no longer on trial.
 - Protect this API Key as it will incur charges.
+- You can also save your API Key into your environment variables with variable name = SOFFOSAI_API_KEY
 
 ## Installation
 `pip install soffos`
@@ -36,7 +37,9 @@ src = {
 ```
 
 - Create the SoffosAIService instance:
+```
 service = SoffosAIService(service=ServiceString.QUESTION_ANSWERING)
+```
 
 - You can also include the user in instantiating the SoffosAIService instance:
 ```
@@ -63,3 +66,35 @@ src = {
 response = service.get_response(src=src)
 print(response)
 ```
+
+## Nodes
+Nodes are service wrappers.  It prepares the SoffosAIService for Pipeline Use.
+You can also Use Nodes like a Service.
+When using Nodes, you can specify which node number you want to get your data:
+```
+from soffos.nodes.node import ServiceNode
+from soffos.common.constants import ServiceString
+
+src = {
+    "user": "test_user",
+    "message": "What are the other term for dogs",
+    "document_text": "The dog or domestic dog (Canis familiaris[4][5] or Canis lupus familiaris[5]) is a domesticated descendant of the wolf, and is characterized by an upturning tail. The dog is derived from an ancient, extinct wolf,[6][7] and the modern wolf is the dog's nearest living relative.[8] The dog was the first species to be domesticated,[9][8] by hunter–gatherers over 15,000 years ago,[7] before the development of agriculture.[1] Due to their long association with humans, dogs have expanded to a large number of domestic individuals[10] and gained the ability to thrive on a starch-rich diet that would be inadequate for other canids.[11]"
+}
+
+node = ServiceNode(
+    service = ServiceString.QUESTION_ANSWERING,
+)
+
+response = node.run(src)
+print(response)
+```
+
+If you need to specify the Node number, the value of the source keys should be a tuple:
+'''
+src = {
+    "user": (0, "user"),
+    "message": (1, "text"),
+    "document_text": "The dog or domestic dog (Canis familiaris[4][5] or Canis lupus familiaris[5]) is a domesticated descendant of the wolf, and is characterized by an upturning tail. The dog is derived from an ancient, extinct wolf,[6][7] and the modern wolf is the dog's nearest living relative.[8] The dog was the first species to be domesticated,[9][8] by hunter–gatherers over 15,000 years ago,[7] before the development of agriculture.[1] Due to their long association with humans, dogs have expanded to a large number of domestic individuals[10] and gained the ability to thrive on a starch-rich diet that would be inadequate for other canids.[11]"
+}
+'''
+In this source, you are specifying to take the "user" value from the source dictionary with the key "user". Then the "message" value from the output of the 1st Node with the key "text".

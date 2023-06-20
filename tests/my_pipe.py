@@ -1,7 +1,4 @@
-import soffos
 from soffos.nodes.node import ServiceNode
-from soffos.core import services
-from soffos.client import SoffosAiResponse
 from soffos.common.constants import ServiceString
 
 src = {
@@ -15,5 +12,4 @@ node = ServiceNode(
 )
 
 response = node.run(src)
-
 print(response)
