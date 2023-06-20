@@ -1,6 +1,12 @@
+[build-system]
+requires = [
+    "setuptools >= 40.9.0",
+    "wheel >= 0.36.2",
+]
+
 [project]
 name = "soffos_ai"
-version = "0.0.2"
+version = "0.0.3"
 authors = [
   { name="Franco Such", email="franco.such@Soffos.ai" },
   { name="Andreas Christofi", email="andreas.christofi@Soffos.ai" }
@@ -13,16 +19,9 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
+dependencies = ["http3", "requests"]
+
 
 [project.urls]
 "Homepage" = "https://github.com/Soffos-Inc/soffos_ai"
 "Bug Tracker" = "https://github.com/Soffos-Inc/soffos_ai/issues"
-
-[build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
-
-[tool.poetry.dependencies]
-python = "^3.9"
-requests = "^2.26.0"
-http3 = "^0.6.7"

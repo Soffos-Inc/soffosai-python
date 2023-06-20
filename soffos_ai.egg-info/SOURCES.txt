@@ -54,4 +54,6 @@ soffos/utils/check_input.py
 soffos_ai.egg-info/PKG-INFO
 soffos_ai.egg-info/SOURCES.txt
 soffos_ai.egg-info/dependency_links.txt
+soffos_ai.egg-info/requires.txt
 soffos_ai.egg-info/top_level.txt
+tests/test.py
