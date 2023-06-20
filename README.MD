@@ -58,4 +58,5 @@ src = {
     "document_text": "Some other context,
 }
 response = service.get_response(src=src)
+print(response)
 ```

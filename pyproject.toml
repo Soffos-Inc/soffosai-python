@@ -1,22 +1,22 @@
 [project]
-name = "soffos"
+name = "soffos_ai"
 version = "0.0.1"
 authors = [
   { name="Franco Such", email="franco.such@Soffos.ai" },
   { name="Andreas Christofi", email="andreas.christofi@Soffos.ai" }
 ]
-description = "Python SDK to access Soffos AI's API"
+description = "Python SDK for Soffos AI"
 readme = "README.md"
 requires-python = ">=3.7"
 classifiers = [
     "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: Soffos Ltd License",
+    "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
 
 [project.urls]
-"Homepage" = "https://platform.soffos.ai"
-"Bug Tracker" = "https://platform.soffos.ai/contact"
+"Homepage" = "https://github.com/Soffos-Inc/soffos_ai"
+"Bug Tracker" = "https://github.com/Soffos-Inc/soffos_ai/issues"
 
 [tool.poetry.dependencies]
 python = "^3.9"
