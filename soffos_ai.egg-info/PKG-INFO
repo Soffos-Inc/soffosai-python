@@ -1,3 +1,17 @@
+Metadata-Version: 2.1
+Name: soffos-ai
+Version: 0.0.1
+Summary: Python SDK for Soffos AI
+Author-email: Franco Such <franco.such@Soffos.ai>, Andreas Christofi <andreas.christofi@Soffos.ai>
+Project-URL: Homepage, https://github.com/Soffos-Inc/soffos_ai
+Project-URL: Bug Tracker, https://github.com/Soffos-Inc/soffos_ai/issues
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
 # Soffos.py
 A Python software development kit for easy use of Soffos AI's APIs.
 
@@ -48,10 +62,7 @@ service = SoffosAIService(
 if you are going to use this user on multiple service calls
 
 - Call the service:
-```
-response = service.get_response(src=src)
-print(response)
-```
+`response = service.get_response(src=src)`
 
 - You can call the same service again for a different response by just changing the source:
 ```

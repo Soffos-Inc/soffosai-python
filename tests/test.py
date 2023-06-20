@@ -15,7 +15,7 @@ src = {
 }
 
 service = SoffosAIService(
-    service= ServiceString.QUESTION_ANSWERING
+    service = ServiceString.QUESTION_ANSWERING
 )
 
 response = service.get_response(src=src)

@@ -18,6 +18,10 @@ classifiers = [
 "Homepage" = "https://github.com/Soffos-Inc/soffos_ai"
 "Bug Tracker" = "https://github.com/Soffos-Inc/soffos_ai/issues"
 
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api
+
 [tool.poetry.dependencies]
 python = "^3.9"
 requests = "^2.26.0"
