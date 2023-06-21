@@ -78,7 +78,7 @@ class SoffosAIService:
             self._user = user_from_src
         
         if not self._user:
-            return False, "user argument is not provided as constructor argument nor in the src keys"
+            return False, f"{self._service}: user argument is not provided as constructor argument nor in the src keys"
 
         if len(self._serviceio.required_input_fields) > 0:
             missing_requirements = []
@@ -86,7 +86,7 @@ class SoffosAIService:
                 if required not in self._src:
                     missing_requirements.append(required)
             if len(missing_requirements) > 0:
-                return False, f"Please provide {missing_requirements} on your src. {visit_docs_message}. {input_structure_message}"
+                return False, f"{self._service}: Please provide {missing_requirements} on your src. {visit_docs_message}. {input_structure_message}"
         
         if len(self._serviceio.require_one_of_choice) > 0:
             group_error = []
@@ -96,9 +96,9 @@ class SoffosAIService:
                     if choice in self._src:
                         found_choices.append(choice)
                 if len(found_choices) == 0:
-                    group_error.append(f"Please provide one of these values on your source: {group}")
+                    group_error.append(f"{self._service}: Please provide one of these values on your source: {group}")
                 elif len(found_choices) > 1:
-                    group_error.append(f"Please only include one of these values: {group}")
+                    group_error.append(f"{self._service}: Please only include one of these values: {group}")
 
             if len(group_error) > 0:
                 return False, group_error

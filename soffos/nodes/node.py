@@ -18,7 +18,7 @@ class ServiceNode:
 
     def __init__(self, service:ServiceString, user:str=None, source:dict=None) -> None:
         self.source = source
-        self.service:SoffosAIService = SoffosAIService(service=service)
+        self.service:SoffosAIService = SoffosAIService(service=service, src=source, user=user)
         self._user = user
 
 

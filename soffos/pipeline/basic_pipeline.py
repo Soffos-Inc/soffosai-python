@@ -22,6 +22,11 @@ class SoffosPipeline:
         self._available_sources = list(self._source.keys())
         self._concern = None
 
+        for stage in stages:
+            stage:ServiceNode
+            if not stage.service._user and user:
+                stage.service._user = user
+
         error_messages = []
         if not isinstance(stages, list):
             error_messages.append("stages field should be a list of Service Nodes")
@@ -43,16 +48,20 @@ class SoffosPipeline:
 
     def validate_pipeline(self):
         error_messages = []
-        previous_stage = None
-        current_stage = None
-        pipe_validated_data = []
+        #  Get output keys as reference for Node's input keys
         outputfields = [stage.service._serviceio.output_structure.keys() for stage in self._stages]
+
+        #  The first available keys are of the source
         outputfields.insert(0, self._source)
+
         for i, stage in enumerate(self._stages):
+            # check if the node/stage has complete source keys
+            node_is_valid, err = stage.service.allow_input()
+            if not node_is_valid:
+                error_messages.append(err)
+
+            # Check if the source keys specified on the Node can be captured from the source or output of ther Nodes
             stage:ServiceNode
-            current_stage = stage
-            pipe_validated_data.append({})
-            
             if i == 0:
                 for key,value in stage.source.items():
                     reference_node_number = value[0]
@@ -61,8 +70,6 @@ class SoffosPipeline:
                         raise ValueError("The first Node cannot reference an output of later Nodes")
                     elif required_key not in self._source.keys():
                         raise ValueError(f"{value[1]} cannot be found in the Pipeline's source")
-                    else:
-                        pipe_validated_data[i][required_key] = self._source[required_key]
             else:
                 for key, value in stage.source.items():
                     reference_node_number = value[0]
@@ -78,7 +85,7 @@ class SoffosPipeline:
         
         return True
 
-        
+
     def run(self) -> dict:
         collected_responses = {}
 
