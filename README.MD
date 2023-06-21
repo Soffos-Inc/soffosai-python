@@ -98,3 +98,6 @@ src = {
 }
 ```
 In this source, you are specifying to take the "user" value from the source dictionary with the key "user". Then the "message" value from the output of the 1st Node with the key "text".
+
+## Further Documentation
+For complete documentation of source and response keys: [soffos.ai documentation](https://platform.soffos.ai/playground/docs#/). In here you will find all available services and their required arguments.
