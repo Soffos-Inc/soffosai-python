@@ -10,14 +10,16 @@ from soffos.common.constants import ServiceString
 
 
 class ServiceNode:
+    '''
+    A SoffosAIService wrapper that holds information how the service is to be executed inside a 
+    SoffosPipeline
+    '''
     _service_io: ServiceIO
 
     def __init__(self, service:ServiceString, user:str=None, source:dict=None) -> None:
         self.source = source
         self.service:SoffosAIService = SoffosAIService(service=service)
         self._user = user
-        if source is not None:
-            self.validate()
 
 
     def validate(self):
