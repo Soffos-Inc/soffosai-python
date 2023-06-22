@@ -19,7 +19,8 @@ A Python software development kit for easy use of Soffos AI's APIs.
 import soffos
 soffos.api_key = "YOUR_API_KEY"
 ```
-put your api_key somewhere safe, off course. 
+Put your api_key somewhere safe, off course. 
+If you included SOFFOSAI_API_KEY in your environment variables and specified your API key there, you don't need have this code: `soffos.api_key = "YOUR_API_KEY"`
 
 - These two imports are commonly used:
 ```
@@ -109,3 +110,64 @@ src = {
     "file": "location/of/the/file.pdf"
 }
 '''
+
+## SoffosPipeline
+By using SoffosPipeline class, you get very easy sequenced call to multiple Soffos Services. Let us explain by example (explanations in the comments):
+```
+import soffos
+from soffos.pipeline import SoffosPipeline
+from soffos.nodes import ServiceNode
+from soffos.common.constants import ServiceString
+
+# authentication
+soffos.api_key = "<your api key>"
+
+# the pipeline's source. This is referred to as info[0] in the pipeline
+src = {
+    "user": "franco", 
+    "file": "matrix.pdf",
+    "name": "matrix"
+}
+
+# create a node instance that uses the file converter service.
+# accepts a file and extracts information.
+file_converter_node = ServiceNode(
+    service=ServiceString.FILE_CONVERTER,
+    source={
+        "file": (0, "file") # this means: get from source (info[0]), the key "file"
+    }
+)
+
+# create a node instance that uses the documents ingest service.
+# uploads the context to our db for faster performance and for future use.
+document_ingest_node = ServiceNode(
+    service=ServiceString.DOCUMENTS_INGEST,
+    source={
+        "name": (0, "name"), # get from source (info[0]), with key = "name"
+        "text": (1, "text") # get from output of first node (info[1]), with key = "text"
+    }
+)
+
+# create a node instance that uses the question answering service.
+# takes document_ids or text (not both), a message (a question) and returns an answer based on the docs.
+question_answering_node = ServiceNode(
+    service=ServiceString.QUESTION_ANSWERING,
+    source={
+        "document_ids": (2, "document_id"), # output of second node (info[2]), key = "document_id"
+        "message": "Who is Neo?" # use this actual value
+    }
+)
+
+# create a SoffosPipeline instance
+# runs the nodes in sequence
+my_pipe = SoffosPipeline(
+    stages = [file_converter_node, document_ingest_node, question_answering_node],
+    user = 'franco',
+    source = src
+)
+
+# Run the pipeline and print the result.
+# The result will be a list of infos. info[0] is the source, info[1] is the output of first node,
+# info[2] is the output of the second node, etc...
+print(my_pipe.run())
+```
