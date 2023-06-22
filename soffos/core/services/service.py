@@ -16,7 +16,21 @@ visit_docs_message = "Kindly visit https://platform.soffos.ai/playground/docs#/ 
 input_structure_message = "To learn what the input dictionary should look like, access it by <your_service_instance>.input_structure"
 
 
+def format_uuid(uuid):
+    formatted_uuid = '-'.join([
+        uuid[:8],
+        uuid[8:12],
+        uuid[12:16],
+        uuid[16:20],
+        uuid[20:]
+    ])
+    return formatted_uuid
+
+
 def is_valid_uuid(uuid_string):
+    if "-" not in uuid_string:
+        uuid_string = format_uuid(uuid_string)
+        
     try:
         uuid_obj = uuid.UUID(uuid_string)
     except ValueError:
@@ -104,10 +118,11 @@ class SoffosAIService:
                 return False, group_error
         
         if "document_ids" in self._src:
-            for _id in self._src["document_ids"]:
-                valid_uuid = is_valid_uuid(_id)
-                if not valid_uuid:
-                    return False, f"{_id} is invalid document_id"
+            if isinstance(self._src['document_ids'], list):
+                for _id in self._src["document_ids"]:
+                    valid_uuid = is_valid_uuid(_id)
+                    if not valid_uuid:
+                        return False, f"{_id} is invalid document_id"
         
         return True, None
 

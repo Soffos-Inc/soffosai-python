@@ -32,14 +32,13 @@ class ServiceNode:
             if not isinstance(value, tuple):
                 validated_data[key] = value
             else:
-                raise ValueError(f"This source notation is only valid in a Pipeline. \
-                    To execute a single node, provide the actual value for each source key")
+                raise ValueError(f"This source notation is only valid in a Pipeline. To execute a single node, provide the actual value for each source key")
             
-            if 'user' not in validated_data.keys() and self._user:
-                validated_data['user'] = self._user
+        if 'user' not in validated_data.keys() and self._user:
+            validated_data['user'] = self._user
             
-            if not validated_data.get('user'):
-                raise TypeError("user is a required parameter. Provide it as a constructor argument or source item")
+        if not validated_data.get('user'):
+            raise TypeError("user is a required parameter. Provide it as a constructor argument or source item")
         
         return validated_data
 
