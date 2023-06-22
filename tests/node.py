@@ -1,4 +1,4 @@
-from soffos.nodes.node import ServiceNode
+from soffos.core.nodes import ServiceNode
 from soffos.common.constants import ServiceString
 
 src = {

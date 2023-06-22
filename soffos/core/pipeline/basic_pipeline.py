@@ -5,12 +5,7 @@ Purpose: Define the basic pipeline object
 -----------------------------------------------------
 '''
 import soffos
-from soffos.common.constants import ServiceString, SERVICES_LIST
-from soffos.common.service_io_map import SERVICE_IO_MAP
-from soffos.common.serviceio_fields import ServiceIO
-from soffos.client import SoffosAiResponse
-from soffos.nodes.node import ServiceNode
-from soffos.core.services import SoffosAIService
+from soffos.core.nodes.node import ServiceNode
 
 
 class SoffosPipeline:

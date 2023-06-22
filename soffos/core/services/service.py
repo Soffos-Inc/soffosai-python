@@ -5,9 +5,8 @@ Purpose: The base Service class
 -----------------------------------------------------
 '''
 import soffos
-import abc, http3, requests, os, mimetypes, uuid, json
-from soffos.common.constants import SOFFOS_SERVICE_URL, ServiceString, FORM_DATA_REQUIRED
-from soffos.client.http_client import HttpClient
+import abc, http3, requests, os, mimetypes, uuid
+from soffos.common.constants import SOFFOS_SERVICE_URL, FORM_DATA_REQUIRED
 from soffos.common.service_io_map import SERVICE_IO_MAP
 from soffos.common.serviceio_fields import ServiceIO
 
@@ -30,7 +29,7 @@ def format_uuid(uuid):
 def is_valid_uuid(uuid_string):
     if "-" not in uuid_string:
         uuid_string = format_uuid(uuid_string)
-        
+
     try:
         uuid_obj = uuid.UUID(uuid_string)
     except ValueError:
@@ -42,7 +41,7 @@ class SoffosAIService:
     '''
     Base service class for all Soffos Services
     '''
-    def __init__(self, service, user=None, src=None, **kwargs) -> None:            
+    def __init__(self, service:str, user=None, src=None, **kwargs) -> None:            
         if kwargs.get("apikey"):
             apikey = kwargs['apikey']
         else:

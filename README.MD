@@ -73,7 +73,7 @@ Nodes are service wrappers.  It prepares the SoffosAIService for Pipeline Use.
 You can also Use Nodes like a Service.
 When using Nodes, you can specify which node number you want to get your data:
 ```
-from soffos.nodes.node import ServiceNode
+from soffos.core.nodes import ServiceNode
 from soffos.common.constants import ServiceString
 
 src = {
@@ -104,19 +104,19 @@ In this source, you are specifying to take the "user" value from the source dict
 For complete documentation of source and response keys: [soffos.ai documentation](https://platform.soffos.ai/playground/docs#/). In here you will find all available services and their required arguments.
 
 For the File Ingest Service though, you only need to specify the directory of the file:
-'''
+```
 src = {
     "user": "sample_user",
     "file": "location/of/the/file.pdf"
 }
-'''
+```
 
 ## SoffosPipeline
 By using SoffosPipeline class, you get very easy sequenced call to multiple Soffos Services. Let us explain by example (explanations in the comments):
 ```
 import soffos
-from soffos.pipeline import SoffosPipeline
-from soffos.nodes import ServiceNode
+from soffos.core.pipeline import SoffosPipeline
+from soffos.core.nodes import ServiceNode
 from soffos.common.constants import ServiceString
 
 # authentication
