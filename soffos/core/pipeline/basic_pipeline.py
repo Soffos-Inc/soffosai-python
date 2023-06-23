@@ -5,31 +5,25 @@ Purpose: Define the basic pipeline object
 -----------------------------------------------------
 '''
 import soffos
-from soffos.core.nodes.node import ServiceNode
+from soffos.core.nodes.node import NodeConfig
 
 
 class SoffosPipeline:
-    def __init__(self, stages:list, source:dict, user=None, use_defaults:bool=True, **kwargs) -> None:
+    def __init__(self, stages:list, use_defaults:bool=True, **kwargs) -> None:
         self._apikey = kwargs['apikey'] if kwargs.get('apikey') else soffos.api_key
         self._stages = stages
-        self._user = user
-        self._source:dict = source
-        self._infos = [source,]
+        self._input:dict = {}
+        self._infos = []
 
         for stage in stages:
-            stage:ServiceNode
-            if not stage.service._user and user:
-                stage.service._user = user
+            stage:NodeConfig
 
         error_messages = []
         if not isinstance(stages, list):
             error_messages.append("stages field should be a list of Service Nodes")
         for stage in stages:
-            if not isinstance(stage, ServiceNode):
-                error_messages.append(f"{stage} is not an instance of ServiceNode class")
-
-        if not isinstance(source, dict):
-            error_messages.append("sources should be a dictionary of required inputs")
+            if not isinstance(stage, NodeConfig):
+                error_messages.append(f"{stage} is not an instance of NodeConfig")
         
         if len(error_messages) != 0:
             raise ValueError(error_messages)
@@ -56,7 +50,7 @@ class SoffosPipeline:
                 error_messages.append(err)
 
             # Check if the source keys specified on the Node can be captured from the source or output of ther Nodes
-            stage:ServiceNode
+            stage:NodeConfig
             if i == 0:
                 for key,value in stage.source.items():
                     if isinstance(value, tuple):

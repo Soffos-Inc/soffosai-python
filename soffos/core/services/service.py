@@ -4,6 +4,7 @@ Created at: 2023-04-01
 Purpose: The base Service class
 -----------------------------------------------------
 '''
+import inspect
 import soffos
 import abc, http3, requests, os, mimetypes, uuid
 from soffos.common.constants import SOFFOS_SERVICE_URL, FORM_DATA_REQUIRED
@@ -13,6 +14,33 @@ from soffos.common.serviceio_fields import ServiceIO
 
 visit_docs_message = "Kindly visit https://platform.soffos.ai/playground/docs#/ for guidance."
 input_structure_message = "To learn what the input dictionary should look like, access it by <your_service_instance>.input_structure"
+
+
+def inspect_arguments(func, *args, **kwargs):
+    '''
+    Given a function, args and kwargs: 
+    create a dictionary with keys as the arg names and values as the arg values
+    '''
+    # Get the list of argument names
+    sig = inspect.signature(func)
+    arg_names = list(sig.parameters.keys())
+
+    # Combine positional arguments and keyword arguments
+    bound_args = sig.bind(*args, **kwargs)
+    bound_args.apply_defaults()
+    combined_args = bound_args.arguments
+
+    # Filter out positional arguments not present in arg_names
+    arguments = {name: combined_args[name] for name in arg_names if name in combined_args}
+    unziped_kwargs = {}
+    for key,value in arguments.items():
+        if key != "kwargs":
+            unziped_kwargs[key] = value
+        else:
+            for key2, value2 in arguments['kwargs'].items():
+                unziped_kwargs[key2] = value2
+
+    return unziped_kwargs
 
 
 def format_uuid(uuid):
@@ -41,7 +69,7 @@ class SoffosAIService:
     '''
     Base service class for all Soffos Services
     '''
-    def __init__(self, service:str, user=None, src=None, **kwargs) -> None:            
+    def __init__(self, service:str, **kwargs) -> None:            
         if kwargs.get("apikey"):
             apikey = kwargs['apikey']
         else:
@@ -51,10 +79,12 @@ class SoffosAIService:
             "x-api-key": apikey,
         }
         self._apikey = apikey
-        self._src = src
-        self._user = user
         self._service = service
         self._serviceio:ServiceIO = SERVICE_IO_MAP.get(service)
+        self._payload = {}
+        self._payload_keys = self._payload.keys()
+        self._args_dict = {}
+
 
     @property
     def input_structure(self):
@@ -64,6 +94,7 @@ class SoffosAIService:
         '''
         return self._serviceio.input_structure
     
+
     @property
     def choose_one(self):
         '''
@@ -71,106 +102,96 @@ class SoffosAIService:
         '''
         return self._serviceio.require_one_of_choice
 
-    @property
-    def src(self):
-        return self._src
 
-    @src.setter
-    def src(self, value):
-        self._src = value
-
-    def allow_input(self):
+    def validate_payload(self):
         '''
         checks if the input type is allowed for the service
         '''
-        if not isinstance(self._src, dict):
-            raise TypeError("src should be a dictionary")
+        if not isinstance(self._payload, dict):
+            raise TypeError("payload should be a dictionary")
 
-        user_from_src = self._src.get('user')
-        if user_from_src:
-            self._user = user_from_src
-        
-        if not self._user:
-            return False, f"{self._service}: user argument is not provided as constructor argument nor in the src keys"
+        # check for missing arguments
+        user_from_src = self._payload.get('user')
+        if not user_from_src:
+            return False, f"{self._service}: user key is required in the payload"
 
         if len(self._serviceio.required_input_fields) > 0:
             missing_requirements = []
             for required in self._serviceio.required_input_fields:
-                if required not in self._src:
+                if required not in self._payload:
                     missing_requirements.append(required)
             if len(missing_requirements) > 0:
-                return False, f"{self._service}: Please provide {missing_requirements} on your src. {visit_docs_message}. {input_structure_message}"
+                return False, f"{self._service}: Please provide {missing_requirements} on your payload. {visit_docs_message}. {input_structure_message}"
         
         if len(self._serviceio.require_one_of_choice) > 0:
             group_error = []
             for group in self._serviceio.require_one_of_choice:
                 found_choices = []
                 for choice in group:
-                    if choice in self._src:
+                    if choice in self._payload:
                         found_choices.append(choice)
                 if len(found_choices) == 0:
-                    group_error.append(f"{self._service}: Please provide one of these values on your source: {group}")
+                    group_error.append(f"{self._service}: Please provide one of these values on your payload: {group}")
                 elif len(found_choices) > 1:
                     group_error.append(f"{self._service}: Please only include one of these values: {group}")
-
+            
             if len(group_error) > 0:
                 return False, group_error
+
+        # check if payload has proper type:
+        input_structure = self._serviceio.input_structure
+        value_errors = []
+        for key, value in self._payload.items():
+            if key in input_structure.keys():
+
+                if not isinstance(input_structure[key], type):
+                    input_type = type(input_structure[key])
+                else:
+                    input_type = input_structure[key]
+
+                if not isinstance(value, input_type):
+                    wrong_type = type(value)
+                    value_errors.append(f"{key} requires {input_structure[key]} but {wrong_type} is provided.")
+            
+        if len(value_errors) > 0:
+            return False, value_errors
+
         
-        if "document_ids" in self._src:
-            if isinstance(self._src['document_ids'], list):
-                for _id in self._src["document_ids"]:
+        if "document_ids" in self._payload:
+            if isinstance(self._payload['document_ids'], list):
+                for _id in self._payload["document_ids"]:
                     valid_uuid = is_valid_uuid(_id)
                     if not valid_uuid:
                         return False, f"{_id} is invalid document_id"
         
         return True, None
 
+     
+    def update_payload(self, key, value):
+        if key in self._payload_keys:
+            print(f"Warning:overwriting payload[{key}]")
+        self._payload[key] = value
 
-    @abc.abstractmethod
-    def provide_output_type(self):
-        '''
-        Sends back the output datatype of the service
-        '''
-    
-    @abc.abstractmethod
-    def provide_source_type(self):
-        '''
-        Sends back the accepted source datatype of the service
-        '''
-
-    @abc.abstractmethod
-    def get_default_output_key(self):
-        '''
-        Sends back the output type of the service
-        '''
-    
 
     def get_data(self):
         '''
         Prepare the json or form data input of the service
         '''
         
-        request_data = {
-            "user": self._user
-        }
-        for key, value in self._src.items():
+        request_data = {}
+        for key, value in self._payload.items():
             if key != 'file':
                 request_data[key] = value
 
         return request_data
 
 
-    def get_response(self, src=None):
+    def get_response(self, payload={}, **kwargs):
         '''
         Based on the knowledge/context, Soffos AI will now give you the data you need
         '''
-        if src:
-            self._src = src
-        
-        if 'user' in src.keys():
-            self._user = src['user']
-
-        allow_input, message = self.allow_input()
+        self._payload = payload
+        allow_input, message = self.validate_payload()
         if not allow_input:
             raise ValueError(message)
         
@@ -190,7 +211,7 @@ class SoffosAIService:
             )
             
         else:
-            file_path = self._src.get('file')
+            file_path = self._payload.get('file')
             filename = str(os.path.basename(file_path))
             mime_type, _ = mimetypes.guess_type(file_path)
             with open(file_path, 'rb') as file:
@@ -210,3 +231,33 @@ class SoffosAIService:
             raise ValueError(response) from err
         except AttributeError as err2:
             raise AttributeError(str(err2)) from err2
+
+
+    def __call__(self, **kwargs):
+
+        return self.get_response(payload=self._args_dict,**kwargs)
+
+
+    def __str__(self) -> str:
+        return self._service
+
+
+    @abc.abstractmethod
+    def provide_output_type(self):
+        '''
+        Sends back the output datatype of the service
+        '''
+    
+
+    @abc.abstractmethod
+    def provide_source_type(self):
+        '''
+        Sends back the accepted source datatype of the service
+        '''
+
+
+    @abc.abstractmethod
+    def get_default_output_key(self):
+        '''
+        Sends back the output type of the service
+        '''

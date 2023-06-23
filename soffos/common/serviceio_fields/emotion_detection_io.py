@@ -10,7 +10,7 @@ class EmotionDetectionIO(ServiceIO):
         "sentence_split": int,
         "sentence_overlap": bool,
         "text": str,
-        "emotion_choices": [str, str]
+        "emotion_choices": list
     }
     output_structure = {
         "spans": [

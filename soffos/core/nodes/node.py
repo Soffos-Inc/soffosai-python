@@ -4,25 +4,24 @@ Created at: 2023-04-17
 Purpose: Soffos Service base Node
 -----------------------------------------------------
 '''
+from typing import Union
 from soffos.common.serviceio_fields import ServiceIO
 from soffos.core.services import SoffosAIService
 from soffos.common.constants import ServiceString
 
 
-class ServiceNode:
+class NodeConfig:
     '''
     A SoffosAIService wrapper that holds information how the service is to be executed inside a 
     SoffosPipeline
     '''
     _service_io: ServiceIO
 
-    def __init__(self, service:ServiceString, user:str=None, source:dict=None) -> None:
-        self.source = source
-        self.service:SoffosAIService = SoffosAIService(service=service, src=source, user=user)
-        self._user = user
+    def __init__(self, service:Union[ServiceString, SoffosAIService]) -> None:
+        self.source = {}
+        self.service:ServiceString = SoffosAIService(service=service)
 
-
-    def validate(self):
+    def validate_node(self):
         '''
         Will check if the Node will run from the given source. Will also create the proper 
         source for the SoffosAIService
@@ -43,10 +42,18 @@ class ServiceNode:
         return validated_data
 
 
-    def run(self, source=None):
-        if source is not None:
-            self.source = source
+    def run(self, payload=None):
+        if payload is not None:
+            self.source = payload
             
-        args = self.validate()
+        args = self.validate_node()
 
-        return self.service.get_response(src=args)
+        return self.service.get_response(payload=payload)
+
+    
+    def __call__(self, payload={}, *args, **kwargs):
+        '''
+        This feature is only for testing/debugging a Node.
+        To easily create and call a service, please use the SoffosAIService class
+        '''
+        self.service.get_response(payload=payload, *args, **kwargs)
