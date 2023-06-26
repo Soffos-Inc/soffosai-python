@@ -1,7 +1,7 @@
-import soffos
-from soffos.core.pipeline import SoffosPipeline
-from soffos.core.nodes import ServiceNode
-from soffos.common.constants import ServiceString
+import soffosai
+from soffosai.core.pipeline import SoffosPipeline
+from soffosai.core.nodes import ServiceNode
+from soffosai.common.constants import ServiceString
 
 
 src = {

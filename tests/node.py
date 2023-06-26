@@ -1,5 +1,5 @@
-from soffos.core.nodes import ServiceNode
-from soffos.common.constants import ServiceString
+from soffosai.core.nodes import ServiceNode
+from soffosai.common.constants import ServiceString
 
 src = {
     "user": "test_user",
