@@ -5,8 +5,10 @@ from ..constants import ServiceString
 class NamedEntityRecognitionIO(ServiceIO):
     service = ServiceString.NER
     required_input_fields = ["text"]
+    optional_input_fields = ["labels"]
     input_structure = {
-        "text": str
+        "text": str,
+        "labels": dict
     }
     output_structure = {
         "named_entities": [

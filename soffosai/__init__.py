@@ -15,6 +15,7 @@ from .core.services import (
     LetsDiscussService,
     LogicalErrorDetectionService,
     MicrolessonService,
+    NamedEntityRecognitionService,
 )
 import os
 import sys
@@ -35,4 +36,5 @@ __all__ = [
     "LetsDiscussService",
     "LogicalErrorDetectionService",
     "MicrolessonService",
+    "NamedEntityRecognitionService",
 ]

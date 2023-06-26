@@ -16,3 +16,4 @@ from .language_detection import LanguageDetectionService
 from .lets_discuss import LetsDiscussService
 from .logical_error_detection import LogicalErrorDetectionService
 from .microlesson import MicrolessonService
+from .NER import NamedEntityRecognitionService
