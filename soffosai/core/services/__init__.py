@@ -11,6 +11,7 @@ from .answer_scoring import AnswerScoringService
 from .contradiction_detection import ContradictionDetectionService
 from .documents import DocumentsIngestService, DocumentsSearchService, DocumentsDeleteService, DocumentsService
 from .email_analysis import EmailAnalysisService
+from .emotion_detection import EmotionDetectionService
 from .file_converter import FileConverterService
 from .language_detection import LanguageDetectionService
 from .lets_discuss import LetsDiscussService

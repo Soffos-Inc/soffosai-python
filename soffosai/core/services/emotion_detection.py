@@ -7,6 +7,7 @@ Purpose: Easily use Emotion Detection Service
 from .service import SoffosAIService, inspect_arguments
 from soffosai.common.constants import ServiceString
 
+_EMOTION_LIST = ["joy", "trust", "fear", "surprise", "sadness", "disgust", "anger", "anticipation"]
 
 class EmotionDetectionService(SoffosAIService):
     '''
@@ -18,6 +19,9 @@ class EmotionDetectionService(SoffosAIService):
         service = ServiceString.EMOTION_DETECTION
         super().__init__(service, **kwargs)
     
-    def __call__(self, user, text):
-        self._args_dict = inspect_arguments(self.__call__, user, text)
+    def __call__(self, user, text, sentence_split=4, sentence_overlap=False, emotion_choices=_EMOTION_LIST):
+        for emotion in emotion_choices:
+            if emotion not in _EMOTION_LIST:
+                raise ValueError(f"{emotion} is not valid as an emotion_choices element. Please choose from {_EMOTION_LIST}.")
+        self._args_dict = inspect_arguments(self.__call__, user, text, sentence_split, sentence_overlap, emotion_choices)
         return super().__call__()
