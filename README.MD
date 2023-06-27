@@ -70,4 +70,4 @@ print(json.dumps(output, indent=4))
 ```
 
 ## Samples
-Sample code for each service can be found on [tests/service_call_samples.py]()
+Sample code for each service can be found on [tests/services](https://github.com/Soffos-Inc/soffos_ai/tree/master/tests/services)
