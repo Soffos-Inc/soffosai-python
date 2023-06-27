@@ -16,6 +16,17 @@ from .core.services import (
     LogicalErrorDetectionService,
     MicrolessonService,
     NamedEntityRecognitionService,
+    ParaphraseService,
+    ProfanityService,
+    QuestionAndAnswerGenerationService,
+    QuestionAnsweringService,
+    ReviewTaggerService,
+    SentimentAnalysisService,
+    SimplifyService,
+    SummarizationService,
+    TableGeneratorService,
+    TagGenerationService,
+    TranscriptCorrectionService
 )
 import os
 import sys
@@ -37,4 +48,15 @@ __all__ = [
     "LogicalErrorDetectionService",
     "MicrolessonService",
     "NamedEntityRecognitionService",
+    "ParaphraseService",
+    "ProfanityService",
+    "QuestionAndAnswerGenerationService",
+    "QuestionAnsweringService",
+    "ReviewTaggerService",
+    "SentimentAnalysisService",
+    "SimplifyService",
+    "SummarizationService",
+    "TableGeneratorService",
+    "TagGenerationService",
+    "TranscriptCorrectionService",
 ]

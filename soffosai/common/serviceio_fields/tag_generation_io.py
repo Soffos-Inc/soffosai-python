@@ -5,10 +5,11 @@ from ..constants import ServiceString
 class TagGenerationIO(ServiceIO):
     service = ServiceString.TAG_GENERATION
     required_input_fields = ["text"]
-    optional_input_fields = ["options"]
+    optional_input_fields = ["types", "n"]
     input_structure = {
         "text": str,
-        "options": [str, str, str] # can only take a subset of ["one_word", "two_words", "three_words"]
+        "types": [str, str, str], # can only take a subset of ["topic", "domain", "audience", "entity"]
+        "n": int 
     }
     output_structure = {
         "one_word": [

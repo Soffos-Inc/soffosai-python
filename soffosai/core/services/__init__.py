@@ -17,3 +17,14 @@ from .lets_discuss import LetsDiscussService
 from .logical_error_detection import LogicalErrorDetectionService
 from .microlesson import MicrolessonService
 from .NER import NamedEntityRecognitionService
+from .paraphrase import ParaphraseService
+from .profanity import ProfanityService
+from .qna_generation import QuestionAndAnswerGenerationService
+from .question_answering import QuestionAnsweringService
+from .review_tagger import ReviewTaggerService
+from .sentiment_analysis import SentimentAnalysisService
+from .simplify import SimplifyService
+from .summarization import SummarizationService
+from .table_generator import TableGeneratorService
+from .tag_generation import TagGenerationService
+from .transcript_correction import TranscriptCorrectionService

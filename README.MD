@@ -1,4 +1,4 @@
-# Soffos.py
+# Soffosai.py
 A Python software development kit for using Soffos AI's APIs.
 
 ## API Keys

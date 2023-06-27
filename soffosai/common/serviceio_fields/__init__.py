@@ -21,3 +21,4 @@ from .sentiment_analysis_io import SentimentAnalysisIO
 from .summarization_io import SummarizaionIO
 from .table_generator_io import TableGeneratorIO
 from .tag_generation_io import TagGenerationIO
+from .transcript_correction import TranscriptCorrectionIO

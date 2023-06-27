@@ -4,12 +4,12 @@ from ..constants import ServiceString
 
 class QuestionAnsweringIO(ServiceIO):
     service = ServiceString.QUESTION_ANSWERING
-    required_input_fields = ["message"]
+    required_input_fields = ["question"] # api receives "message" but "question" is clearer in the sdk
     require_one_of_choice = [["document_text", "document_ids"]]
     defaults = ["document_text"]
     optional_input_fields = ["check_ambiguity", "check_query_type", "generic_responses"]
     input_structure = {
-        "message": str,
+        "question": str,
         "document_ids": [
             str,
             str
