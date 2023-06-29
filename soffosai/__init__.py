@@ -29,6 +29,8 @@ from .core.services import (
     TagGenerationService,
     TranscriptCorrectionService
 )
+from .common.constants import ServiceString
+
 import os
 import sys
 
@@ -61,4 +63,6 @@ __all__ = [
     "TableGeneratorService",
     "TagGenerationService",
     "TranscriptCorrectionService",
+
+    "ServiceString"
 ]

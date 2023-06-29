@@ -245,7 +245,6 @@ class SoffosAIService:
 
 
     def __call__(self, **kwargs):
-
         return self.get_response(payload=self._args_dict,**kwargs)
 
 
