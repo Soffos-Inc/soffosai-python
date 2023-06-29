@@ -17,9 +17,15 @@ class NodeConfig:
     '''
     _service_io: ServiceIO
 
-    def __init__(self, service:Union[ServiceString, SoffosAIService]) -> None:
-        self.source = {}
-        self.service:ServiceString = SoffosAIService(service=service)
+    def __init__(self, service:Union[ServiceString, SoffosAIService], source:dict={}) -> None:
+        self.source = source
+        if isinstance(service, str):
+            self.service:SoffosAIService = SoffosAIService(service=service)
+        elif isinstance(service, SoffosAIService):
+            self.service:SoffosAIService = service
+        else:
+            raise ValueError("Upon initialization of the NodeConfig: invalid argument value for <service>.")
+        
 
     def validate_node(self):
         '''
@@ -33,22 +39,16 @@ class NodeConfig:
             else:
                 raise ValueError(f"This source notation is only valid in a Pipeline. To execute a single node, provide the actual value for each source key")
             
-        if 'user' not in validated_data.keys() and self._user:
-            validated_data['user'] = self._user
-            
-        if not validated_data.get('user'):
-            raise TypeError("user is a required parameter. Provide it as a constructor argument or source item")
-        
         return validated_data
 
 
-    def run(self, payload=None):
-        if payload is not None:
-            self.source = payload
+    # def run(self, payload=None):
+    #     if payload is not None:
+    #         self.source = payload
             
-        args = self.validate_node()
+    #     args = self.validate_node()
 
-        return self.service.get_response(payload=payload)
+    #     return self.service.get_response(payload=payload)
 
     
     def __call__(self, payload={}, *args, **kwargs):

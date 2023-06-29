@@ -1,1 +1,1 @@
-from .node import ServiceNode
+from .node import NodeConfig

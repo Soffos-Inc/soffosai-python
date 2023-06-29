@@ -1,3 +1,17 @@
+Metadata-Version: 2.1
+Name: soffosai
+Version: 0.0.1
+Summary: Python SDK for Soffos AI
+Author-email: Franco Such <franco.such@Soffos.ai>, Andreas Christofi <andreas.christofi@Soffos.ai>
+Project-URL: Homepage, https://github.com/Soffos-Inc/soffos_ai
+Project-URL: Bug Tracker, https://github.com/Soffos-Inc/soffos_ai/issues
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
 # Soffosai.py
 A Python software development kit for using Soffos AI's APIs.
 
@@ -30,10 +44,7 @@ Here is the list of SoffosAIService Subclasses:
     "AmbiguityDetectionService",
     "AnswerScoringService",
     "ContradictionDetectionService",
-    "DocumentsService",
-    "DocumentsIngestService", 
-    "DocumentsSearchService", 
-    "DocumentsDeleteService", 
+    "DocumentsIngestService", "DocumentsSearchService", "DocumentsDeleteService", "DocumentsService",
     "EmailAnalysisService",
     "FileConverterService",
     "LanguageDetectionService",
@@ -74,84 +85,3 @@ print(json.dumps(output, indent=4))
 
 ## Samples
 Sample code for each service can be found on [tests/services](https://github.com/Soffos-Inc/soffos_ai/tree/master/tests/services)
-
-
-## Pipeline
-A Pipeline is a collection of services working together to generate a required output given a set of inputs.
-
-### NodeConfig
-- To easily create a pipeline, you need to create NodeConfigs (node configuration).  A NodeConfig is a service configuration that will tell the Pipeline what the service is to be used and where in the pipe would it get its input:
-```
-import json
-from soffosai.core import NodeConfig
-from soffosai.common.constants import ServiceString
-
-src = {
-    "user": "franco", 
-    "file": "matrix.pdf",
-    "name": "matrix",
-    "question": "who is Neo?"
-}
-
-file_converter_node = NodeConfig(
-    service=ServiceString.FILE_CONVERTER,
-    source={
-        "file": (0, "file")
-    }
-)
-```
-
-### Use the NodeConfigs as input of the Pipeline
-```
-import json
-from soffosai.core import Pipeline
-from soffosai.core import NodeConfig
-from soffosai.common.constants import ServiceString
-
-
-src = {
-    "user": "franco", 
-    "file": "matrix.pdf",
-    "name": "matrix",
-    "question": "who is Neo?"
-}
-
-file_converter_node = NodeConfig(
-    service=ServiceString.FILE_CONVERTER,
-    source={
-        "file": (0, "file"), # get the value for "file" field from user_input (0) with the key "file"
-        "normalize": 0 # meaning the pipeline will always 0 as the value of this field
-    }
-)
-
-document_ingest_node = NodeConfig(
-    service=ServiceString.DOCUMENTS_INGEST,
-    source={
-        "name": (0, "name"), # get the value for "name" field from user_input (0) with the key "name"
-        "text": (1, "text")  # get the value for "text" field from 1st stage (1) output with the key "text"
-    }
-)
-
-question_answering_node = NodeConfig(
-    service=ServiceString.QUESTION_ANSWERING,
-    source={
-        "document_ids": (2, "document_id"), # get the value for "document_ids" field from 2nd stage (2) output with the key "document_ids"
-        "question": (0, "question")
-    }
-)
-
-# This is one way to define your pipeline
-my_pipe = Pipeline(
-    stages = [file_converter_node, document_ingest_node, question_answering_node]
-)
-output = my_pipe.run(user_input=src)
-print(json.dumps(output, indent=4))
-
-# But there is a better way
-```
-
-### Better way to define your own Custom Pipeline
-As an example, this is the a custom pipeline included in the package as one of the standard Pipelines:
-```
-
-```

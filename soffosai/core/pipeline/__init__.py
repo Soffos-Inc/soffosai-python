@@ -1,1 +1,1 @@
-from .basic_pipeline import SoffosPipeline
+from .pipeline import Pipeline

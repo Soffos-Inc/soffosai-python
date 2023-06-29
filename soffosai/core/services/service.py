@@ -58,6 +58,9 @@ def format_uuid(uuid):
 
 
 def is_valid_uuid(uuid_string):
+    if isinstance(uuid_string, type): # coming from pipeline validation, always True because it will come from Soffos Services
+        return True
+
     if "-" not in uuid_string:
         formatted_uuid = format_uuid(uuid_string)
     else:
@@ -153,7 +156,7 @@ class SoffosAIService:
                 else:
                     input_type = input_structure[key]
 
-                if not isinstance(value, input_type):
+                if not isinstance(value, input_type) and value != input_type: # the second condition is for pipeline
                     wrong_type = type(value)
                     value_errors.append(f"{key} requires {input_structure[key]} but {wrong_type} is provided.")
             
@@ -195,6 +198,9 @@ class SoffosAIService:
         '''
         self._payload = payload
         allow_input, message = self.validate_payload()
+        if "question" in self._payload.keys(): # the api receives the question as message.
+            self._payload['message'] = self._payload['question']
+
         if not allow_input:
             raise ValueError(message)
         
