@@ -1,18 +1,18 @@
 import soffosai
-from soffosai.core.pipeline import SoffosPipeline
-from soffosai.core.nodes import ServiceNode
+from soffosai.core.pipelines import Pipeline
+from soffosai.core.nodes import NodeConfig
 from soffosai.common.constants import ServiceString
 
 src = {
     "text": ""
 }
 
-pipeline = SoffosPipeline(
+pipeline = Pipeline(
     stages=[
-        ServiceNode(service=ServiceString.SUMMARIZATION, inputs=[{"text": "pipeline", "sent_length": "pipeline"}]),
-        ServiceNode(service=ServiceString.PARAPHRASE, inputs=[{"text": {0: "summary"}}]),
-        ServiceNode(service=ServiceString.NER, inputs=[{"text": "pipeline"}]),
-        ServiceNode(service=ServiceString.TAG_GENERATION, inputs=[{"text": {1: "paraphrase"}, "types": ["topic", "domain"]}])
+        NodeConfig(service=ServiceString.SUMMARIZATION, inputs=[{"text": "pipeline", "sent_length": "pipeline"}]),
+        NodeConfig(service=ServiceString.PARAPHRASE, inputs=[{"text": {0: "summary"}}]),
+        NodeConfig(service=ServiceString.NER, inputs=[{"text": "pipeline"}]),
+        NodeConfig(service=ServiceString.TAG_GENERATION, inputs=[{"text": {1: "paraphrase"}, "types": ["topic", "domain"]}])
     ]
 )
 

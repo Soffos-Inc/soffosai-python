@@ -9,14 +9,20 @@ from soffosai.core.nodes.node import NodeConfig
 
 
 class Pipeline:
+    '''
+    A controller for consuming multiple Services called stages.
+    It validates all inputs of all stages before sending the first Soffos API request to ensure
+    that the Pipeline will not waste credits.
+    
+    ** use_defaults=True means that the current stage will take input from the previous stage's 
+    output of the same field name. If the previous stage does not have it, it will take from the
+    pipeline's user_input.
+    '''
     def __init__(self, stages:list, use_defaults:bool=False, **kwargs) -> None:
         self._apikey = kwargs['apikey'] if kwargs.get('apikey') else soffosai.api_key
         self._stages = stages
         self._input:dict = {}
         self._infos = []
-
-        for stage in stages:
-            stage:NodeConfig
 
         error_messages = []
         if not isinstance(stages, list):
@@ -24,15 +30,14 @@ class Pipeline:
         for stage in stages:
             if not isinstance(stage, NodeConfig):
                 error_messages.append(f"{stage} is not an instance of NodeConfig")
-        
+
         if len(error_messages) != 0:
             raise ValueError(error_messages)
         
-        if "text" in self._input.keys():
-            self._input["document_text"] = self._input["text"]
-        
         self._outputfields = [stage.service._serviceio.output_structure.keys() for stage in self._stages]
-        # self.validate_pipeline()
+        
+        if use_defaults:
+            self.set_defaults()
 
 
     def validate_pipeline(self):
@@ -111,6 +116,10 @@ class Pipeline:
 
     def run(self, user_input:dict) -> dict:
         self._input = user_input
+        
+        if "text" in self._input.keys():
+            self._input["document_text"] = self._input["text"]
+
         self.validate_pipeline()
         self._infos.append(user_input)
 
@@ -147,3 +156,7 @@ class Pipeline:
 
     def __call__(self, user_input):
         return self.run(user_input)
+
+
+    def set_defaults(self):
+        pass

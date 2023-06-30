@@ -1,6 +1,6 @@
 import soffosai
-from soffosai.core.pipeline import SoffosPipeline
-from soffosai.core.nodes import ServiceNode
+from soffosai.core.pipelines import Pipeline
+from soffosai.core.nodes import NodeConfig
 from soffosai.common.constants import ServiceString
 
 
@@ -9,14 +9,14 @@ src = {
     "file": "matrix.pdf",
     "name": "matrix"
 }
-file_converter_node = ServiceNode(
+file_converter_node = NodeConfig(
     service=ServiceString.FILE_CONVERTER,
     source={
         "file": (0, "file")
     }
 )
 
-document_ingest_node = ServiceNode(
+document_ingest_node = NodeConfig(
     service=ServiceString.DOCUMENTS_INGEST,
     source={
         "name": (0, "name"),
@@ -24,7 +24,7 @@ document_ingest_node = ServiceNode(
     }
 )
 
-question_answering_node = ServiceNode(
+question_answering_node = NodeConfig(
     service=ServiceString.QUESTION_ANSWERING,
     source={
         "document_ids": (2, "document_id"),
