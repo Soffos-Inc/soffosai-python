@@ -14,9 +14,11 @@ class Pipeline:
     It validates all inputs of all stages before sending the first Soffos API request to ensure
     that the Pipeline will not waste credits.
     
-    ** use_defaults=True means that the current stage will take input from the previous stage's 
-    output of the same field name. If the previous stage does not have it, it will take from the
-    pipeline's user_input.
+    ** use_defaults=True means that stages will take input from the previous stages' 
+    output of the same field name prioritizing the latest stage's output. 
+    If the previous stages does not have it, it will take from the
+    pipeline's user_input.  Also, the stages will only be supplied with the required fields + default
+    of the require_one_of_choice fields.  
     '''
     def __init__(self, stages:list, use_defaults:bool=False, **kwargs) -> None:
         self._apikey = kwargs['apikey'] if kwargs.get('apikey') else soffosai.api_key
@@ -37,7 +39,7 @@ class Pipeline:
         self._outputfields = [stage.service._serviceio.output_structure.keys() for stage in self._stages]
         
         if use_defaults:
-            self.set_defaults()
+            self._stages = self.set_defaults(self._stages)
 
 
     def validate_pipeline(self):
@@ -88,7 +90,7 @@ class Pipeline:
                         else: # get from  other node/stage. 
                             ref_node = reference_node_number - 1 # because you are refencing a node, not node output
                             try:
-                                stage.service._payload[required_key] = self._stages[ref_node].service._serviceio.output_structure[required_key]
+                                stage.service._payload[key] = self._stages[ref_node].service._serviceio.output_structure[required_key]
                             except KeyError:
                                 error_messages.append(f"stage{i+1}:{required_key} is not available in {self._stages[ref_node].service._service} output")
                     else:
@@ -144,6 +146,8 @@ class Pipeline:
                 src['user'] = user_input.get('user')
 
             response:dict = node.service.get_response(payload = src)
+            if 'error' in response:
+                raise ValueError(response)
             print(f"response ready for {node.service._service}")
             # update outputfields values
             self._infos.append(response)
@@ -158,5 +162,36 @@ class Pipeline:
         return self.run(user_input)
 
 
-    def set_defaults(self):
-        pass
+    def set_defaults(self, stages):
+        defaulted_stages = []
+        for i, stage in enumerate(stages):
+            # initialize the acquired source
+            stage_source = {}
+            # Take the required inputs
+            required_keys:list = stage.service._serviceio.required_input_fields
+            if len(stage.service._serviceio.require_one_of_choice) > 0:
+                for group in stage.service._serviceio.require_one_of_choice:
+                    required_keys.append(group[0])
+
+            for key in required_keys:
+                # check the output of previous stage
+                if i > 0:
+                    found_key = False
+                    for j in range(i):
+                        previous_output_fields = self._stages[j].service._serviceio.output_structure.keys()
+                        if key in previous_output_fields:
+                            stage_source[key] = (j+1, key)
+                            found_key = True
+
+                    if not found_key:
+                        # if not found, set it to the user_input
+                        stage_source[key] = (0, key)
+                
+                else:
+                    stage_source[key] = (0, key)
+
+            defaulted_stage = NodeConfig(service=stage.service, source=stage_source)
+            defaulted_stages.append(defaulted_stage)
+            print(defaulted_stages)
+        
+        return defaulted_stages
