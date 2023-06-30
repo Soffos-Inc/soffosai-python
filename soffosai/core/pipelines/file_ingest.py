@@ -1,12 +1,12 @@
 '''
 Copyright (c)2022 - Soffos.ai - All rights reserved
-Created at: 2023-06-23
+Created at: 2023-06-29
 Purpose: Define the standard Pipeline for converting then ingesting a file
 -----------------------------------------------------
 '''
 from soffosai import ServiceString
-from soffosai.core import NodeConfig, Pipeline, inspect_arguments
-
+from soffosai.core import NodeConfig, inspect_arguments
+from soffosai.core.pipelines import Pipeline
 
 class FileIngestPipeline(Pipeline):
     '''

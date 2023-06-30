@@ -207,5 +207,46 @@ class FileIngestPipeline(Pipeline):
     to the function itself. As you can observe, __call__ and inspect_arguments both have the 
     arguments listed as user, file, name.
     '''
-    
 ```
+
+### Use Defaults
+The Pipeline has a use_defaults argument that defaults to False. If set to True:
+stages will take input from the previous stages' output of the same field name prioritizing the latest stage's output. If the previous stages does not have it, it will take from the pipeline's user_input.  Also, the stages will only be supplied with the required fields + default of the require_one_of_choice fields.  
+
+Use this feature if you are familiar with the input and output keys of the services your
+are cascading.  This will make the definition of your pipeline shorter:
+```
+import json
+from soffosai import ServiceString
+from soffosai.core import NodeConfig, Pipeline, inspect_arguments
+
+
+class FileIngestPipeline(Pipeline):
+    '''
+    A Soffos Pipeline that takes a file, convert it to its text content then saves it to Soffos db.
+    the output is a list containing the output object of file converter and document ingest
+    '''
+
+    # override the constructor of the Pipeline
+    def __init__(self, **kwargs) -> None:
+
+        # define your nodes even without the sources
+        file_converter_node = NodeConfig(service=ServiceString.FILE_CONVERTER)
+        document_ingest_node = NodeConfig(service = ServiceString.DOCUMENTS_INGEST)
+
+        # define the stages
+        stages = [file_converter_node, document_ingest_node]
+        use_defaults = True # dynamically create the source configuration of the Nodes
+        super().__init__(stages=stages, use_defaults=use_defaults, **kwargs)
+
+
+    # make sure you know the required input fields
+    def __call__(self, user, file, name): # define what your pipeline needs, arguments instead of dictionary
+        user_input = inspect_arguments(self.__call__, user, file, name) # convert the args to dict
+        return super().__call__(user_input)
+```
+
+
+### Where to get the required fields for Services
+To know the required fields of each SoffosAIService, they are defined in:
+```soffosai.common.serviceio_fields``` or [visit the api documentation](https://platform.soffos.ai/playground/docs#)
