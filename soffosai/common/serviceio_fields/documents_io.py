@@ -52,7 +52,8 @@ class DocumentSearchIO(ServiceIO):
                 },
             ],
             "meta": {}
-        }
+        },
+        "text": str
     }
 
 

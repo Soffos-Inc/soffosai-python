@@ -21,8 +21,8 @@ class NodeConfig:
         self.source = source
         if isinstance(service, str):
             self.service:SoffosAIService = SoffosAIService(service=service)
-        elif isinstance(service, SoffosAIService):
-            self.service:SoffosAIService = service
+        elif issubclass(service, SoffosAIService):
+            self.service:SoffosAIService = service()
         else:
             raise ValueError("Upon initialization of the NodeConfig: invalid argument value for <service>.")
         

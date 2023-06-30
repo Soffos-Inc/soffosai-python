@@ -35,11 +35,27 @@ class DocumentsSearchService(SoffosAIService):
         service = ServiceString.DOCUMENTS_SEARCH
         super().__init__(service, **kwargs)
     
+
     def __call__(self, user, query=None, filters=None, document_ids=None, top_n_keywords=None,
         top_n_natural_language=None, date_from=None, date_until=None):
         self._args_dict = inspect_arguments(self.__call__, user, query, filters, document_ids, top_n_keywords,
         top_n_natural_language, date_from, date_until)
-        return super().__call__()
+        response:dict = super().__call__()
+        text = ""
+        for passage in response.get('passages'):
+            text = text + passage
+        response['text'] = text
+        return response
+    
+
+    def get_response(self, payload=..., **kwargs):
+        response = super().get_response(payload, **kwargs)
+        text = ""
+        if response.get('passages'):
+            for passage in response['passages']:
+                text = text + passage['content']
+            response['text'] = text
+        return response
 
 
 class DocumentsDeleteService(SoffosAIService):
@@ -80,7 +96,7 @@ class DocumentsService(SoffosAIService):
         self._args_dict = inspect_arguments(self.search, user, query, filters, document_ids, top_n_keywords,
         top_n_natural_language, date_from, date_until)
         return self.get_response(payload=self._args_dict)
-    
+
 
     def ingest(self, user, document_name, text=None, tagged_elements=None, meta=None):
         self._service = ServiceString.DOCUMENTS_INGEST
@@ -96,3 +112,13 @@ class DocumentsService(SoffosAIService):
         self._serviceio:ServiceIO = SERVICE_IO_MAP.get(self._service)
         self._args_dict = inspect_arguments(self.delete, user, document_ids)
         return self.get_response(payload=self._args_dict)
+
+
+    def get_response(self, payload=..., **kwargs):
+        response = super().get_response(payload, **kwargs)
+        text = ""
+        if response.get('passages'):
+            for passage in response.get['passages']:
+                text = text + passage
+            response['text'] = text
+        return response
