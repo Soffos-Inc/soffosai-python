@@ -42,18 +42,18 @@ class NodeConfig:
         return validated_data
 
 
-    # def run(self, payload=None):
-    #     if payload is not None:
-    #         self.source = payload
+    def run(self, payload=None):
+        if payload is not None:
+            self.source = payload
             
-    #     args = self.validate_node()
+        args = self.validate_node()
 
-    #     return self.service.get_response(payload=payload)
+        return self.service.get_response(payload=payload)
 
     
-    # def __call__(self, payload={}, *args, **kwargs):
-    #     '''
-    #     This feature is only for testing/debugging a Node.
-    #     To easily create and call a service, please use the SoffosAIService class
-    #     '''
-    #     self.service.get_response(payload=payload, *args, **kwargs)
+    def __call__(self, payload={}, *args, **kwargs):
+        '''
+        This feature is only for testing/debugging a Node.
+        To easily create and call a service, please use the SoffosAIService class
+        '''
+        self.service.get_response(payload=payload, *args, **kwargs)

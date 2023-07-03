@@ -5,7 +5,7 @@ Purpose: Soffos Services Objects
 -----------------------------------------------------
 '''
 
-from .service import SoffosAIService
+from .service import SoffosAIService, inspect_arguments
 from .ambiguity_detection import AmbiguityDetectionService
 from .answer_scoring import AnswerScoringService
 from .contradiction_detection import ContradictionDetectionService
