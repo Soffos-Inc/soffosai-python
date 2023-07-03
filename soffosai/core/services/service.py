@@ -157,7 +157,7 @@ class SoffosAIService:
                     input_type = input_structure[key]
 
                 if not isinstance(value, input_type) and value != input_type: # the second condition is for pipeline
-                    wrong_type = type(value)
+                    wrong_type = value if isinstance(value, type) else type(value)
                     value_errors.append(f"{key} requires {input_structure[key]} but {wrong_type} is provided.")
             
         if len(value_errors) > 0:

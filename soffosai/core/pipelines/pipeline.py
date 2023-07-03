@@ -66,9 +66,13 @@ class Pipeline:
                             error_messages.append("The first Node cannot reference an output of later Nodes")
                         elif required_key not in self._input.keys():
                             error_messages.append(f"{value[1]} cannot be found in the Pipeline's source")
-
-                        # update the temporary payload for service validation
-                        stage.service._payload[required_key] = self._input[required_key]
+                        
+                        # correction for document_id and document_ids
+                        if key == "document_ids" and required_key == "document_id":
+                            stage.service._payload[key] = [self._input[required_key]]
+                        else:
+                            # update the temporary payload for service validation
+                            stage.service._payload[key] = self._input[required_key]
                     
                     else:
                         stage.service._payload[key] = value
@@ -86,11 +90,14 @@ class Pipeline:
                         
                         # update the temporary payload for service validation
                         if reference_node_number == 0: # get from source
-                            stage.service._payload[required_key] = self._input[required_key]
+                            stage.service._payload[key] = self._input[required_key]
+                            
                         else: # get from  other node/stage. 
                             ref_node = reference_node_number - 1 # because you are refencing a node, not node output
                             try:
-                                stage.service._payload[key] = self._stages[ref_node].service._serviceio.output_structure[required_key]
+                                # get the type from serviceio but also consider document_ids when given document_id
+                                required_type = self._stages[ref_node].service._serviceio.output_structure[required_key]
+                                stage.service._payload[key] = required_type if key != "document_ids" else [required_type]
                             except KeyError:
                                 error_messages.append(f"stage{i+1}:{required_key} is not available in {self._stages[ref_node].service._service} output")
                     else:
