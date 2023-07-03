@@ -192,7 +192,7 @@ class SoffosAIService:
         return request_data
 
 
-    def get_response(self, payload={}, **kwargs):
+    def get_response(self, payload={}, **kwargs) -> dict:
         '''
         Based on the knowledge/context, Soffos AI will now give you the data you need
         '''
@@ -244,7 +244,7 @@ class SoffosAIService:
             raise AttributeError(str(err)) from err
 
 
-    def __call__(self, **kwargs):
+    def __call__(self, **kwargs)->dict:
         return self.get_response(payload=self._args_dict,**kwargs)
 
 

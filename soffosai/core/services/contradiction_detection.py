@@ -19,6 +19,6 @@ class ContradictionDetectionService(SoffosAIService):
         service = ServiceString.CONTRADICTION_DETECTION
         super().__init__(service, **kwargs)
     
-    def __call__(self, user, text):
+    def __call__(self, user:str, text:str)->dict:
         self._args_dict = inspect_arguments(self.__call__, user, text)
         return super().__call__()

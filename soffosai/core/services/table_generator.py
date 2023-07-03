@@ -8,6 +8,7 @@ from typing import Union
 from .service import SoffosAIService, inspect_arguments
 from soffosai.common.constants import ServiceString
 
+TABLE_FORMATS = ['markdonw', 'CSV']
 
 class TableGeneratorService(SoffosAIService):
     '''
@@ -21,6 +22,8 @@ class TableGeneratorService(SoffosAIService):
         super().__init__(service, **kwargs)
     
 
-    def __call__(self, user, text:str, table_format:str='markdown'):
+    def __call__(self, user:str, text:str, table_format:str='markdown'):
+        if table_format not in TABLE_FORMATS:
+            raise ValueError(f"The argument table_format accepted values are: {TABLE_FORMATS}")
         self._args_dict = inspect_arguments(self.__call__, user, text, table_format)
         return super().__call__()

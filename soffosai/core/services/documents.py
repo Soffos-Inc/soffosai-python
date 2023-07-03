@@ -19,7 +19,7 @@ class DocumentsIngestService(SoffosAIService):
         service = ServiceString.DOCUMENTS_INGEST
         super().__init__(service, **kwargs)
     
-    def __call__(self, user, document_name, text=None, tagged_elements=None, meta=None):
+    def __call__(self, user:str, document_name:str, text:str=None, tagged_elements:list=None, meta:dict=None):
         self._args_dict = inspect_arguments(self.__call__, user, document_name, text, tagged_elements, meta)
         self._args_dict['name'] = document_name
         self._args_dict.pop('document_name')
@@ -36,8 +36,8 @@ class DocumentsSearchService(SoffosAIService):
         super().__init__(service, **kwargs)
     
 
-    def __call__(self, user, query=None, filters=None, document_ids=None, top_n_keywords=None,
-        top_n_natural_language=None, date_from=None, date_until=None):
+    def __call__(self, user:str, query:str=None, filters:dict=None, document_ids:list=None, top_n_keywords:int=5,
+        top_n_natural_language:int=5, date_from:str=None, date_until:str=None):
         self._args_dict = inspect_arguments(self.__call__, user, query, filters, document_ids, top_n_keywords,
         top_n_natural_language, date_from, date_until)
         response:dict = super().__call__()
@@ -67,7 +67,7 @@ class DocumentsDeleteService(SoffosAIService):
         service = ServiceString.DOCUMENTS_DELETE
         super().__init__(service, **kwargs)
     
-    def __call__(self, user, document_ids):
+    def __call__(self, user:str, document_ids:list):
         self._args_dict = inspect_arguments(self.__call__, user, document_ids)
         return super().__call__()
 
@@ -83,14 +83,14 @@ class DocumentsService(SoffosAIService):
         super().__init__(service, **kwargs)
     
 
-    def __call__(self, user, query=None, filters=None, document_ids=None, top_n_keywords=None,
-        top_n_natural_language=None, date_from=None, date_until=None):
+    def __call__(self, user:str, query:str=None, filters:dict=None, document_ids:list=None, top_n_keywords:int=5,
+        top_n_natural_language:int=5, date_from:str=None, date_until:str=None):
         return self.search(user, query=query, filters=filters, document_ids=document_ids, top_n_keywords=top_n_keywords,
         top_n_natural_language=top_n_natural_language, date_from=date_from, date_until=date_until)
 
     
-    def search(self, user, query=None, filters=None, document_ids=None, top_n_keywords=None,
-        top_n_natural_language=None, date_from=None, date_until=None):
+    def search(self, user:str, query:str=None, filters:dict=None, document_ids:list=None, top_n_keywords:int=5,
+        top_n_natural_language:int=5, date_from:str=None, date_until:str=None):
         self._service = ServiceString.DOCUMENTS_SEARCH
         self._serviceio:ServiceIO = SERVICE_IO_MAP.get(self._service)
         self._args_dict = inspect_arguments(self.search, user, query, filters, document_ids, top_n_keywords,
@@ -98,7 +98,7 @@ class DocumentsService(SoffosAIService):
         return self.get_response(payload=self._args_dict)
 
 
-    def ingest(self, user, document_name, text=None, tagged_elements=None, meta=None):
+    def ingest(self, user:str, document_name:str, text:str=None, tagged_elements:list=None, meta:dict=None):
         self._service = ServiceString.DOCUMENTS_INGEST
         self._serviceio:ServiceIO = SERVICE_IO_MAP.get(self._service)
         self._args_dict = inspect_arguments(self.ingest, user, document_name, text, tagged_elements, meta)
@@ -107,14 +107,14 @@ class DocumentsService(SoffosAIService):
         return self.get_response(payload=self._args_dict)
 
     
-    def delete(self, user, document_ids):
+    def delete(self, user:str, document_ids:list):
         self._service = ServiceString.DOCUMENTS_DELETE
         self._serviceio:ServiceIO = SERVICE_IO_MAP.get(self._service)
         self._args_dict = inspect_arguments(self.delete, user, document_ids)
         return self.get_response(payload=self._args_dict)
 
 
-    def get_response(self, payload=..., **kwargs):
+    def get_response(self, payload:dict, **kwargs) -> dict:
         response = super().get_response(payload, **kwargs)
         text = ""
         if response.get('passages'):

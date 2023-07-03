@@ -19,7 +19,7 @@ class EmotionDetectionService(SoffosAIService):
         service = ServiceString.EMOTION_DETECTION
         super().__init__(service, **kwargs)
     
-    def __call__(self, user, text, sentence_split=4, sentence_overlap=False, emotion_choices=_EMOTION_LIST):
+    def __call__(self, user:str, text:str, sentence_split:int=4, sentence_overlap:bool=False, emotion_choices:list=_EMOTION_LIST):
         for emotion in emotion_choices:
             if emotion not in _EMOTION_LIST:
                 raise ValueError(f"{emotion} is not valid as an emotion_choices element. Please choose from {_EMOTION_LIST}.")

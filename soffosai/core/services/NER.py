@@ -20,7 +20,7 @@ class NamedEntityRecognitionService(SoffosAIService):
         super().__init__(service, **kwargs)
     
 
-    def __call__(self, user, text, labels:dict=None):
+    def __call__(self, user:str, text:str, labels:dict=None):
         
         self._args_dict = inspect_arguments(self.__call__, user, text, labels)
 
@@ -30,7 +30,7 @@ class NamedEntityRecognitionService(SoffosAIService):
         return super().__call__()
 
 
-    def add_label(self, label, definition):
+    def add_label(self, label:str, definition:str):
         '''
         Adds a TAG label and its description so that Soffos AI can identify the entities matching the tag
         '''

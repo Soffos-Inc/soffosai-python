@@ -23,6 +23,6 @@ class SummarizationService(SoffosAIService):
         super().__init__(service, **kwargs)
     
 
-    def __call__(self, user, text, sent_length):
+    def __call__(self, user:str, text:str, sent_length:int):
         self._args_dict = inspect_arguments(self.__call__, user, text, sent_length)
         return super().__call__()
