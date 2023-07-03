@@ -1,5 +1,5 @@
 import json
-from soffosai.core import Pipeline
+from soffosai.core.pipelines import Pipeline
 from soffosai.core import NodeConfig
 from soffosai.common.constants import ServiceString
 

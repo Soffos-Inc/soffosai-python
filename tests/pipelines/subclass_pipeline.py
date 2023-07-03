@@ -4,8 +4,8 @@ The __call__ method gives you the power to put the arguments and makes calling y
 '''
 
 from soffosai import ServiceString
-from soffosai.core import NodeConfig, Pipeline, inspect_arguments
-
+from soffosai.core import NodeConfig, inspect_arguments
+from soffosai.core.pipelines import Pipeline
 
 class FileIngestPipeline(Pipeline):
     '''

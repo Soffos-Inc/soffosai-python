@@ -173,10 +173,10 @@ class SoffosAIService:
         return True, None
 
      
-    def update_payload(self, key, value):
-        if key in self._payload_keys:
-            print(f"Warning:overwriting payload[{key}]")
-        self._payload[key] = value
+    # def update_payload(self, key, value):
+    #     if key in self._payload_keys:
+    #         print(f"Warning:overwriting payload[{key}]")
+    #     self._payload[key] = value
 
 
     def get_data(self):

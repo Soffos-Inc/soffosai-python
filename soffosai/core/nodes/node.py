@@ -51,9 +51,9 @@ class NodeConfig:
     #     return self.service.get_response(payload=payload)
 
     
-    def __call__(self, payload={}, *args, **kwargs):
-        '''
-        This feature is only for testing/debugging a Node.
-        To easily create and call a service, please use the SoffosAIService class
-        '''
-        self.service.get_response(payload=payload, *args, **kwargs)
+    # def __call__(self, payload={}, *args, **kwargs):
+    #     '''
+    #     This feature is only for testing/debugging a Node.
+    #     To easily create and call a service, please use the SoffosAIService class
+    #     '''
+    #     self.service.get_response(payload=payload, *args, **kwargs)

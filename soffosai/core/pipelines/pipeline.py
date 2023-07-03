@@ -18,7 +18,7 @@ class Pipeline:
     output of the same field name prioritizing the latest stage's output. 
     If the previous stages does not have it, it will take from the
     pipeline's user_input.  Also, the stages will only be supplied with the required fields + default
-    of the require_one_of_choice fields.  
+    of the require_one_of_choice fields.
     '''
     def __init__(self, stages:list, use_defaults:bool=False, **kwargs) -> None:
         self._apikey = kwargs['apikey'] if kwargs.get('apikey') else soffosai.api_key
