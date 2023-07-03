@@ -21,7 +21,7 @@ class MicrolessonService(SoffosAIService):
         super().__init__(service, **kwargs)
     
 
-    def __call__(self, user, content=None):
+    def __call__(self, user:str, content:dict=None):
         if content:
             self.content = content
         self._args_dict = inspect_arguments(self.__call__, user, content)
@@ -29,7 +29,7 @@ class MicrolessonService(SoffosAIService):
         return super().__call__()
 
 
-    def add_content(self, source, text):
+    def add_content(self, source:str, text:str):
         '''
         Add content to the microlesson
         '''

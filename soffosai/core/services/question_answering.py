@@ -21,9 +21,10 @@ class QuestionAnsweringService(SoffosAIService):
         super().__init__(service, **kwargs)
     
 
-    def __call__(self, user, question, document_text=None, document_ids=None, 
-        check_ambiguity=True, check_query_type=True, generic_response=False, meta=None):
+    def __call__(self, user:str, question:str, document_text:str=None, document_ids:list=None, 
+        check_ambiguity:bool=True, check_query_type:bool=True, generic_response:bool=False, meta:dict=None):
         self._args_dict = inspect_arguments(self.__call__, user, question, document_text, document_ids, 
         check_ambiguity, check_query_type, generic_response, meta)
         self._args_dict['message'] = question
         return super().__call__()
+

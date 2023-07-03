@@ -21,28 +21,28 @@ class LetsDiscussService(SoffosAIService):
         super().__init__(service, **kwargs)
 
 
-    def create(self, user, context):
+    def create(self, user:str, context:str):
         self._service = ServiceString.LETS_DISCUSS_CREATE
         self._serviceio:ServiceIO = SERVICE_IO_MAP.get(self._service)
         self._args_dict = inspect_arguments(self.create, user, context)
         return self.get_response(payload=self._args_dict)
     
 
-    def __call__(self, user, session_id, query):
+    def __call__(self, user:str, session_id:str, query:str):
         self._service = ServiceString.LETS_DISCUSS
         self._serviceio:ServiceIO = SERVICE_IO_MAP.get(self._service)
         self._args_dict = inspect_arguments(self.__call__, user, session_id, query)
         return super().__call__()
     
 
-    def retrieve_sessions(self, user, return_messages:bool):
+    def retrieve_sessions(self, user:str, return_messages:bool):
         self._service = ServiceString.LETS_DISCUSS_RETRIEVE
         self._serviceio:ServiceIO = SERVICE_IO_MAP.get(self._service)
         self._args_dict = inspect_arguments(self.retrieve_sessions, user, return_messages)
         return self.get_response(payload=self._args_dict)
     
     
-    def delete(self, user, session_ids:list):
+    def delete(self, user:str, session_ids:list):
         self._service = ServiceString.LETS_DISCUSS_DELETE
         self._serviceio:ServiceIO = SERVICE_IO_MAP.get(self._service)
         self._args_dict = inspect_arguments(self.delete, user, session_ids)

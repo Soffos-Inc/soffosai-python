@@ -20,7 +20,7 @@ class TagGenerationService(SoffosAIService):
         super().__init__(service, **kwargs)
     
 
-    def __call__(self, user, text:str, types:list=["topic"], n:int=10):
+    def __call__(self, user:str, text:str, types:list=["topic"], n:int=10):
         '''
         Note: List of types of keywords to extract. Supported types:
 
