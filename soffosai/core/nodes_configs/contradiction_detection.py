@@ -6,7 +6,7 @@ class ContradictionDetectionNodeConfig(NodeConfig):
     '''
     Answer Scoring service configuration for Pipeline Use
     '''
-    def __init__(self, text:str):
+    def __init__(self, name:str, text:str):
         service = ContradictionDetectionService
         source = inspect_arguments(self.__init__, text)
-        super().__init__(service, source)
+        super().__init__(name, service, source)

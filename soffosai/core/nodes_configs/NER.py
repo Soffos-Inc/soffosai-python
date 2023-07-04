@@ -6,7 +6,7 @@ class NERNodeConfig(NodeConfig):
     '''
     NER Service configuration for Pipeline Use
     '''
-    def __init__(self, text:str, labels:dict=None):
+    def __init__(self, name:str, text:str, labels:dict=None):
         source = inspect_arguments(self.__call__, text, labels)
         service = NamedEntityRecognitionService
-        super().__init__(service, source)
+        super().__init__(name, service, source)

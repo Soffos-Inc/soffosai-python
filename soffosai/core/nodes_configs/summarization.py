@@ -6,7 +6,7 @@ class SummarizationNodeConfig(NodeConfig):
     '''
     Summarization Service configuration for Pipeline Use
     '''
-    def __init__(self, text:str, sent_length:int):
+    def __init__(self, name:str, text:str, sent_length:int):
         source = inspect_arguments(self.__call__, text, sent_length)
         service = SummarizationService
-        super().__init__(service, source)
+        super().__init__(name, service, source)

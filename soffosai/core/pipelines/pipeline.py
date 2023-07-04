@@ -125,7 +125,8 @@ class Pipeline:
 
     def run(self, user_input:dict) -> dict:
         self._input = user_input
-        
+        self._stages = self.prepare_nodes(self._stages)
+
         if "text" in self._input.keys():
             self._input["document_text"] = self._input["text"]
 
@@ -160,6 +161,7 @@ class Pipeline:
             self._infos.append(response)
 
         return self._infos
+
 
     def add_node(self, node:NodeConfig):
         self._stages.append(node)
@@ -202,3 +204,35 @@ class Pipeline:
             print(defaulted_stages)
         
         return defaulted_stages
+    
+
+    def prepare_nodes(self, stages):
+        organized_stages = []
+        index_map = {}
+        # Create an index for the stage
+        for i, stage in enumerate(stages):
+            stage: NodeConfig
+            index_map[stage.name] = i + 1
+
+        # replace node name with index
+        for stage in stages:
+            stage: NodeConfig
+            new_stage: NodeConfig
+            new_source = {}
+            for key,value in stage.source.items():
+                source_node_name = value[0]
+                key_of_source_node = value[1]
+                if isinstance(source_node_name, str):
+
+                    if source_node_name == "user_input":
+                        new_source[key] = (0, key_of_source_node)
+                    else:
+                        new_source[key] = (index_map[source_node_name], key_of_source_node)
+
+                    new_stage = NodeConfig(stage.name, stage._raw_service, new_source)
+                else:
+                    new_stage = stage
+
+            organized_stages.append(new_stage)
+        
+        return organized_stages

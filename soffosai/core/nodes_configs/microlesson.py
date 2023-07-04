@@ -6,7 +6,7 @@ class MicrolessonNodeConfig(NodeConfig):
     '''
     Microlesson Service configuration for Pipeline Use
     '''
-    def __init__(self, content:list):
+    def __init__(self, name:str, content:list):
         source = inspect_arguments(self.__call__, content)
         service = MicrolessonService
-        super().__init__(service, source)
+        super().__init__(name, service, source)

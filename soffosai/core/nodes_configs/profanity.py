@@ -6,7 +6,7 @@ class ProfanityNodeConfig(NodeConfig):
     '''
     Profanity Service configuration for Pipeline Use
     '''
-    def __init__(self, text:str):
+    def __init__(self, name:str, text:str):
         source = inspect_arguments(self.__call__, text)
         service = ProfanityService
-        super().__init__(service, source)
+        super().__init__(name, service, source)

@@ -17,7 +17,9 @@ class NodeConfig:
     '''
     _service_io: ServiceIO
 
-    def __init__(self, service:Union[ServiceString, SoffosAIService], source:dict={}) -> None:
+    def __init__(self, name, service:Union[ServiceString, SoffosAIService], source:dict={}) -> None:
+        self._raw_service = service
+        self.name = name
         self.source = source
         if isinstance(service, str):
             self.service:SoffosAIService = SoffosAIService(service=service)

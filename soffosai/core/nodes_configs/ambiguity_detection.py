@@ -6,7 +6,7 @@ class AmbiguityDetectionNodeConfig(NodeConfig):
     '''
     Ambiguity Detection service configuration for Pipeline Use
     '''
-    def __init__(self, text:str, sentence_split:int=4, sentence_overlap=False):
+    def __init__(self, name:str, text:str, sentence_split:int=4, sentence_overlap=False):
         service = AmbiguityDetectionService
         source = inspect_arguments(self.__init__, text, sentence_split, sentence_overlap)
-        super().__init__(service, source)
+        super().__init__(name, service, source)
