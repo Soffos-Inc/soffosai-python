@@ -1,4 +1,4 @@
-from soffosai.core.nodes import ServiceNode
+from soffosai.core.nodes_configs import ServiceNode
 from soffosai.common.constants import ServiceString
 
 src = {

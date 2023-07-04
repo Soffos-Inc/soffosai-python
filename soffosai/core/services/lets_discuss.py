@@ -47,3 +47,36 @@ class LetsDiscussService(SoffosAIService):
         self._serviceio:ServiceIO = SERVICE_IO_MAP.get(self._service)
         self._args_dict = inspect_arguments(self.delete, user, session_ids)
         return self.get_response(payload=self._args_dict)
+
+
+class LetsDiscussCreateService(SoffosAIService):
+    '''
+    A separate class for LetsDiscuss service to be used for creating a session only.
+    '''
+    def __call__(self, user:str, context:str):
+        self._service = ServiceString.LETS_DISCUSS_CREATE
+        self._serviceio:ServiceIO = SERVICE_IO_MAP.get(self._service)
+        self._args_dict = inspect_arguments(self.__call__, user, context)
+        return super().__call__()
+
+
+class LetsDiscussRetrieveService(SoffosAIService):
+    '''
+    A separate class for LetsDiscuss service to be used for retrieving sessions only.
+    '''
+    def __call__(self, user:str, return_messages:bool):
+        self._service = ServiceString.LETS_DISCUSS_RETRIEVE
+        self._serviceio:ServiceIO = SERVICE_IO_MAP.get(self._service)
+        self._args_dict = inspect_arguments(self.__call__, user, return_messages)
+        return super().__call__()
+
+
+class LetsDiscussDeleteService(SoffosAIService):
+    '''
+    A separate class for LetsDiscuss service to be used for retrieving sessions only.
+    '''
+    def __call__(self, user:str, session_ids:list):
+        self._service = ServiceString.LETS_DISCUSS_DELETE
+        self._serviceio:ServiceIO = SERVICE_IO_MAP.get(self._service)
+        self._args_dict = inspect_arguments(self.__call__, user, session_ids)
+        return super().__call__()

@@ -5,7 +5,7 @@ Purpose: Define the basic pipeline object
 -----------------------------------------------------
 '''
 import soffosai
-from soffosai.core.nodes.node import NodeConfig
+from soffosai.core.nodes_configs.node import NodeConfig
 
 
 class Pipeline:

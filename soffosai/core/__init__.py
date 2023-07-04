@@ -1,3 +1,3 @@
 from .services import *
 from .services.service import inspect_arguments
-from .nodes import NodeConfig
+from .nodes_configs import NodeConfig

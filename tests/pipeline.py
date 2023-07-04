@@ -1,6 +1,6 @@
 import soffosai
 from soffosai.core.pipelines import Pipeline
-from soffosai.core.nodes import NodeConfig
+from soffosai.core.nodes_configs import NodeConfig
 from soffosai.common.constants import ServiceString
 
 

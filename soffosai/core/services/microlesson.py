@@ -21,7 +21,7 @@ class MicrolessonService(SoffosAIService):
         super().__init__(service, **kwargs)
     
 
-    def __call__(self, user:str, content:dict=None):
+    def __call__(self, user:str, content:list=None):
         if content:
             self.content = content
         self._args_dict = inspect_arguments(self.__call__, user, content)
