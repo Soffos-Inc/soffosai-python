@@ -1,5 +1,23 @@
 from .node import NodeConfig
 from .ambiguity_detection import AmbiguityDetectionNodeConfig
-
-
+from .answer_scoring import AnswerScoringNodeConfig
+from .contradiction_detection import ContradictionDetectionNodeConfig
+from .documents import DocumentsIngestNodeConfig, DocumentsSearchNodeConfig, DocumentsDeleteNodeConfig
+from .email_analysis import EmailAnalysisNodeConfig
+from .emotion_detection import EmotionDetectionNodeConfig
 from .file_converter import FileConverterNodeConfig
+from .language_detection import LanguageDetectionNodeConfig
+from .lets_discuss import LetsDiscussCreateNodeConfig, LetsDiscussNodeConfig, LetsDiscussRetrieveNodeConfig, LetsDiscussDeleteNodeConfig
+from .logical_error_detection import LogicalErrorDetectionNodeConfig
+from .microlesson import MicrolessonNodeConfig
+from .NER import NERNodeConfig
+from .paraphrase import ParaphraseNodeConfig
+from .qna_generation import QuestionAndAnswerGenerationNodeConfig
+from .question_answering import QuestionAnsweringNodeConfig
+from .review_tagger import ReviewTaggerNodeConfig
+from .sentiment_analysis import SentimentAnalysisNodeConfig
+from .simplify import SimplifyNodeConfig
+from .summarization import SummarizationNodeConfig
+from .table_generator import TableGeneratorNodeConfig
+from .tag_generation import TagGenerationNodeConfig
+from .transcript_correction import TranscriptCorrectionNodeConfig
