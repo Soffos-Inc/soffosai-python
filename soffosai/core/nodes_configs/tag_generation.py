@@ -10,6 +10,6 @@ class TagGenerationNodeConfig(NodeConfig):
         for _type in types:
             if _type not in ["topic", "domain", "audience", "entity"]:
                 raise ValueError(f'Tag Generation: types argument\'s elements can only be "topic", "domain", "audience" and/or "entity".')
-        source = inspect_arguments(self.__call__,text, types, n)
+        source = inspect_arguments(self.__init__, name, text, types, n)
         service = TagGenerationService
         super().__init__(name, service, source)

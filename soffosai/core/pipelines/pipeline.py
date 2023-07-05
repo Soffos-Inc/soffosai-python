@@ -62,7 +62,7 @@ class Pipeline:
                     if isinstance(required_key, tuple):
                         if not callable(required_key[0]):
                             error_messages.append(f"{stage.name} source {key}: The first element of the tuple should be a function.")
-                        required_key = required_key[1]
+                        continue
                         
                     if i == 0:
                         if reference_node_number > 0:
@@ -215,22 +215,26 @@ class Pipeline:
             new_stage: NodeConfig
             new_source = {}
             for key,value in stage.source.items():
-                source_node_name = value[0]
-                key_of_source_node = value[1]
-                if isinstance(source_node_name, str):
+                if isinstance(value, tuple):
+                    source_node_name = value[0]
+                    key_of_source_node = value[1]
+                    if isinstance(source_node_name, str):
 
-                    if source_node_name == "user_input":
-                        new_source[key] = (0, key_of_source_node)
+                        if source_node_name == "user_input":
+                            new_source[key] = (0, key_of_source_node)
+                        else:
+                            try:
+                                new_source[key] = (index_map[source_node_name], key_of_source_node)
+                            except KeyError:
+                                raise ValueError(f"{stage.name} source: cannot map '{source_node_name}'.")
+
                     else:
-                        try:
-                            new_source[key] = (index_map[source_node_name], key_of_source_node)
-                        except KeyError:
-                            raise ValueError(f"{stage.name} source: cannot map '{source_node_name}'.")
+                        new_source[key] = value
 
-                    new_stage = NodeConfig(stage.name, stage._raw_service, new_source)
                 else:
-                    new_stage = stage
+                    new_source[key] = value
 
+            new_stage = NodeConfig(stage.name, stage._raw_service, new_source)
             organized_stages.append(new_stage)
         
         return organized_stages

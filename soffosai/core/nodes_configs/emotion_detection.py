@@ -12,6 +12,6 @@ class EmotionDetectionNodeConfig(NodeConfig):
         for emotion in emotion_choices:
             if emotion not in _EMOTION_LIST:
                 raise ValueError(f"{emotion} is not valid as an emotion_choices element. Please choose from {_EMOTION_LIST}.")
-        source = inspect_arguments(self.__call__, text, sentence_split, sentence_overlap, emotion_choices)
+        source = inspect_arguments(self.__init__, name, text, sentence_split, sentence_overlap, emotion_choices)
         service = EmotionDetectionService
         super().__init__(name, service, source)

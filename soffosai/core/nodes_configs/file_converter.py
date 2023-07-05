@@ -6,5 +6,5 @@ from soffosai.core.nodes_configs.node import NodeConfig
 class FileConverterNodeConfig(NodeConfig):
     def __init__(self, name:str, file) -> None:
         service = FileConverterService
-        source = inspect_arguments(self.__init__, file)
+        source = inspect_arguments(self.__init__, name, file)
         super().__init__(name, service, source)

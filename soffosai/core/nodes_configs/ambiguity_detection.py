@@ -8,5 +8,5 @@ class AmbiguityDetectionNodeConfig(NodeConfig):
     '''
     def __init__(self, name:str, text:str, sentence_split:int=4, sentence_overlap=False):
         service = AmbiguityDetectionService
-        source = inspect_arguments(self.__init__, text, sentence_split, sentence_overlap)
+        source = inspect_arguments(self.__init__, name, text, sentence_split, sentence_overlap)
         super().__init__(name, service, source)

@@ -7,6 +7,6 @@ class LogicalErrorDetectionNodeConfig(NodeConfig):
     Lets Discuss Service configuration for Pipeline Use
     '''
     def __init__(self, name:str, text:str):
-        source = inspect_arguments(self.__call__, text)
+        source = inspect_arguments(self.__init__, name, text)
         service = LogicalErrorDetectionService
         super().__init__(name, service, source)

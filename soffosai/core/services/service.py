@@ -42,6 +42,9 @@ def inspect_arguments(func, *args, **kwargs):
             for key2, value2 in arguments['kwargs'].items():
                 if value2 != None:
                     unziped_kwargs[key2] = value2
+    
+    if unziped_kwargs.get('name'):
+        unziped_kwargs.pop('name')
 
     return unziped_kwargs
 

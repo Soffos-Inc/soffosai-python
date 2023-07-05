@@ -8,5 +8,5 @@ class ContradictionDetectionNodeConfig(NodeConfig):
     '''
     def __init__(self, name:str, text:str):
         service = ContradictionDetectionService
-        source = inspect_arguments(self.__init__, text)
+        source = inspect_arguments(self.__init__, name, text)
         super().__init__(name, service, source)
