@@ -6,7 +6,7 @@ requires = [
 
 [project]
 name = "soffosai"
-version = "0.0.1"
+version = "0.0.2"
 authors = [
   { name="Franco Such", email="franco.such@Soffos.ai" },
   { name="Andreas Christofi", email="andreas.christofi@Soffos.ai" }
