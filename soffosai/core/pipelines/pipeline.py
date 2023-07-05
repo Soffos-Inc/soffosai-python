@@ -53,55 +53,43 @@ class Pipeline:
         self._outputfields.insert(0, self._input.keys())
 
         for i, stage in enumerate(self._stages):
-            
             stage.service._payload = {}
-            # Check if the source keys specified on the Node can be captured from the source or output of other Nodes
-            stage:NodeConfig
-            if i == 0:
-                for key,value in stage.source.items():
-                    if isinstance(value, tuple):
-                        reference_node_number = value[0]
-                        required_key = value[1]
+            stage: NodeConfig
+            
+            for key, value in stage.source.items():
+                if isinstance(value, tuple):
+                    reference_node_number, required_key = value
+                    if isinstance(required_key, tuple):
+                        if not callable(required_key[0]):
+                            error_messages.append(f"{stage.name} source {key}: The first element of the tuple should be a function.")
+                        required_key = required_key[1]
+                        
+                    if i == 0:
                         if reference_node_number > 0:
                             error_messages.append("The first Node cannot reference an output of later Nodes")
                         elif required_key not in self._input.keys():
-                            error_messages.append(f"{value[1]} cannot be found in the Pipeline's source")
-                        
-                        # correction for document_id and document_ids
-                        if key == "document_ids" and required_key == "document_id":
+                            error_messages.append(f"{required_key} cannot be found in the Pipeline's source")
+                        elif key == "document_ids" and required_key == "document_id":
                             stage.service._payload[key] = [self._input[required_key]]
                         else:
-                            # update the temporary payload for service validation
                             stage.service._payload[key] = self._input[required_key]
-                    
                     else:
-                        stage.service._payload[key] = value
-
-            else:
-                for key, value in stage.source.items():
-                    if isinstance(value, tuple):
-                        reference_node_number = value[0]
-                        required_key = value[1]
-                        if reference_node_number > i: # value[0] refers to the output of the node, i refers to the node itself, different index 
+                        if reference_node_number > i:
                             error_messages.append(f"stage {i+1}. {stage.service._service}: Cannot reference the output of later or current Node")
-                        if required_key not in self._outputfields[reference_node_number]:
+                        elif required_key not in self._outputfields[reference_node_number]:
                             _note = f"output of Node {reference_node_number}" if reference_node_number > 0 else "source"
-                            error_messages.append(f"cannot map {required_key} in the {_note}.")
-                        
-                        # update the temporary payload for service validation
-                        if reference_node_number == 0: # get from source
+                            error_messages.append(f"Cannot map {required_key} in the {_note}.")
+                        elif reference_node_number == 0:
                             stage.service._payload[key] = self._input[required_key]
-                            
-                        else: # get from  other node/stage. 
-                            ref_node = reference_node_number - 1 # because you are refencing a node, not node output
+                        else:
+                            ref_node = reference_node_number - 1
                             try:
-                                # get the type from serviceio but also consider document_ids when given document_id
                                 required_type = self._stages[ref_node].service._serviceio.output_structure[required_key]
                                 stage.service._payload[key] = required_type if key != "document_ids" else [required_type]
                             except KeyError:
-                                error_messages.append(f"stage{i+1}:{required_key} is not available in {self._stages[ref_node].service._service} output")
-                    else:
-                        stage.service._payload[key] = value
+                                error_messages.append(f"stage {i+1}: {required_key} is not available in {self._stages[ref_node].service._service} output")
+                else:
+                    stage.service._payload[key] = value
 
             # check if the node/stage has complete source keys and correct type
             if "document_id" in stage.service._payload.keys():
@@ -141,12 +129,19 @@ class Pipeline:
             
             for key, value in temp_src.items():
                 if isinstance(value, tuple):
-                    set_value = self._infos[value[0]][value[1]]
+                    if isinstance(value[1], tuple): # if value is a tuple, run the function with the 2nd item as argument
+                        helper_func = value[1][0]
+                        needed_key = value[1][1]
+                        arguments = self._infos[value[0]][needed_key]
+                        set_value = helper_func(arguments)
+                    else:
+                        set_value = self._infos[value[0]][value[1]]
                 else:
                     set_value = value
                 
-                if key == "document_ids" and value[1] == "document_id":
-                    set_value = [set_value]
+                
+                # if key == "document_ids" and value[1] == "document_id":
+                #     set_value = [set_value]
 
                 src[key] = set_value
             
@@ -227,7 +222,10 @@ class Pipeline:
                     if source_node_name == "user_input":
                         new_source[key] = (0, key_of_source_node)
                     else:
-                        new_source[key] = (index_map[source_node_name], key_of_source_node)
+                        try:
+                            new_source[key] = (index_map[source_node_name], key_of_source_node)
+                        except KeyError:
+                            raise ValueError(f"{stage.name} source: cannot map '{source_node_name}'.")
 
                     new_stage = NodeConfig(stage.name, stage._raw_service, new_source)
                 else:
