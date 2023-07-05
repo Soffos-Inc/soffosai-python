@@ -1,8 +1,8 @@
-from .node import NodeConfig
+from .node import Node
 from soffosai.core.services import inspect_arguments, QuestionAndAnswerGenerationService
 
 
-class QuestionAndAnswerGenerationNodeConfig(NodeConfig):
+class QuestionAndAnswerGenerationNode(Node):
     '''
     Question And Answer Generation Service configuration for Pipeline Use
     '''

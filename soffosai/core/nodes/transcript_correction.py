@@ -1,8 +1,8 @@
-from .node import NodeConfig
+from .node import Node
 from soffosai.core.services import inspect_arguments, TranscriptCorrectionService
 
 
-class TranscriptCorrectionNodeConfig(NodeConfig):
+class TranscriptCorrectionNode(Node):
     '''
     Transcript Correction Service configuration for Pipeline Use
     '''

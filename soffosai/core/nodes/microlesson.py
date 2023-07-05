@@ -1,8 +1,8 @@
-from .node import NodeConfig
+from .node import Node
 from soffosai.core.services import MicrolessonService, inspect_arguments
 
 
-class MicrolessonNodeConfig(NodeConfig):
+class MicrolessonNode(Node):
     '''
     Microlesson Service configuration for Pipeline Use
     '''

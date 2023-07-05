@@ -1,10 +1,10 @@
-from .node import NodeConfig
+from .node import Node
 from soffosai.core.services import inspect_arguments, TableGeneratorService
 
 
 TABLE_FORMATS = ['markdonw', 'CSV']
 
-class TableGeneratorNodeConfig(NodeConfig):
+class TableGeneratorNode(Node):
     '''
     Table Generator Service configuration for Pipeline Use
     '''

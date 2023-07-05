@@ -1,8 +1,8 @@
-from .node import NodeConfig
+from .node import Node
 from soffosai.core.services import ContradictionDetectionService, inspect_arguments
 
 
-class ContradictionDetectionNodeConfig(NodeConfig):
+class ContradictionDetectionNode(Node):
     '''
     Answer Scoring service configuration for Pipeline Use
     '''

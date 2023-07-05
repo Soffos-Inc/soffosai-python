@@ -1,8 +1,8 @@
-from .node import NodeConfig
+from .node import Node
 from soffosai.core.services import inspect_arguments, ReviewTaggerService
 
 
-class ReviewTaggerNodeConfig(NodeConfig):
+class ReviewTaggerNode(Node):
     '''
     Review Tagger Service configuration for Pipeline Use
     '''

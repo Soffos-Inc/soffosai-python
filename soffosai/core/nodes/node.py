@@ -10,7 +10,7 @@ from soffosai.core.services import SoffosAIService
 from soffosai.common.constants import ServiceString
 
 
-class NodeConfig:
+class Node:
     '''
     A SoffosAIService wrapper that holds information how the service is to be executed inside a 
     SoffosPipeline
@@ -18,6 +18,7 @@ class NodeConfig:
     _service_io: ServiceIO
 
     def __init__(self, name, service:Union[ServiceString, SoffosAIService], source:dict={}) -> None:
+        
         self._raw_service = service
         self.name = name
         self.source = source
@@ -26,7 +27,7 @@ class NodeConfig:
         elif issubclass(service, SoffosAIService):
             self.service:SoffosAIService = service()
         else:
-            raise ValueError("Upon initialization of the NodeConfig: invalid argument value for <service>.")
+            raise ValueError("Upon initialization of the Node: invalid argument value for <service>.")
         
 
     def validate_node(self):

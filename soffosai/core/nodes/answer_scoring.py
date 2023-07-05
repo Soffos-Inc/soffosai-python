@@ -1,8 +1,8 @@
-from .node import NodeConfig
+from .node import Node
 from soffosai.core.services import AnswerScoringService, inspect_arguments
 
 
-class AnswerScoringNodeConfig(NodeConfig):
+class AnswerScoringNode(Node):
     '''
     Answer Scoring service configuration for Pipeline Use
     '''

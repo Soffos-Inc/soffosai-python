@@ -5,7 +5,7 @@ Purpose: Define the basic pipeline object
 -----------------------------------------------------
 '''
 import soffosai
-from soffosai.core.nodes_configs.node import NodeConfig
+from soffosai.core.nodes.node import Node
 
 
 class Pipeline:
@@ -30,8 +30,8 @@ class Pipeline:
         if not isinstance(stages, list):
             error_messages.append("stages field should be a list of Service Nodes")
         for stage in stages:
-            if not isinstance(stage, NodeConfig):
-                error_messages.append(f"{stage} is not an instance of NodeConfig")
+            if not isinstance(stage, Node):
+                error_messages.append(f"{stage} is not an instance of Node")
 
         if len(error_messages) != 0:
             raise ValueError(error_messages)
@@ -54,15 +54,16 @@ class Pipeline:
 
         for i, stage in enumerate(self._stages):
             stage.service._payload = {}
-            stage: NodeConfig
-            
+            stage: Node
+            stage_with_helper_function = False # Will not validate in service level if there is a helper function
             for key, value in stage.source.items():
                 if isinstance(value, tuple):
                     reference_node_number, required_key = value
                     if isinstance(required_key, tuple):
                         if not callable(required_key[0]):
                             error_messages.append(f"{stage.name} source {key}: The first element of the tuple should be a function.")
-                        continue
+                        stage_with_helper_function = True
+                        required_key = required_key[1]
                         
                     if i == 0:
                         if reference_node_number > 0:
@@ -101,9 +102,10 @@ class Pipeline:
             if 'user' not in stage.service._payload.keys():
                 stage.service._payload['user'] = self._input.get('user')
 
-            node_is_valid, err = stage.service.validate_payload()
-            if not node_is_valid:
-                error_messages.append(err)
+            if not stage_with_helper_function:
+                node_is_valid, err = stage.service.validate_payload()
+                if not node_is_valid:
+                    error_messages.append(err)
 
         if len(error_messages) != 0:
             raise ValueError(error_messages)
@@ -122,7 +124,7 @@ class Pipeline:
         self._infos.append(user_input)
 
         for i, node in enumerate(self._stages):
-            node:NodeConfig
+            node:Node
             print(f"running {node.service._service}")
             temp_src = node.source
             src = {}
@@ -158,7 +160,7 @@ class Pipeline:
         return self._infos
 
 
-    def add_node(self, node:NodeConfig):
+    def add_node(self, node:Node):
         self._stages.append(node)
 
 
@@ -194,7 +196,7 @@ class Pipeline:
                 else:
                     stage_source[key] = (0, key)
 
-            defaulted_stage = NodeConfig(service=stage.service, source=stage_source)
+            defaulted_stage = Node(service=stage.service, source=stage_source)
             defaulted_stages.append(defaulted_stage)
             print(defaulted_stages)
         
@@ -206,13 +208,13 @@ class Pipeline:
         index_map = {}
         # Create an index for the stage
         for i, stage in enumerate(stages):
-            stage: NodeConfig
+            stage: Node
             index_map[stage.name] = i + 1
 
         # replace node name with index
         for stage in stages:
-            stage: NodeConfig
-            new_stage: NodeConfig
+            stage: Node
+            new_stage: Node
             new_source = {}
             for key,value in stage.source.items():
                 if isinstance(value, tuple):
@@ -234,7 +236,7 @@ class Pipeline:
                 else:
                     new_source[key] = value
 
-            new_stage = NodeConfig(stage.name, stage._raw_service, new_source)
+            new_stage = Node(stage.name, stage._raw_service, new_source)
             organized_stages.append(new_stage)
         
         return organized_stages

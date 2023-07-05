@@ -1,10 +1,10 @@
-from .node import NodeConfig
+from .node import Node
 from soffosai.core.services import EmotionDetectionService, inspect_arguments
 
 
 _EMOTION_LIST = ["joy", "trust", "fear", "surprise", "sadness", "disgust", "anger", "anticipation"]
 
-class EmotionDetectionNodeConfig(NodeConfig):
+class EmotionDetectionNode(Node):
     '''
     Emotion Detection configuration for Pipeline Use
     '''

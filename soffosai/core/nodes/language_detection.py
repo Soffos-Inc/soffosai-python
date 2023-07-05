@@ -1,8 +1,8 @@
-from .node import NodeConfig
+from .node import Node
 from soffosai.core.services import LanguageDetectionService, inspect_arguments
 
 
-class LanguageDetectionNodeConfig(NodeConfig):
+class LanguageDetectionNode(Node):
     '''
     Language Detection configuration for Pipeline Use
     '''

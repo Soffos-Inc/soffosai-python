@@ -1,8 +1,8 @@
-from .node import NodeConfig
+from .node import Node
 from soffosai.core.services import inspect_arguments, SummarizationService
 
 
-class SummarizationNodeConfig(NodeConfig):
+class SummarizationNode(Node):
     '''
     Summarization Service configuration for Pipeline Use
     '''

@@ -1,8 +1,8 @@
-from .node import NodeConfig
+from .node import Node
 from soffosai.core.services import inspect_arguments, QuestionAnsweringService
 
 
-class QuestionAnsweringNodeConfig(NodeConfig):
+class QuestionAnsweringNode(Node):
     '''
     Question Answering Service configuration for Pipeline Use
     '''

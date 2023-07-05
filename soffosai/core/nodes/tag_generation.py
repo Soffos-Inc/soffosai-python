@@ -1,8 +1,8 @@
-from .node import NodeConfig
+from .node import Node
 from soffosai.core.services import inspect_arguments, TagGenerationService
 
 
-class TagGenerationNodeConfig(NodeConfig):
+class TagGenerationNode(Node):
     '''
     Tag Generation Service configuration for Pipeline Use
     '''

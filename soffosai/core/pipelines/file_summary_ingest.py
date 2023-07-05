@@ -5,7 +5,7 @@ Purpose: Define the standard Pipeline for converting, summarizing then ingesting
 -----------------------------------------------------
 '''
 from soffosai import ServiceString
-from soffosai.core import NodeConfig, inspect_arguments
+from soffosai.core import Node, inspect_arguments
 from soffosai.core.pipelines import Pipeline
 
 class FileSummaryIngestPipeline(Pipeline):
@@ -15,14 +15,14 @@ class FileSummaryIngestPipeline(Pipeline):
     The output is a list containing the output object of file converter, summarization and document ingest
     '''
     def __init__(self, **kwargs) -> None:
-        file_converter_node = NodeConfig(
+        file_converter_node = Node(
             service=ServiceString.FILE_CONVERTER,
             source = {
                 "file": (0, "file"),
             }
         )
 
-        summarization_node = NodeConfig(
+        summarization_node = Node(
             service=ServiceString.SUMMARIZATION,
             source = {
                 "text": (1, "text"),
@@ -30,7 +30,7 @@ class FileSummaryIngestPipeline(Pipeline):
             }
         )
 
-        document_ingest_node = NodeConfig(
+        document_ingest_node = Node(
             service = ServiceString.DOCUMENTS_INGEST,
             source = {
                 "text": (2, "summary"),

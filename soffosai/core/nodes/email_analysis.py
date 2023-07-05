@@ -1,8 +1,8 @@
-from .node import NodeConfig
+from .node import Node
 from soffosai.core.services import EmailAnalysisService, inspect_arguments
 
 
-class EmailAnalysisNodeConfig(NodeConfig):
+class EmailAnalysisNode(Node):
     '''
     Email analysis configuration for Pipeline Use
     '''

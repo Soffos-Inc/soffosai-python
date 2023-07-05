@@ -1,8 +1,8 @@
-from .node import NodeConfig
+from .node import Node
 from soffosai.core.services import AmbiguityDetectionService, inspect_arguments
 
 
-class AmbiguityDetectionNodeConfig(NodeConfig):
+class AmbiguityDetectionNode(Node):
     '''
     Ambiguity Detection service configuration for Pipeline Use
     '''

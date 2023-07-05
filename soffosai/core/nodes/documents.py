@@ -1,9 +1,9 @@
-from .node import NodeConfig
+from .node import Node
 from soffosai.core.services import DocumentsIngestService, DocumentsSearchService, DocumentsDeleteService
 from soffosai.core.services import inspect_arguments
 
 
-class DocumentsIngestNodeConfig(NodeConfig):
+class DocumentsIngestNode(Node):
     '''
     Ingest a text to Soffos' database, returns document_id that references that document
     '''
@@ -14,7 +14,7 @@ class DocumentsIngestNodeConfig(NodeConfig):
         super().__init__(name, service, source)
 
 
-class DocumentsSearchNodeConfig(NodeConfig):
+class DocumentsSearchNode(Node):
     '''
     Return details about a document that was ingested to Soffos. 
     Takes document_ids, query, or filter.  Returns Passages of the documents and concatenated text.
@@ -27,7 +27,7 @@ class DocumentsSearchNodeConfig(NodeConfig):
         super().__init__(name, service, source)
 
 
-class DocumentsDeleteNodeConfig(NodeConfig):
+class DocumentsDeleteNode(Node):
     '''
     Deletes a document from the Soffos db that is referred to by the given document_ids
     '''

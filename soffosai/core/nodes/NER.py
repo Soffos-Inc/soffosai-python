@@ -1,8 +1,8 @@
-from .node import NodeConfig
+from .node import Node
 from soffosai.core.services import NamedEntityRecognitionService, inspect_arguments
 
 
-class NERNodeConfig(NodeConfig):
+class NERNode(Node):
     '''
     NER Service configuration for Pipeline Use
     '''

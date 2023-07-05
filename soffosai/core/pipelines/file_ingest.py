@@ -5,7 +5,7 @@ Purpose: Define the standard Pipeline for converting then ingesting a file
 -----------------------------------------------------
 '''
 from soffosai import ServiceString
-from soffosai.core import NodeConfig, inspect_arguments
+from soffosai.core import Node, inspect_arguments
 from soffosai.core.pipelines import Pipeline
 
 class FileIngestPipeline(Pipeline):
@@ -14,7 +14,7 @@ class FileIngestPipeline(Pipeline):
     the output is a list containing the output object of file converter and document ingest
     '''
     def __init__(self, **kwargs) -> None:
-        file_converter_node = NodeConfig(
+        file_converter_node = Node(
             service=ServiceString.FILE_CONVERTER,
             source = {
                 "file": (0, "file"),
@@ -22,7 +22,7 @@ class FileIngestPipeline(Pipeline):
             }
         )
 
-        document_ingest_node = NodeConfig(
+        document_ingest_node = Node(
             service = ServiceString.DOCUMENTS_INGEST,
             source = {
                 "text": (1, "text"),

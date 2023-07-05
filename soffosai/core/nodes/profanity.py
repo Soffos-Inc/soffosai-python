@@ -1,8 +1,8 @@
-from .node import NodeConfig
+from .node import Node
 from soffosai.core.services import inspect_arguments, ProfanityService
 
 
-class ProfanityNodeConfig(NodeConfig):
+class ProfanityNode(Node):
     '''
     Profanity Service configuration for Pipeline Use
     '''

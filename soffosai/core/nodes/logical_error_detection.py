@@ -1,8 +1,8 @@
-from .node import NodeConfig
+from .node import Node
 from soffosai.core.services import LogicalErrorDetectionService, inspect_arguments
 
 
-class LogicalErrorDetectionNodeConfig(NodeConfig):
+class LogicalErrorDetectionNode(Node):
     '''
     Lets Discuss Service configuration for Pipeline Use
     '''

@@ -1,8 +1,8 @@
-from .node import NodeConfig
+from .node import Node
 from soffosai.core.services import inspect_arguments, ParaphraseService
 
 
-class ParaphraseNodeConfig(NodeConfig):
+class ParaphraseNode(Node):
     '''
     Paraphrase Service configuration for Pipeline Use
     '''

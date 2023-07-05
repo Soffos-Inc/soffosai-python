@@ -1,8 +1,8 @@
-from .node import NodeConfig
+from .node import Node
 from soffosai.core.services import inspect_arguments, SimplifyService
 
 
-class SimplifyNodeConfig(NodeConfig):
+class SimplifyNode(Node):
     '''
     Simplify Analysis Service configuration for Pipeline Use
     '''

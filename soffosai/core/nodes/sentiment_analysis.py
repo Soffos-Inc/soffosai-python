@@ -1,8 +1,8 @@
-from .node import NodeConfig
+from .node import Node
 from soffosai.core.services import inspect_arguments, SentimentAnalysisService
 
 
-class SentimentAnalysisNodeConfig(NodeConfig):
+class SentimentAnalysisNode(Node):
     '''
     Sentiment Analysis Service configuration for Pipeline Use
     '''

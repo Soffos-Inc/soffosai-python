@@ -1,9 +1,9 @@
-from .node import NodeConfig
+from .node import Node
 from soffosai.core.services import LetsDiscussService, inspect_arguments
 from soffosai.core.services import LetsDiscussCreateService, LetsDiscussRetrieveService, LetsDiscussDeleteService
 
 
-class LetsDiscussNodeConfig(NodeConfig):
+class LetsDiscussNode(Node):
     '''
     Lets Discuss Service configuration for Pipeline Use
     '''
@@ -13,7 +13,7 @@ class LetsDiscussNodeConfig(NodeConfig):
         super().__init__(name, service, source)
 
 
-class LetsDiscussCreateNodeConfig(NodeConfig):
+class LetsDiscussCreateNode(Node):
     '''
     Lets Discuss Create Service configuration for Pipeline Use
     '''
@@ -23,7 +23,7 @@ class LetsDiscussCreateNodeConfig(NodeConfig):
         super().__init__(name, service, source)
 
 
-class LetsDiscussRetrieveNodeConfig(NodeConfig):
+class LetsDiscussRetrieveNode(Node):
     '''
     Lets Discuss Retrieve Sessions Service configuration for Pipeline Use
     '''
@@ -33,7 +33,7 @@ class LetsDiscussRetrieveNodeConfig(NodeConfig):
         super().__init__(name, service, source)
 
 
-class LetsDiscussDeleteNodeConfig(NodeConfig):
+class LetsDiscussDeleteNode(Node):
     '''
     Lets Discuss Delete Sessions Service configuration for Pipeline Use
     '''
