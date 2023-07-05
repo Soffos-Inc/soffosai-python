@@ -1,41 +1,40 @@
 import json
 from soffosai.core.pipelines import Pipeline
-from soffosai.core import NodeConfig
-from soffosai.common.constants import ServiceString
+from soffosai.core.nodes import FileConverterNode, DocumentsIngestNode, QuestionAnsweringNode
 
+# a helper function to get the filename provided the file is in the same directory
+def get_filename(full_file_name:str):
+    return full_file_name.split(".")[0]
+
+
+# a helper function that puts the document_id inside a list. Useful when the source node's output is
+# document_id and the current node needs document_ids
+def put_docid_inside_list(doc_id):
+    return [doc_id]
+
+# initialize the generic Pipeling
+my_pipe = Pipeline(
+    # define your nodes in order of execution
+    nodes = [
+        # This node's name is fileconv for reference of other nodes. It needs the argument file to come from user input 'file'
+        FileConverterNode(name="fileconv", file=("user_input", "file")), 
+        DocumentsIngestNode(
+            name = 'ingest', 
+            document_name=("user_input", (get_filename, "file")), # this argument needs the return value of get_filename(user_input['file'])
+            text=("fileconv", "text") # this node needs its text argument to come from fileconv output field named 'text'
+        ),
+        QuestionAnsweringNode(
+            name="qa",
+            question=("user_input", "question"), 
+            document_ids=("ingest", (put_docid_inside_list, "document_id"))# this argument needs the return value of put_docid_inside_list(<output of ingest node with key 'document_id'>)
+        )
+    ]
+)
 
 src = {
-    "user": "franco", 
+    "user": "client_id", 
     "file": "matrix.pdf",
-    "name": "matrix",
     "question": "who is Neo?"
 }
-
-file_converter_node = NodeConfig(
-    service=ServiceString.FILE_CONVERTER,
-    source={
-        "file": (0, "file")
-    }
-)
-
-document_ingest_node = NodeConfig(
-    service=ServiceString.DOCUMENTS_INGEST,
-    source={
-        "name": (0, "name"),
-        "text": (1, "text")
-    }
-)
-
-question_answering_node = NodeConfig(
-    service=ServiceString.QUESTION_ANSWERING,
-    source={
-        "document_ids": (2, "document_id"),
-        "question": (0, "question")
-    }
-)
-
-
-my_pipe = Pipeline(
-    stages = [file_converter_node, document_ingest_node, question_answering_node]
-)
-print(json.dumps(my_pipe.run(user_input=src), indent=4))
+output = my_pipe.run(user_input=src)
+print(json.dumps(output, indent=4))

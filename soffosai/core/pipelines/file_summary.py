@@ -4,8 +4,8 @@ Created at: 2023-06-30
 Purpose: Define the standard Pipeline for converting and summarizing a file
 -----------------------------------------------------
 '''
-from soffosai import ServiceString
 from soffosai.core import Node, inspect_arguments
+from soffosai.core.nodes import FileConverterNode, SummarizationNode
 from soffosai.core.pipelines import Pipeline
 
 class FileSummaryPipeline(Pipeline):
@@ -14,24 +14,20 @@ class FileSummaryPipeline(Pipeline):
     The output is a list containing the output object of file converter and summarization.
     '''
     def __init__(self, **kwargs) -> None:
-        file_converter_node = Node(
-            service=ServiceString.FILE_CONVERTER,
-            source = {
-                "file": (0, "file"),
-            }
+
+        file_converter_node = FileConverterNode(
+            name = "fileconverter",
+            file = ("user_input", "file")
+        )
+        summarization_node = SummarizationNode(
+            name = "summary",
+            text = ("fileconverter"),
+            sent_length = ("user_input", "sent_length")
         )
 
-        summarization_node = Node(
-            service=ServiceString.SUMMARIZATION,
-            source = {
-                "text": (1, "text"),
-                "sent_length": (0, "sent_length")
-            }
-        )
-
-        stages = [file_converter_node, summarization_node]
+        nodes = [file_converter_node, summarization_node]
         use_defaults = False
-        super().__init__(stages=stages, use_defaults=use_defaults, **kwargs)
+        super().__init__(nodes=nodes, use_defaults=use_defaults, **kwargs)
 
 
     def __call__(self, user, file, sent_length):

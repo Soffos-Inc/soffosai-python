@@ -20,16 +20,16 @@ class Pipeline:
     pipeline's user_input.  Also, the stages will only be supplied with the required fields + default
     of the require_one_of_choice fields.
     '''
-    def __init__(self, stages:list, use_defaults:bool=False, **kwargs) -> None:
+    def __init__(self, nodes:list, use_defaults:bool=False, **kwargs) -> None:
         self._apikey = kwargs['apikey'] if kwargs.get('apikey') else soffosai.api_key
-        self._stages = stages
+        self._stages = nodes
         self._input:dict = {}
         self._infos = []
 
         error_messages = []
-        if not isinstance(stages, list):
+        if not isinstance(nodes, list):
             error_messages.append("stages field should be a list of Service Nodes")
-        for stage in stages:
+        for stage in self._stages:
             if not isinstance(stage, Node):
                 error_messages.append(f"{stage} is not an instance of Node")
 

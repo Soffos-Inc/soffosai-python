@@ -4,8 +4,8 @@ Created at: 2023-06-30
 Purpose: Define the standard Pipeline for converting, summarizing an ingested document
 -----------------------------------------------------
 '''
-from soffosai import ServiceString, DocumentsSearchService
-from soffosai.core import Node, inspect_arguments
+from soffosai.core import inspect_arguments
+from soffosai.core.nodes import DocumentsSearchNode, SummarizationNode
 from soffosai.core.pipelines import Pipeline
 
 class DocumentSummaryPipeline(Pipeline):
@@ -14,24 +14,20 @@ class DocumentSummaryPipeline(Pipeline):
     The output is a list containing the output object of file converter and summarization.
     '''
     def __init__(self, **kwargs) -> None:
-        document_search_node = Node(
-            service=DocumentsSearchService,
-            source = {
-                "document_ids": (0, "document_ids")
-            }
+        document_search_node = DocumentsSearchNode(
+            name = "doc_search",
+            document_ids= ("user_input", "document_ids")
+        )
+        
+        summarization_node = SummarizationNode(
+            name = "summarization",
+            text = ("doc_search", "text"),
+            sent_length = ("user_input", "sent_length")
         )
 
-        summarization_node = Node(
-            service=ServiceString.SUMMARIZATION,
-            source = {
-                "text": (1, "text"),
-                "sent_length": (0, "sent_length")
-            }
-        )
-
-        stages = [document_search_node, summarization_node]
+        nodes = [document_search_node, summarization_node]
         use_defaults = False
-        super().__init__(stages=stages, use_defaults=use_defaults, **kwargs)
+        super().__init__(nodes=nodes, use_defaults=use_defaults, **kwargs)
 
 
     def __call__(self, user, document_ids, sent_length):
