@@ -61,7 +61,5 @@ __all__ = [
     "SummarizationService",
     "TableGeneratorService",
     "TagGenerationService",
-    "TranscriptCorrectionService",
-
-    "ServiceString"
+    "TranscriptCorrectionService"
 ]

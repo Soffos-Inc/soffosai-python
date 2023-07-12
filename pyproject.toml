@@ -6,7 +6,7 @@ requires = [
 
 [project]
 name = "soffosai"
-version = "0.0.2"
+version = "0.0.3"
 authors = [
   { name="Franco Such", email="franco.such@Soffos.ai" },
   { name="Andreas Christofi", email="andreas.christofi@Soffos.ai" }
@@ -19,7 +19,7 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
-dependencies = ["http3", "requests", "aiohttp"]
+dependencies = ["requests", "http3"]
 
 
 [project.urls]

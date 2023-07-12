@@ -46,16 +46,6 @@ class DocumentsSearchService(SoffosAIService):
             text = text + passage
         response['text'] = text
         return response
-    
-
-    def get_response(self, payload=..., **kwargs):
-        response = super().get_response(payload, **kwargs)
-        text = ""
-        if response.get('passages'):
-            for passage in response['passages']:
-                text = text + passage['content']
-            response['text'] = text
-        return response
 
 
 class DocumentsDeleteService(SoffosAIService):

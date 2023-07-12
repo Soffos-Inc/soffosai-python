@@ -12,26 +12,26 @@ class TagGenerationIO(ServiceIO):
         "n": int 
     }
     output_structure = {
-        "one_word": [
-            {
-                "text": str,
-                "score": float
-            },
-            
-        ],
-
-        "two_words": [
-            {
-                "text": str,
-                "score": float
-            },
-
-        ],
-
-        "three_words": [
-            {
-                "text": str,
-                "score": float
-            },
-        ]
+        "tags": {
+            "label1": [
+                {
+                    "tag": str,
+                    "score": float
+                },
+                {
+                    "tag": str,
+                    "score": float
+                }
+            ],
+            "label2": [
+                {
+                    "tag": str,
+                    "score": float
+                },
+                {
+                    "tag": str,
+                    "score": float
+                }
+            ],
+        }
     }

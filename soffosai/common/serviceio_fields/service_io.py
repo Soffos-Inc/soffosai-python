@@ -11,7 +11,7 @@ class ServiceIO:
     Defines the IO of services. The structure is specifically important to determine if
     the input provided by the programmer or other service is acceptable
     '''
-    service = None
+    service:ServiceString = None
     required_input_fields = []
     require_one_of_choice = []
     defaults = []
