@@ -175,12 +175,6 @@ class SoffosAIService:
         
         return True, None
 
-     
-    # def update_payload(self, key, value):
-    #     if key in self._payload_keys:
-    #         print(f"Warning:overwriting payload[{key}]")
-    #     self._payload[key] = value
-
 
     def get_data(self):
         '''
@@ -240,9 +234,15 @@ class SoffosAIService:
         try:
             return response.json()
         except requests.exceptions.JSONDecodeError as err:
-            return response
+            return {
+                "error": str(err),
+                "detail": response
+                }
         except json.decoder.JSONDecodeError as err:
-            return response
+            return {
+                "error": str(err),
+                "detail": response
+                }
         except AttributeError as err:
             raise AttributeError(str(err)) from err
 

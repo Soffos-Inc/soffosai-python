@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: soffosai
-Version: 0.0.2
+Version: 0.0.3
 Summary: Python SDK for Soffos AI
 Author-email: Franco Such <franco.such@Soffos.ai>, Andreas Christofi <andreas.christofi@Soffos.ai>
 Project-URL: Homepage, https://github.com/Soffos-Inc/soffos_ai

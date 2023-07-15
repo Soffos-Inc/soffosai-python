@@ -1,3 +1,2 @@
-http3
 requests
-aiohttp
+http3

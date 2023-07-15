@@ -73,7 +73,7 @@ class LetsDiscussRetrieveService(SoffosAIService):
 
 class LetsDiscussDeleteService(SoffosAIService):
     '''
-    A separate class for LetsDiscuss service to be used for retrieving sessions only.
+    A separate class for LetsDiscuss service to be used for deleting sessions only.
     '''
     def __call__(self, user:str, session_ids:list):
         self._service = ServiceString.LETS_DISCUSS_DELETE

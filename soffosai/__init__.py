@@ -63,3 +63,7 @@ __all__ = [
     "TagGenerationService",
     "TranscriptCorrectionService"
 ]
+
+__title__ = "soffosai"
+__description__ = "Python SDK for Soffos.ai API"
+__version__ = "0.0.3"
