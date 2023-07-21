@@ -8,7 +8,7 @@ from typing import Union
 from .service import SoffosAIService, inspect_arguments
 from soffosai.common.constants import ServiceString
 
-TABLE_FORMATS = ['markdonw', 'CSV']
+TABLE_FORMATS = ['markdown', 'CSV']
 
 class TableGeneratorService(SoffosAIService):
     '''
