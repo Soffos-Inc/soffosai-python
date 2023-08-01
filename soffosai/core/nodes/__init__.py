@@ -10,7 +10,7 @@ from .language_detection import LanguageDetectionNode
 from .lets_discuss import LetsDiscussCreateNode, LetsDiscussNode, LetsDiscussRetrieveNode, LetsDiscussDeleteNode
 from .logical_error_detection import LogicalErrorDetectionNode
 from .microlesson import MicrolessonNode
-from .NER import NERNode
+from .named_entity_recognition import NamedEntityRecognitionNode
 from .paraphrase import ParaphraseNode
 from .qna_generation import QuestionAndAnswerGenerationNode
 from .question_answering import QuestionAnsweringNode

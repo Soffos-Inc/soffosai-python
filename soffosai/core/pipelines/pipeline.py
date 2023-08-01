@@ -116,7 +116,7 @@ class Pipeline:
     def run(self, user_input:dict) -> dict:
         self._input = user_input
         self._stages = self.prepare_nodes(self._stages)
-
+        total_call_cost = 0.00
         if "text" in self._input.keys():
             self._input["document_text"] = self._input["text"]
 
@@ -128,7 +128,8 @@ class Pipeline:
             print(f"running {node.service._service}")
             temp_src = node.source
             src = {}
-            
+            # Check termination Cache
+            # if execution_id in termination_cache, python cache
             for key, value in temp_src.items():
                 if isinstance(value, tuple):
                     if isinstance(value[1], tuple): # if value is a tuple, run the function with the 2nd item as argument
@@ -140,10 +141,6 @@ class Pipeline:
                         set_value = self._infos[value[0]][value[1]]
                 else:
                     set_value = value
-                
-                
-                # if key == "document_ids" and value[1] == "document_id":
-                #     set_value = [set_value]
 
                 src[key] = set_value
             
@@ -155,8 +152,10 @@ class Pipeline:
                 raise ValueError(response)
             print(f"response ready for {node.service._service}")
             # update outputfields values
+            total_call_cost += response['cost']['total_cost']
             self._infos.append(response)
 
+        self._infos.append({'total_call_cost': total_call_cost})
         return self._infos
 
 
@@ -198,7 +197,6 @@ class Pipeline:
 
             defaulted_stage = Node(service=stage.service, source=stage_source)
             defaulted_stages.append(defaulted_stage)
-            print(defaulted_stages)
         
         return defaulted_stages
     
@@ -211,7 +209,7 @@ class Pipeline:
             stage: Node
             index_map[stage.name] = i + 1
 
-        # replace node name with index
+        # replace node name with index and arrange source
         for stage in stages:
             stage: Node
             new_stage: Node
@@ -220,7 +218,7 @@ class Pipeline:
                 if isinstance(value, tuple):
                     source_node_name = value[0]
                     key_of_source_node = value[1]
-                    if isinstance(source_node_name, str):
+                    if isinstance(source_node_name, str): # if pointing to a node name
 
                         if source_node_name == "user_input":
                             new_source[key] = (0, key_of_source_node)

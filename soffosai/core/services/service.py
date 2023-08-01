@@ -7,7 +7,7 @@ Purpose: The base Service class
 import inspect
 import soffosai
 import json
-import abc, http3, requests, os, mimetypes, uuid
+import abc, requests, os, mimetypes, uuid
 from soffosai.common.constants import SOFFOS_SERVICE_URL, FORM_DATA_REQUIRED
 from soffosai.common.service_io_map import SERVICE_IO_MAP
 from soffosai.common.serviceio_fields import ServiceIO
@@ -209,11 +209,11 @@ class SoffosAIService:
 
         if self._service not in FORM_DATA_REQUIRED:
             self.headers["content-type"] = "application/json"
-            response = http3.post(
+            response = requests.post(
                 url = SOFFOS_SERVICE_URL + self._service + "/",
                 headers = self.headers,
                 json = data,
-                timeout = 60
+                timeout = 120
             )
             
         else:
@@ -229,7 +229,8 @@ class SoffosAIService:
                     url = SOFFOS_SERVICE_URL + self._service + "/",
                     headers = self.headers,
                     data = data,
-                    files = files,
+                    files = files, 
+                    timeout=120
                 )
         try:
             return response.json()
