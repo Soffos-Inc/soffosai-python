@@ -6,6 +6,7 @@ Purpose: Define the basic pipeline object
 '''
 import soffosai
 from soffosai.core.nodes.node import Node
+from soffosai.core.services.service import SoffosAIService
 
 
 def is_node_input(value):
@@ -82,7 +83,15 @@ class Pipeline:
 
         # Execute per stage
         for stage in stages:
-            stage: Node
+            if isinstance(stage, Node):
+                stage: Node
+                service_name = stage.service._service
+                mode = "node"
+            elif isinstance(stage, SoffosAIService):
+                stage: SoffosAIService
+                service_name = stage._service
+                mode = "service"
+
             # premature termination
             if execution_code in self._termination_codes:
                 self._termination_codes.remove(execution_code)
@@ -92,7 +101,7 @@ class Pipeline:
                 return infos
             
             # execute
-            print(f"running {stage.service._service}.")
+            print(f"running {service_name}.")
             tmp_source: dict = stage.source
             payload = {}
             for key, notation in tmp_source.items():
@@ -115,7 +124,11 @@ class Pipeline:
             
             payload['apikey'] = self._apikey
 
-            response = stage.service.get_response(payload)
+            if mode == "node":
+                response = stage.service.get_response(payload)
+            else:
+                response = stage.get_response(payload)
+                
             if "error" in response:
                 raise ValueError(response)
             
@@ -141,8 +154,14 @@ class Pipeline:
         self._outputfields.insert(0, user_input.keys())
 
         for stage in stages:
-            stage: Node
-            serviceio = stage.service._serviceio
+            if isinstance(stage, Node):
+                stage: Node
+                serviceio = stage.service._serviceio
+                input_structure = stage.service.input_structure
+            elif isinstance(stage, SoffosAIService):
+                stage: SoffosAIService
+                serviceio = stage._serviceio
+                input_structure = stage.input_structure
             # checking required_input_fields is already handled in the Node's constructor
 
             # check if require_one_of_choices is present and not more than one
@@ -160,7 +179,7 @@ class Pipeline:
             
             # check if datatypes are correct:
             for key, notation in stage.source.items():
-                required_datatype = self.get_serviceio_datatype(stage.service._serviceio.input_structure[key])
+                required_datatype = self.get_serviceio_datatype(input_structure[key])
                 if is_node_input(notation):
                     if "pre_process" in notation:
                         continue # will not check for type if there is a helper function
@@ -171,9 +190,15 @@ class Pipeline:
                             error_messages.append(f"{stage.name}: {required_datatype} required on user_input '{key}' field but {user_input_type} is provided.")
                     else:
                         for subnode in stages:
-                            subnode: Node
+                            if isinstance(subnode, Node):
+                                subnode: Node
+                                output_structure = subnode.service.output_structure
+                            elif isinstance(subnode, SoffosAIService):
+                                subnode: SoffosAIService
+                                output_structure = subnode.output_structure
+
                             if notation['source'] == subnode.name:
-                                output_datatype = self.get_serviceio_datatype(subnode.service._serviceio.output_structure[notation['field']])
+                                output_datatype = self.get_serviceio_datatype(output_structure[notation['field']])
                                 if output_datatype != required_datatype:
                                     error_messages.append(f"On {stage.name} node: The input datatype required for field ${key} is {required_datatype}. This does not match the datatype to be given by node ${subnode.name}'s ${notation['field']} field which is ${output_datatype}.")
                             break
@@ -189,19 +214,25 @@ class Pipeline:
 
 
     def add_node(self, node):
-        if isinstance(node, Node):
+        if isinstance(node, Node) or isinstance(node, SoffosAIService):
             self._stages.append(node)
         else:
-            raise ValueError(f"{node} is not a Node instance")
+            raise ValueError(f"{node} is not a Node nor a SoffosAIService instance")
 
     
     def set_defaults(self, stages, user_input):
         defaulted_stages = []
         for i, stage in enumerate(stages):
-            stage: Node
+            if isinstance(stage, Node):
+                stage: Node
+                required_keys = stage.service._serviceio.required_input_fields
+                require_one_choices = stage.service._serviceio.require_one_of_choice
+            elif isinstance(stage, SoffosAIService):
+                stage: SoffosAIService
+                required_keys = stage._serviceio.required_input_fields
+                require_one_choices = stage._serviceio.require_one_of_choice
+
             stage_source = {}
-            required_keys = stage.service._serviceio.required_input_fields
-            require_one_choices = stage.service._serviceio.require_one_of_choice
             if len(require_one_choices) > 0:
                 for choices in require_one_choices:
                     required_keys.append(choices[0]) # the default argument is the first one
@@ -214,8 +245,14 @@ class Pipeline:
 
                 found_input = False
                 for j in range(i-1, -1, -1):
-                    stage_for_output:Node = stages[j]
-                    stage_for_output_output_fields = stage_for_output.service._serviceio.output_structure
+                    if isinstance(stages[j], Node):
+                        stage_for_output:Node = stages[j]
+                        stage_for_output_output_fields = stage_for_output.service.output_structure
+
+                    elif isinstance(stage[j], SoffosAIService):
+                        stage_for_output: SoffosAIService = stages[j]
+                        stage_for_output_output_fields = stage_for_output.output_structure
+
                     if required_key in stage_for_output_output_fields:
                         stage_source[required_key] = {
                             "source": stage_for_output.name,
@@ -239,16 +276,16 @@ class Pipeline:
                         found_input = True
                     
                 if not found_input:
-                    if required_key in user_input:
-                        stage_source[required_key] = user_input[required_key]
-                        stage_source[required_key] = {
-                            "source": "user_input",
-                            "field": required_key
-                        }
-                    else:
-                        raise ReferenceError(f"Please add {required_key} to user input. The previous Nodes' outputs do not provide this data.")
+                    stage_source[required_key] = {
+                        "source": "user_input",
+                        "field": required_key
+                    }
 
-            defaulted_stage = Node(stage.name, stage.service, stage_source)
+            if isinstance(stage, Node):
+                defaulted_stage = Node(stage.name, stage.service, stage_source)
+            elif isinstance(stage, SoffosAIService):
+                defaulted_stage = SoffosAIService(service=stage._service, name=stage.name, source=stage_source)
+
             defaulted_stages.append(defaulted_stage)
         
         return defaulted_stages

@@ -4,6 +4,7 @@ Created at: 2023-06-23
 Purpose: Easily use Ambiguity Detection Service
 -----------------------------------------------------
 '''
+from typing import Union, Dict
 from .service import SoffosAIService, inspect_arguments
 from soffosai.common.constants import ServiceString
 
@@ -29,3 +30,8 @@ class AmbiguityDetectionService(SoffosAIService):
         '''
         self._args_dict = inspect_arguments(self.__call__, user, text, sentence_split, sentence_overlap)
         return super().__call__()
+
+
+    def set_pipeline_input(self, name: str, user:str, text:Union[str, Dict], sentence_split:Union[int, Dict]=4, sentence_overlap:Union[bool, Dict]=False) -> None:
+        self.source_config = inspect_arguments(self.__call__, name, user, text, sentence_split, sentence_overlap)
+        return super().set_pipeline_input()
