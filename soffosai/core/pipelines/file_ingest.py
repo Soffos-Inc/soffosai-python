@@ -18,12 +18,12 @@ class FileIngestPipeline(Pipeline):
 
         file_converter_node = FileConverterNode(
             name = "fileconverter",
-            file = ("user_input", "file")
+            file = {"source": "user_input", "field": "file"}
         )
         document_ingest_node = DocumentsIngestNode(
             name = "ingest",
-            document_name = ("user_input", "file"),
-            text = ("fileconverter", "text")
+            document_name = {"source": "user_input", "field": "file"},
+            text = {"source": "fileconverter", "field": "text"}
         )
 
         nodes = [file_converter_node, document_ingest_node]

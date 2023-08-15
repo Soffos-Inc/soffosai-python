@@ -16,13 +16,13 @@ class DocumentSummaryPipeline(Pipeline):
     def __init__(self, **kwargs) -> None:
         document_search_node = DocumentsSearchNode(
             name = "doc_search",
-            document_ids= ("user_input", "document_ids")
+            document_ids= {"source": "user_input", "field": "document_ids"}
         )
         
         summarization_node = SummarizationNode(
             name = "summarization",
-            text = ("doc_search", "text"),
-            sent_length = ("user_input", "sent_length")
+            text = {"source": "doc_search", "field": "text"},
+            sent_length = {"source": "user_input", "field": "sent_length"}
         )
 
         nodes = [document_search_node, summarization_node]

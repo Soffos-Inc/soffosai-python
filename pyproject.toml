@@ -8,7 +8,9 @@ requires = [
 name = "soffosai"
 version = "0.0.4"
 authors = [
-  { name="Franco Such, Andreas Christofi", email="franco.such@Soffos.ai,andreas.christofi@Soffos.ai" },
+  { name="Franco Such, Andreas Christofi", email="franco.such@Soffos.ai" },
+  { name="Andreas Christofi", email="andreas.christofi@Soffos.ai" }
+
 ]
 description = "Python SDK for Soffos AI"
 readme = "README.md"

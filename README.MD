@@ -92,7 +92,7 @@ from soffosai.core.nodes import FileConverterNode
 
 file_converter_node = FileConverterNode( # this node uses the FileConverterService
     name = "fileconverter", # for reference of the entire pipeline, this node is named "fileconverter"
-    file = ("user_input", "file") # this node will take from the user_input, the value of the element "file"
+    file = file = {"source":"user_input", "field": "file"} # this node will take from the user_input, the value of the element "file"
 )
 ```
 
@@ -118,16 +118,17 @@ my_pipe = Pipeline(
     nodes = [
         FileConverterNode(
             name="fileconv", # This node will be referenced by other nodes as "fileconv"
-            file=("user_input", "file")), #  It needs the argument file to come from user_input 'file'
+            file = {"source":"user_input", "field": "file"} #  It needs the argument file to come from user_input 'file'
+        ), 
         DocumentsIngestNode(
             name = 'ingest', 
-            document_name=("user_input", (get_filename, "file")), # this argument needs the return value of get_filename(user_input['file'])
-            text=("fileconv", "text") # this node needs its text argument to come from fileconv output field named 'text'
+            document_name={"source": "user_input", "pre_process": get_filename, "field": "file"}, # this argument needs the return value of get_filename(user_input['file'])
+            text={"source": "fileconv", "field": "text"} # this node needs its text argument to come from fileconv output field named 'text'
         ),
         QuestionAnsweringNode(
             name="qa",
-            question=("user_input", "question"), 
-            document_ids=("ingest", (put_docid_inside_list, "document_id"))# this argument needs the return value of put_docid_inside_list(<output of ingest node with key 'document_id'>)
+            question={"source": "user_input", "field": "question"}, 
+            document_ids={"source": "ingest", "pre_process": put_docid_inside_list, "field": "document_id"}# this argument needs the return value of put_docid_inside_list(<output of ingest node with key 'document_id'>)
         )
     ]
 )
@@ -168,17 +169,17 @@ class FileSummaryIngestPipeline(Pipeline):
         # define your nodes
         file_converter_node = FileConverterNode(
             name = "fileconverter",
-            file = ("user_input", "file")
+            file = {"source":"user_input", "field": "file"}
         )
         summarization_node = SummarizationNode(
             name = "summary",
-            text = ("fileconverter", "text"),
-            sent_length = ("user_input", "sent_length")
+            text = {"source":"fileconverter", "field": "text"},
+            sent_length = {"source":"user_input", "field": "sent_length"}
         )
         document_ingest_node = DocumentsIngestNode(
             name = "ingest",
-            text = ("summary", "summary"),
-            document_name = ("user_input", "file")
+            text = {"source": "summary", "field": "summary"},
+            document_name = {"source": "user_input", "field": "file"}
         )
 
         # define the list of nodes in order of execution
@@ -218,8 +219,8 @@ def put_docid_inside_list(doc_id):
 
 QuestionAnsweringNode(
     name="qa",
-    question=("user_input", "question"), 
-    document_ids=("ingest", (put_docid_inside_list, "document_id"))# this argument needs the return value of put_docid_inside_list(<output of ingest node with key 'document_id'>)
+    question={"source": "user_input", "field": "question"}, 
+    document_ids={"source": "ingest", "pre_process": put_docid_inside_list, "field": "document_id"}# this argument needs the return value of put_docid_inside_list(<output of ingest node with key 'document_id'>)
 )
 ```
 When you use a helper function, the field will not be checked for datatype.  The keys will still be checked if

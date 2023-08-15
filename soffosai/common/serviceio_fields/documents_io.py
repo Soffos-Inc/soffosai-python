@@ -4,12 +4,12 @@ from ..constants import ServiceString
 
 class DocumentsIngestIO(ServiceIO):
     service = ServiceString.DOCUMENTS_INGEST
-    required_input_fields = ["name", ]
+    required_input_fields = ["document_name", ]
     require_one_of_choice = [["text", "tagged_elements"]]
     defaults = ["text"]
     optional_input_fields = ["meta"]
     input_structure = {
-        "name": str,
+        "document_name": str,
         "meta": dict,
         "text": str
     }

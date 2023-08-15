@@ -6,7 +6,7 @@ Purpose: The base Service class
 '''
 import inspect
 import soffosai
-import json
+import json, io
 import abc, requests, os, mimetypes, uuid
 from soffosai.common.constants import SOFFOS_SERVICE_URL, FORM_DATA_REQUIRED
 from soffosai.common.service_io_map import SERVICE_IO_MAP
@@ -189,6 +189,15 @@ class SoffosAIService:
         return request_data
 
 
+    def handle_file(self, file_stream, filename, mime_type):
+        # Using read(), seek() and other file like object operations on file_stream 
+        buffer = file_stream.read()
+        file_stream.seek(0)  # it's a good practice to reset the file pointer
+        stream = io.BytesIO(buffer)
+        file_tuple = (filename, stream, mime_type)
+        return file_tuple
+
+
     def get_response(self, payload={}, **kwargs) -> dict:
         '''
         Based on the knowledge/context, Soffos AI will now give you the data you need
@@ -209,43 +218,74 @@ class SoffosAIService:
 
         if self._service not in FORM_DATA_REQUIRED:
             self.headers["content-type"] = "application/json"
-            response = requests.post(
-                url = SOFFOS_SERVICE_URL + self._service + "/",
-                headers = self.headers,
-                json = data,
-                timeout = 120
-            )
-            
-        else:
-            file_path = self._payload.get('file')
-            filename = str(os.path.basename(file_path))
-            mime_type, _ = mimetypes.guess_type(file_path)
-            with open(file_path, 'rb') as file:
-                files = {
-                    "file": (filename, file, mime_type)
-                }
-
+            try:
                 response = requests.post(
                     url = SOFFOS_SERVICE_URL + self._service + "/",
                     headers = self.headers,
-                    data = data,
-                    files = files, 
-                    timeout=120
+                    json = data,
+                    timeout = 120
                 )
-        try:
+                response.raise_for_status()
+            except (requests.exceptions.HTTPError, requests.exceptions.ConnectionError, 
+                    requests.exceptions.Timeout, requests.exceptions.RequestException) as err:
+                return {
+                    "status": 'Error',
+                    "error": str(err)
+                }
+            
+        else:
+            file_obj = self._payload.get('file')
+            if isinstance(file_obj, str):
+                filename = str(os.path.basename(file_obj))
+                mime_type, _ = mimetypes.guess_type(file_obj)
+                with open(file_obj, 'rb') as file:
+                    files = {
+                        "file": (filename, file, mime_type)
+                    }
+                    try:
+                        response = requests.post(
+                            url = SOFFOS_SERVICE_URL + self._service + "/",
+                            headers = self.headers,
+                            data = data,
+                            files = files,
+                            timeout=120
+                        )
+                        response.raise_for_status()
+                    except (requests.exceptions.HTTPError, requests.exceptions.ConnectionError, 
+                            requests.exceptions.Timeout, requests.exceptions.RequestException) as err:
+                        return {
+                            "status": 'Error',
+                            "error": str(err)
+                        }
+
+            else:
+                filename = file_obj.name
+                mime_type, _ = mimetypes.guess_type(filename)
+                files = self.handle_file(file_obj, filename, mime_type)
+
+                try:
+                    response = requests.post(
+                        url = SOFFOS_SERVICE_URL + self._service + "/",
+                        headers = self.headers,
+                        data = data,
+                        files = files,
+                        timeout=120
+                    )
+                    response.raise_for_status()
+                except (requests.exceptions.HTTPError, requests.exceptions.ConnectionError, 
+                        requests.exceptions.Timeout, requests.exceptions.RequestException) as err:
+                    return {
+                        "status": 'Error',
+                        "error": str(err)
+                    }
+        
+        if response.ok:
             return response.json()
-        except requests.exceptions.JSONDecodeError as err:
+        else:
             return {
-                "error": str(err),
-                "detail": response
-                }
-        except json.decoder.JSONDecodeError as err:
-            return {
-                "error": str(err),
-                "detail": response
-                }
-        except AttributeError as err:
-            raise AttributeError(str(err)) from err
+                "status": response.status_code,
+                "error": response.text
+            }
 
 
     def __call__(self, **kwargs)->dict:

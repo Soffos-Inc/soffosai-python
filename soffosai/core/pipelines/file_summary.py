@@ -17,12 +17,12 @@ class FileSummaryPipeline(Pipeline):
 
         file_converter_node = FileConverterNode(
             name = "fileconverter",
-            file = ("user_input", "file")
+            file = {"source":"user_input", "field": "file"}
         )
         summarization_node = SummarizationNode(
             name = "summary",
-            text = ("fileconverter"),
-            sent_length = ("user_input", "sent_length")
+            text = {"source":"fileconverter", "field": "text"},
+            sent_length = {"source":"user_input", "field": "sent_length"}
         )
 
         nodes = [file_converter_node, summarization_node]
