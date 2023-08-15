@@ -19,5 +19,13 @@ class AmbiguityDetectionService(SoffosAIService):
         super().__init__(service, **kwargs)
     
     def __call__(self, user:str, text:str, sentence_split:int=4, sentence_overlap:bool=False) -> dict:
+        '''
+        :param user: The identify of the user sending this request. The user of the app.
+        :param text: Text to be analyzed for ambiguitites.
+        :param sentence_split: The number of sentences of each chunk when splitting the input text.
+        :param sentence_overlap: Whether to overlap adjacent chunks by 1 sentence. 
+                                For example, with sentence_split 3 and sentence_overlap=true :
+                                [[s1, s2, s3], [s3, s4, s5], [s5, s6, s7]]
+        '''
         self._args_dict = inspect_arguments(self.__call__, user, text, sentence_split, sentence_overlap)
         return super().__call__()

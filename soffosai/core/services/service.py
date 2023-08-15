@@ -94,6 +94,7 @@ class SoffosAIService:
         self._payload = {}
         self._payload_keys = self._payload.keys()
         self._args_dict = {}
+        self.source_config = {}
 
 
     @property
@@ -286,6 +287,14 @@ class SoffosAIService:
                 "status": response.status_code,
                 "error": response.text
             }
+
+    
+    @abc.abstractmethod
+    def set_pipeline_input(self):
+        '''
+        When using a service in a pipeline, its input might be based on another service's output or on the user input.
+        This configuration of where to find the input is set in this method.
+        '''
 
 
     def __call__(self, **kwargs)->dict:
