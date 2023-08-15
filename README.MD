@@ -73,7 +73,7 @@ print(json.dumps(output, indent=4))
 ```
 
 ### Samples
-Sample code for each service can be found on [tests/services](https://github.com/Soffos-Inc/soffos_ai/tree/master/tests/services)
+Sample code for each service can be found on [tests/services](https://github.com/Soffos-Inc/soffosai-python/tree/master/tests/services)
 
 ### Where to get the required fields for Services
 To know the required fields of each SoffosAIService, they are defined in:
@@ -263,6 +263,6 @@ class FileIngestPipeline(Pipeline):
         return super().__call__(user_input)
 ```
 ### Pipelines Examples
-You can check how the Pipelines are created at [tests/pipelines](https://github.com/Soffos-Inc/soffos_ai/tree/master/tests/pipelines) and in [pipelines](https://github.com/Soffos-Inc/soffos_ai/tree/master/soffosai/core/pipelines)
+You can check how the Pipelines are created at [tests/pipelines](https://github.com/Soffos-Inc/soffosai-python/tree/master/tests/pipelines) and in [pipelines](https://github.com/Soffos-Inc/soffosai-python/tree/master/soffosai/core/pipelines)
 
 Copyright (c)2023 - Soffos.ai - All rights reserved
