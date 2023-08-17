@@ -41,13 +41,16 @@ class Pipeline:
             error_messages.append('stages field should be a list of Service Nodes')
 
         for node in nodes:
-            if not isinstance(node, Node):
-                error_messages.append(f'{node} is not an instance of Node.')
+            if not isinstance(node, Node) and not isinstance(node, SoffosAIService):
+                error_messages.append(f'{node.name} is not an instance of Node or of SoffosAIService.')
 
         if len(error_messages) > 0:
             raise ValueError("\\n".join(error_messages))
-
-        self._outputfields = [list(stage.service._serviceio.output_structure.keys()) for stage in self._stages]
+        
+        if isinstance(nodes[0], Node):
+            self._outputfields = [list(stage.service.output_structure.keys()) for stage in self._stages]
+        else:
+            self._outputfields = [list(stage.output_structure.keys()) for stage in self._stages]
 
     
     def run(self, user_input):
@@ -102,7 +105,7 @@ class Pipeline:
             
             # execute
             print(f"running {service_name}.")
-            tmp_source: dict = stage.source
+            tmp_source: dict = stage.source_config
             payload = {}
             for key, notation in tmp_source.items():
                 # prepare payload
@@ -125,9 +128,10 @@ class Pipeline:
             payload['apikey'] = self._apikey
 
             if mode == "node":
-                response = stage.service.get_response(payload)
+                response = stage.service.__call__(**payload)
             else:
-                response = stage.get_response(payload)
+                payload.pop('apikey')
+                response = stage.__call__(**payload)
                 
             if "error" in response:
                 raise ValueError(response)
@@ -168,7 +172,7 @@ class Pipeline:
             if len(serviceio.require_one_of_choice) > 0:
                 group_errors = []
                 for group in serviceio.require_one_of_choice:
-                    found_choices = [choice for choice in group if choice in stage.source]
+                    found_choices = [choice for choice in group if choice in stage.source_config]
                     if not found_choices:
                         group_errors.append(f"{stage.name}: Please provide one of these values on your payload: {group}.")
                     elif len(found_choices) > 1:
@@ -178,16 +182,22 @@ class Pipeline:
                     error_messages.append(". ".join(group_errors))
             
             # check if datatypes are correct:
-            for key, notation in stage.source.items():
-                required_datatype = self.get_serviceio_datatype(input_structure[key])
+            for key, notation in stage.source_config.items():
+                if key in input_structure.keys():
+                    required_datatype = self.get_serviceio_datatype(input_structure[key])
+                else:
+                    continue
                 if is_node_input(notation):
                     if "pre_process" in notation:
                         continue # will not check for type if there is a helper function
                     
                     if notation['source'] == "user_input":
-                        user_input_type = type(user_input[notation['field']])
-                        if user_input_type != required_datatype:
-                            error_messages.append(f"{stage.name}: {required_datatype} required on user_input '{key}' field but {user_input_type} is provided.")
+                        if notation['field'] not in user_input:
+                            error_messages.append(f"Cannot find '{notation['field']}' in user_input")
+                        else:
+                            user_input_type = type(user_input[notation['field']])
+                            if user_input_type != required_datatype:
+                                error_messages.append(f"{stage.name}: {required_datatype} required on user_input '{key}' field but {user_input_type} is provided.")
                     else:
                         for subnode in stages:
                             if isinstance(subnode, Node):
@@ -238,7 +248,7 @@ class Pipeline:
                     required_keys.append(choices[0]) # the default argument is the first one
             
             for required_key in required_keys:
-                check_key = stage.source.get(required_key)
+                check_key = stage.source_config.get(required_key)
                 if check_key and check_key != "default":
                     stage_source[required_key] = check_key
                     continue

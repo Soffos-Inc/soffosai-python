@@ -21,7 +21,7 @@ class Node:
         
         self._raw_service = service
         self.name = name
-        self.source = source
+        self.source_config = source
         if isinstance(service, str):
             self.service:SoffosAIService = SoffosAIService(service=service)
         elif issubclass(service, SoffosAIService):
@@ -36,7 +36,7 @@ class Node:
         source for the SoffosAIService
         '''
         validated_data = {}
-        for key,value in self.source.items():
+        for key,value in self.source_config.items():
             if not isinstance(value, tuple):
                 validated_data[key] = value
             else:
@@ -47,7 +47,7 @@ class Node:
 
     def run(self, payload=None):
         if payload is not None:
-            self.source = payload
+            self.source_config = payload
             
         args = self.validate_node()
 

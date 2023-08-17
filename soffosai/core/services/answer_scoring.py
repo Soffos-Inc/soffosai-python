@@ -4,6 +4,7 @@ Created at: 2023-06-26
 Purpose: Easily use Answer Scoring Service
 -----------------------------------------------------
 '''
+from typing import Union, Dict
 from .service import SoffosAIService, inspect_arguments
 from soffosai.common.constants import ServiceString
 
@@ -21,3 +22,7 @@ class AnswerScoringService(SoffosAIService):
     def __call__(self, user:str, context:str, question:str, user_answer:str, answer:str=None)->dict:
         self._args_dict = inspect_arguments(self.__call__, user, context, question, user_answer, answer)
         return super().__call__()
+
+    def set_pipeline_input(self, ref_name, context:Union[str,Dict], question:Union[str,Dict], user_answer:Union[str,Dict], answer:Union[str,Dict]=None)->None:
+        self.source_config = inspect_arguments(self.set_pipeline_input, ref_name, context, question, user_answer, answer)
+        return super().set_pipeline_input()

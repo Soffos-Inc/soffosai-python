@@ -5,6 +5,7 @@ Purpose: Define the standard Pipeline for converting, summarizing an ingested do
 -----------------------------------------------------
 '''
 from soffosai.core import inspect_arguments
+from soffosai.core.services import DocumentsSearchService, SummarizationService
 from soffosai.core.nodes import DocumentsSearchNode, SummarizationNode
 from soffosai.core.pipelines import Pipeline
 
@@ -26,6 +27,35 @@ class DocumentSummaryPipeline(Pipeline):
         )
 
         nodes = [document_search_node, summarization_node]
+        use_defaults = False
+        super().__init__(nodes=nodes, use_defaults=use_defaults, **kwargs)
+
+
+    def __call__(self, user, document_ids, sent_length):
+        user_input = inspect_arguments(self.__call__, user, document_ids, sent_length)
+        return super().__call__(user_input)
+
+
+class DocumentSummaryPipeline2(Pipeline):
+    '''
+    A Soffos Pipeline that takes document_ids, then summarizes the content.
+    The output is a list containing the output object of file converter and summarization.
+    '''
+    def __init__(self, **kwargs) -> None:
+        document_search_service = DocumentsSearchService()
+        document_search_service.set_pipeline_input(
+            ref_name = "doc_search",
+            document_ids= {"source": "user_input", "field": "document_ids"}
+        )
+
+        summarization_service = SummarizationService()
+        summarization_service.set_pipeline_input(
+            ref_name = "summarization",
+            text = {"source": "doc_search", "field": "text"},
+            sent_length = {"source": "user_input", "field": "sent_length"}
+        )
+
+        nodes = [document_search_service, summarization_service]
         use_defaults = False
         super().__init__(nodes=nodes, use_defaults=use_defaults, **kwargs)
 

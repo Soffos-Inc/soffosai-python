@@ -4,6 +4,7 @@ Created at: 2023-06-27
 Purpose: Easily use Table Generator Service
 -----------------------------------------------------
 '''
+from typing import Union, Dict
 from typing import Union
 from .service import SoffosAIService, inspect_arguments
 from soffosai.common.constants import ServiceString
@@ -27,3 +28,8 @@ class TableGeneratorService(SoffosAIService):
             raise ValueError(f"The argument table_format accepted values are: {TABLE_FORMATS}")
         self._args_dict = inspect_arguments(self.__call__, user, text, table_format)
         return super().__call__()
+
+
+    def set_pipeline_input(self, ref_name:str, text:Union[str, Dict], table_format:Union[str, Dict]='markdown') -> None:
+        self.source_config = inspect_arguments(self.set_pipeline_input, ref_name, text, table_format)
+        return super().set_pipeline_input()

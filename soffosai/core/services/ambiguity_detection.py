@@ -32,6 +32,7 @@ class AmbiguityDetectionService(SoffosAIService):
         return super().__call__()
 
 
-    def set_pipeline_input(self, name: str, user:str, text:Union[str, Dict], sentence_split:Union[int, Dict]=4, sentence_overlap:Union[bool, Dict]=False) -> None:
-        self.source_config = inspect_arguments(self.__call__, name, user, text, sentence_split, sentence_overlap)
+    def set_pipeline_input(self, ref_name:str, text:Union[str, Dict], sentence_split:Union[int, Dict]=4, sentence_overlap:Union[bool, Dict]=False) -> None:
+        self.source_config = inspect_arguments(self.set_pipeline_input, ref_name, text, sentence_split, sentence_overlap)
         return super().set_pipeline_input()
+

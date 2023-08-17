@@ -4,6 +4,7 @@ Created at: 2023-06-27
 Purpose: Easily use Question Answering Service
 -----------------------------------------------------
 '''
+from typing import Union, Dict
 from .service import SoffosAIService, inspect_arguments
 from soffosai.common.constants import ServiceString
 
@@ -28,3 +29,8 @@ class QuestionAnsweringService(SoffosAIService):
         self._args_dict['message'] = question
         return super().__call__()
 
+
+
+    def set_pipeline_input(self, ref_name:str, question:Union[str, Dict], document_text:Union[str, Dict]=None, document_ids:Union[list, Dict]=None, check_ambiguity:Union[bool, Dict]=True, check_query_type:Union[bool, Dict]=True, generic_response:Union[bool, Dict]=False, meta:Union[dict, Dict]=None) -> None:
+        self.source_config = inspect_arguments(self.set_pipeline_input, ref_name, question, document_text, document_ids, check_ambiguity, check_query_type, generic_response, meta)
+        return super().set_pipeline_input()

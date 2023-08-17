@@ -4,6 +4,7 @@ Created at: 2023-06-26
 Purpose: Easily use Documents Ingest, Search, and Delete Service
 -----------------------------------------------------
 '''
+from typing import Union, Dict
 from .service import SoffosAIService, inspect_arguments
 from soffosai.common.constants import ServiceString
 from soffosai.common.service_io_map import SERVICE_IO_MAP
@@ -22,8 +23,12 @@ class DocumentsIngestService(SoffosAIService):
     def __call__(self, user:str, document_name:str, text:str=None, tagged_elements:list=None, meta:dict=None):
         self._args_dict = inspect_arguments(self.__call__, user, document_name, text, tagged_elements, meta)
         self._args_dict['name'] = document_name
-        self._args_dict.pop('document_name')
         return super().__call__()
+    
+
+    def set_pipeline_input(self, ref_name:str, document_name:Union[str, Dict], text:Union[str, Dict]=None, tagged_elements:Union[list, Dict]=None, meta:Union[dict, Dict]=None) -> None:
+        self.source_config = inspect_arguments(self.set_pipeline_input, ref_name, document_name, text, tagged_elements, meta)
+        return super().set_pipeline_input()
 
 
 class DocumentsSearchService(SoffosAIService):
@@ -43,9 +48,14 @@ class DocumentsSearchService(SoffosAIService):
         response:dict = super().__call__()
         text = ""
         for passage in response.get('passages'):
-            text = text + passage
+            text = text + passage.get('content')
         response['text'] = text
         return response
+
+
+    def set_pipeline_input(self, ref_name:str, query:Union[str, Dict]=None, filters:dict=None, document_ids:Union[list, Dict]=None, top_n_keywords:Union[int, Dict]=None, top_n_natural_language:Union[int, Dict]=5, date_from:Union[str, Dict]=None, date_until:Union[str, Dict]=None) -> None:
+        self.source_config = inspect_arguments(self.set_pipeline_input, ref_name, query, filters, document_ids, top_n_keywords, top_n_natural_language, date_from, date_until)
+        return super().set_pipeline_input()
 
 
 class DocumentsDeleteService(SoffosAIService):
@@ -57,9 +67,15 @@ class DocumentsDeleteService(SoffosAIService):
         service = ServiceString.DOCUMENTS_DELETE
         super().__init__(service, **kwargs)
     
+
     def __call__(self, user:str, document_ids:list):
         self._args_dict = inspect_arguments(self.__call__, user, document_ids)
         return super().__call__()
+    
+
+    def set_pipeline_input(self, ref_name:str, document_ids:Union[list, Dict]) -> None:
+        self.source_config = inspect_arguments(self.set_pipeline_input, ref_name, document_ids)
+        return super().set_pipeline_input()
 
 
 class DocumentsService(SoffosAIService):
@@ -93,7 +109,6 @@ class DocumentsService(SoffosAIService):
         self._serviceio:ServiceIO = SERVICE_IO_MAP.get(self._service)
         self._args_dict = inspect_arguments(self.ingest, user, document_name, text, tagged_elements, meta)
         self._args_dict['name'] = document_name
-        self._args_dict.pop('document_name')
         return self.get_response(payload=self._args_dict)
 
     
@@ -108,7 +123,7 @@ class DocumentsService(SoffosAIService):
         response = super().get_response(payload, **kwargs)
         text = ""
         if response.get('passages'):
-            for passage in response.get['passages']:
-                text = text + passage
+            for passage in response.get('passages'):
+                text = text + passage['content']
             response['text'] = text
         return response

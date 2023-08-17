@@ -4,6 +4,7 @@ Created at: 2023-06-27
 Purpose: Easily use Tag Generation Service
 -----------------------------------------------------
 '''
+from typing import Union, Dict
 from .service import SoffosAIService, inspect_arguments
 from soffosai.common.constants import ServiceString
 
@@ -35,3 +36,8 @@ class TagGenerationService(SoffosAIService):
                 raise ValueError(f'{self._service} types argument\'s elements can only be "topic", "domain", "audience" and/or "entity".')
         self._args_dict = inspect_arguments(self.__call__, user, text, types, n)
         return super().__call__()
+
+
+    def set_pipeline_input(self, ref_name:str, text:Union[str, Dict], types:Union[list, Dict]=["topic"], n:Union[int, Dict]=10) -> None:
+        self.source_config = inspect_arguments(self.set_pipeline_input, ref_name, text, types, n)
+        return super().set_pipeline_input()

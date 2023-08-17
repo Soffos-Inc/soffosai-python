@@ -4,6 +4,7 @@ Created at: 2023-06-26
 Purpose: Easily use Microlesson Service
 -----------------------------------------------------
 '''
+from typing import Union, Dict
 from .service import SoffosAIService, inspect_arguments
 from soffosai.common.constants import ServiceString
 
@@ -39,3 +40,8 @@ class MicrolessonService(SoffosAIService):
                 "text": text
             }
         )
+
+
+    def set_pipeline_input(self, ref_name:str, content:Union[list, Dict]=None) -> None:
+        self.source_config = inspect_arguments(self.set_pipeline_input, ref_name, content)
+        return super().set_pipeline_input()
