@@ -160,7 +160,11 @@ class Pipeline:
             
             # check if datatypes are correct:
             for key, notation in stage.source.items():
-                required_datatype = self.get_serviceio_datatype(stage.service._serviceio.input_structure[key])
+                try:
+                    required_datatype = self.get_serviceio_datatype(stage.service._serviceio.input_structure[key])
+                except KeyError:
+                    continue
+                
                 if is_node_input(notation):
                     if "pre_process" in notation:
                         continue # will not check for type if there is a helper function

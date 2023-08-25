@@ -22,7 +22,6 @@ class DocumentsIngestService(SoffosAIService):
     def __call__(self, user:str, document_name:str, text:str=None, tagged_elements:list=None, meta:dict=None):
         self._args_dict = inspect_arguments(self.__call__, user, document_name, text, tagged_elements, meta)
         self._args_dict['name'] = document_name
-        self._args_dict.pop('document_name')
         return super().__call__()
 
 

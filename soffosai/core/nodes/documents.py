@@ -9,6 +9,7 @@ class DocumentsIngestNode(Node):
     '''
     def __init__(self, name:str, document_name:str, text:str=None, tagged_elements:list=None, meta:dict=None):
         source = inspect_arguments(self.__init__, name, document_name, text, tagged_elements, meta)
+        source['name'] = source['document_name']
         service = DocumentsIngestService
         super().__init__(name, service, source)
 
