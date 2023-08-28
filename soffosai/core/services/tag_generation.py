@@ -33,5 +33,5 @@ class TagGenerationService(SoffosAIService):
         for _type in types:
             if _type not in ["topic", "domain", "audience", "entity"]:
                 raise ValueError(f'{self._service} types argument\'s elements can only be "topic", "domain", "audience" and/or "entity".')
-        self._args_dict = inspect_arguments(self.__call__, user, text, types, n)
-        return super().__call__()
+        payload = inspect_arguments(self.__call__, user, text, types, n)
+        return super().__call__(payload)

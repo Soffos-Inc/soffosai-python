@@ -19,5 +19,5 @@ class AnswerScoringService(SoffosAIService):
         super().__init__(service, **kwargs)
     
     def __call__(self, user:str, context:str, question:str, user_answer:str, answer:str=None)->dict:
-        self._args_dict = inspect_arguments(self.__call__, user, context, question, user_answer, answer)
-        return super().__call__()
+        payload = inspect_arguments(self.__call__, user, context, question, user_answer, answer)
+        return super().__call__(payload)

@@ -24,5 +24,5 @@ class SummarizationService(SoffosAIService):
     
 
     def __call__(self, user:str, text:str, sent_length:int):
-        self._args_dict = inspect_arguments(self.__call__, user, text, sent_length)
-        return super().__call__()
+        payload = inspect_arguments(self.__call__, user, text, sent_length)
+        return super().__call__(payload)

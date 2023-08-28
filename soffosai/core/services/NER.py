@@ -22,10 +22,10 @@ class NamedEntityRecognitionService(SoffosAIService):
 
     def __call__(self, user:str, text:str, labels:dict=None):
         
-        self._args_dict = inspect_arguments(self.__call__, user, text, labels)
+        payload = inspect_arguments(self.__call__, user, text, labels)
 
         if not labels and len(self.labels.keys()) > 0:
-            self._args_dict['labels'] = self.labels
+            payload['labels'] = self.labels
 
         return super().__call__()
 

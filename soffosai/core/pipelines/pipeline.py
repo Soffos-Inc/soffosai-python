@@ -64,6 +64,8 @@ class Pipeline:
         else:
             stages = self._stages
 
+        self.validate_pipeline(user_input, stages)
+
         # termination referencing
         execution_code = user_input.get("execution_code")
         if execution_code:
@@ -72,8 +74,6 @@ class Pipeline:
                 raise ValueError("This execution code is still being used in an existing pipeline run.")
             else:
                 self._execution_codes.append(execution_code)
-
-        self.validate_pipeline(user_input, stages)
 
         # Initialization of values
         infos = {}
@@ -141,6 +141,26 @@ class Pipeline:
         self._outputfields.insert(0, user_input.keys())
 
         for stage in stages:
+            if isinstance(stage, Pipeline):
+                stage:Pipeline
+                if not isinstance(user_input, dict):
+                    raise ValueError("User input should be a dictionary.")
+
+                if "user" not in user_input:
+                    raise ReferenceError("'user' is not defined in the user_input.")
+
+                if "text" in user_input:
+                    user_input['document_text'] = user_input['text']
+                
+                if stage._use_defaults:
+                    sub_pipe_stages = stage.set_defaults(stage._stages, user_input)
+                else:
+                    sub_pipe_stages = stage._stages
+
+                stage.validate_pipeline(user_input, stage._stages)
+                continue
+
+            # If stage is a Node:
             stage: Node
             serviceio = stage.service._serviceio
             # checking required_input_fields is already handled in the Node's constructor
@@ -162,7 +182,7 @@ class Pipeline:
             for key, notation in stage.source.items():
                 try:
                     required_datatype = self.get_serviceio_datatype(stage.service._serviceio.input_structure[key])
-                except KeyError:
+                except KeyError: # If there are user_input fields not required by the pipeline
                     continue
                 
                 if is_node_input(notation):

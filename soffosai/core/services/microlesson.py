@@ -24,9 +24,9 @@ class MicrolessonService(SoffosAIService):
     def __call__(self, user:str, content:list=None):
         if content:
             self.content = content
-        self._args_dict = inspect_arguments(self.__call__, user, content)
-        self._args_dict['content'] = self.content
-        return super().__call__()
+        payload = inspect_arguments(self.__call__, user, content)
+        payload['content'] = self.content
+        return super().__call__(payload)
 
 
     def add_content(self, source:str, text:str):

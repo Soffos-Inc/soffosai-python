@@ -20,9 +20,9 @@ class DocumentsIngestService(SoffosAIService):
         super().__init__(service, **kwargs)
     
     def __call__(self, user:str, document_name:str, text:str=None, tagged_elements:list=None, meta:dict=None):
-        self._args_dict = inspect_arguments(self.__call__, user, document_name, text, tagged_elements, meta)
-        self._args_dict['name'] = document_name
-        return super().__call__()
+        payload = inspect_arguments(self.__call__, user, document_name, text, tagged_elements, meta)
+        payload['name'] = document_name
+        return super().__call__(payload)
 
 
 class DocumentsSearchService(SoffosAIService):
@@ -37,9 +37,9 @@ class DocumentsSearchService(SoffosAIService):
 
     def __call__(self, user:str, query:str=None, filters:dict=None, document_ids:list=None, top_n_keywords:int=5,
         top_n_natural_language:int=5, date_from:str=None, date_until:str=None):
-        self._args_dict = inspect_arguments(self.__call__, user, query, filters, document_ids, top_n_keywords,
+        payload = inspect_arguments(self.__call__, user, query, filters, document_ids, top_n_keywords,
         top_n_natural_language, date_from, date_until)
-        response:dict = super().__call__()
+        response:dict = super().__call__(payload)
         text = ""
         for passage in response.get('passages'):
             text = text + passage
@@ -57,8 +57,8 @@ class DocumentsDeleteService(SoffosAIService):
         super().__init__(service, **kwargs)
     
     def __call__(self, user:str, document_ids:list):
-        self._args_dict = inspect_arguments(self.__call__, user, document_ids)
-        return super().__call__()
+        payload = inspect_arguments(self.__call__, user, document_ids)
+        return super().__call__(payload)
 
 
 class DocumentsService(SoffosAIService):
@@ -82,25 +82,24 @@ class DocumentsService(SoffosAIService):
         top_n_natural_language:int=5, date_from:str=None, date_until:str=None):
         self._service = ServiceString.DOCUMENTS_SEARCH
         self._serviceio:ServiceIO = SERVICE_IO_MAP.get(self._service)
-        self._args_dict = inspect_arguments(self.search, user, query, filters, document_ids, top_n_keywords,
+        payload = inspect_arguments(self.search, user, query, filters, document_ids, top_n_keywords,
         top_n_natural_language, date_from, date_until)
-        return self.get_response(payload=self._args_dict)
+        return self.get_response(payload=payload)
 
 
     def ingest(self, user:str, document_name:str, text:str=None, tagged_elements:list=None, meta:dict=None):
         self._service = ServiceString.DOCUMENTS_INGEST
         self._serviceio:ServiceIO = SERVICE_IO_MAP.get(self._service)
-        self._args_dict = inspect_arguments(self.ingest, user, document_name, text, tagged_elements, meta)
-        self._args_dict['name'] = document_name
-        self._args_dict.pop('document_name')
-        return self.get_response(payload=self._args_dict)
+        payload = inspect_arguments(self.ingest, user, document_name, text, tagged_elements, meta)
+        payload['name'] = document_name
+        return self.get_response(payload)
 
     
     def delete(self, user:str, document_ids:list):
         self._service = ServiceString.DOCUMENTS_DELETE
         self._serviceio:ServiceIO = SERVICE_IO_MAP.get(self._service)
-        self._args_dict = inspect_arguments(self.delete, user, document_ids)
-        return self.get_response(payload=self._args_dict)
+        payload = inspect_arguments(self.delete, user, document_ids)
+        return self.get_response(payload)
 
 
     def get_response(self, payload:dict, **kwargs) -> dict:

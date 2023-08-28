@@ -113,22 +113,22 @@ class SoffosAIService:
         return self._serviceio.require_one_of_choice
 
 
-    def validate_payload(self):
+    def validate_payload(self, payload):
         '''
         checks if the input type is allowed for the service
         '''
-        if not isinstance(self._payload, dict):
+        if not isinstance(payload, dict):
             raise TypeError("payload should be a dictionary")
 
         # check for missing arguments
-        user_from_src = self._payload.get('user')
+        user_from_src = payload.get('user')
         if not user_from_src:
             return False, f"{self._service}: user key is required in the payload"
 
         if len(self._serviceio.required_input_fields) > 0:
             missing_requirements = []
             for required in self._serviceio.required_input_fields:
-                if required not in self._payload:
+                if required not in payload:
                     missing_requirements.append(required)
             if len(missing_requirements) > 0:
                 return False, f"{self._service}: Please provide {missing_requirements} on your payload. {visit_docs_message}. {input_structure_message}"
@@ -138,7 +138,7 @@ class SoffosAIService:
             for group in self._serviceio.require_one_of_choice:
                 found_choices = []
                 for choice in group:
-                    if choice in self._payload:
+                    if choice in payload:
                         found_choices.append(choice)
                 if len(found_choices) == 0:
                     group_error.append(f"{self._service}: Please provide one of these values on your payload: {group}")
@@ -151,7 +151,7 @@ class SoffosAIService:
         # check if payload has proper type:
         input_structure = self._serviceio.input_structure
         value_errors = []
-        for key, value in self._payload.items():
+        for key, value in payload.items():
             if key in input_structure.keys():
 
                 if not isinstance(input_structure[key], type):
@@ -162,13 +162,14 @@ class SoffosAIService:
                 if not isinstance(value, input_type) and value != input_type: # the second condition is for pipeline
                     wrong_type = value if isinstance(value, type) else type(value)
                     value_errors.append(f"{key} requires {input_structure[key]} but {wrong_type} is provided.")
-            
+        
+        special_validation_passed, error_on_special_validation = self._serviceio.special_validation(payload)
         if len(value_errors) > 0:
             return False, value_errors
 
         if "document_ids" in self._payload:
-            if isinstance(self._payload['document_ids'], list):
-                for _id in self._payload["document_ids"]:
+            if isinstance(payload['document_ids'], list):
+                for _id in payload["document_ids"]:
                     valid_uuid = is_valid_uuid(_id)
                     if not valid_uuid:
                         return False, f"{_id} is invalid document_id"
@@ -176,13 +177,13 @@ class SoffosAIService:
         return True, None
 
 
-    def get_data(self):
+    def get_data(self, payload):
         '''
         Prepare the json or form data input of the service
         '''
         
         request_data = {}
-        for key, value in self._payload.items():
+        for key, value in payload.items():
             if key != 'file':
                 request_data[key] = value
 
@@ -198,14 +199,13 @@ class SoffosAIService:
         return file_tuple
 
 
-    def get_response(self, payload={}, **kwargs) -> dict:
+    def get_response(self, payload:dict={}, **kwargs) -> dict:
         '''
         Based on the knowledge/context, Soffos AI will now give you the data you need
         '''
-        self._payload = payload
-        allow_input, message = self.validate_payload()
-        if "question" in self._payload.keys(): # the api receives the question as message.
-            self._payload['message'] = self._payload['question']
+        allow_input, message = self.validate_payload(payload)
+        if "question" in payload.keys(): # the api receives the question as message.
+            payload['message'] = payload['question']
 
         if not allow_input:
             raise ValueError(message)
@@ -214,7 +214,7 @@ class SoffosAIService:
             raise ValueError("Please provide the service you need from Soffos AI.")
 
         response = None
-        data = self.get_data()
+        data = self.get_data(payload)
 
         if self._service not in FORM_DATA_REQUIRED:
             self.headers["content-type"] = "application/json"
@@ -234,7 +234,7 @@ class SoffosAIService:
                 }
             
         else:
-            file_obj = self._payload.get('file')
+            file_obj = payload.get('file')
             if isinstance(file_obj, str):
                 filename = str(os.path.basename(file_obj))
                 mime_type, _ = mimetypes.guess_type(file_obj)
@@ -288,8 +288,8 @@ class SoffosAIService:
             }
 
 
-    def __call__(self, **kwargs)->dict:
-        return self.get_response(payload=self._args_dict,**kwargs)
+    def __call__(self, payload:dict, **kwargs)->dict:
+        return self.get_response(payload=payload,**kwargs)
 
 
     def __str__(self) -> str:

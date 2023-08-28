@@ -23,5 +23,5 @@ class FileConverterService(SoffosAIService):
     def __call__(self, user:str, file:str, normalize:int=0):
         if normalize not in _NORMALIZE_VALUES:
             raise ValueError(f"{self._service}: normalize can only accept a value of 0 or 1")
-        self._args_dict = inspect_arguments(self.__call__, user, file, normalize)
-        return super().__call__()
+        payload = inspect_arguments(self.__call__, user, file, normalize)
+        return super().__call__(payload)

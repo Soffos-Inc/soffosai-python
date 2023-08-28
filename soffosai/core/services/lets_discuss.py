@@ -24,29 +24,29 @@ class LetsDiscussService(SoffosAIService):
     def create(self, user:str, context:str):
         self._service = ServiceString.LETS_DISCUSS_CREATE
         self._serviceio:ServiceIO = SERVICE_IO_MAP.get(self._service)
-        self._args_dict = inspect_arguments(self.create, user, context)
-        return self.get_response(payload=self._args_dict)
+        payload = inspect_arguments(self.create, user, context)
+        return self.get_response(payload)
     
 
     def __call__(self, user:str, session_id:str, query:str):
         self._service = ServiceString.LETS_DISCUSS
         self._serviceio:ServiceIO = SERVICE_IO_MAP.get(self._service)
-        self._args_dict = inspect_arguments(self.__call__, user, session_id, query)
-        return super().__call__()
+        payload = inspect_arguments(self.__call__, user, session_id, query)
+        return super().__call__(payload)
     
 
     def retrieve_sessions(self, user:str, return_messages:bool):
         self._service = ServiceString.LETS_DISCUSS_RETRIEVE
         self._serviceio:ServiceIO = SERVICE_IO_MAP.get(self._service)
-        self._args_dict = inspect_arguments(self.retrieve_sessions, user, return_messages)
-        return self.get_response(payload=self._args_dict)
+        payload = inspect_arguments(self.retrieve_sessions, user, return_messages)
+        return self.get_response(payload)
     
     
     def delete(self, user:str, session_ids:list):
         self._service = ServiceString.LETS_DISCUSS_DELETE
         self._serviceio:ServiceIO = SERVICE_IO_MAP.get(self._service)
-        self._args_dict = inspect_arguments(self.delete, user, session_ids)
-        return self.get_response(payload=self._args_dict)
+        payload = inspect_arguments(self.delete, user, session_ids)
+        return self.get_response(payload)
 
 
 class LetsDiscussCreateService(SoffosAIService):
@@ -56,8 +56,8 @@ class LetsDiscussCreateService(SoffosAIService):
     def __call__(self, user:str, context:str):
         self._service = ServiceString.LETS_DISCUSS_CREATE
         self._serviceio:ServiceIO = SERVICE_IO_MAP.get(self._service)
-        self._args_dict = inspect_arguments(self.__call__, user, context)
-        return super().__call__()
+        payload = inspect_arguments(self.__call__, user, context)
+        return super().__call__(payload)
 
 
 class LetsDiscussRetrieveService(SoffosAIService):
@@ -67,8 +67,8 @@ class LetsDiscussRetrieveService(SoffosAIService):
     def __call__(self, user:str, return_messages:bool):
         self._service = ServiceString.LETS_DISCUSS_RETRIEVE
         self._serviceio:ServiceIO = SERVICE_IO_MAP.get(self._service)
-        self._args_dict = inspect_arguments(self.__call__, user, return_messages)
-        return super().__call__()
+        payload = inspect_arguments(self.__call__, user, return_messages)
+        return super().__call__(payload)
 
 
 class LetsDiscussDeleteService(SoffosAIService):
@@ -78,5 +78,5 @@ class LetsDiscussDeleteService(SoffosAIService):
     def __call__(self, user:str, session_ids:list):
         self._service = ServiceString.LETS_DISCUSS_DELETE
         self._serviceio:ServiceIO = SERVICE_IO_MAP.get(self._service)
-        self._args_dict = inspect_arguments(self.__call__, user, session_ids)
-        return super().__call__()
+        payload = inspect_arguments(self.__call__, user, session_ids)
+        return super().__call__(payload)

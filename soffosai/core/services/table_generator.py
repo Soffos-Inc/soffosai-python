@@ -25,5 +25,5 @@ class TableGeneratorService(SoffosAIService):
     def __call__(self, user:str, text:str, table_format:str='markdown'):
         if table_format not in TABLE_FORMATS:
             raise ValueError(f"The argument table_format accepted values are: {TABLE_FORMATS}")
-        self._args_dict = inspect_arguments(self.__call__, user, text, table_format)
-        return super().__call__()
+        payload = inspect_arguments(self.__call__, user, text, table_format)
+        return super().__call__(payload)

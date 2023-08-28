@@ -21,5 +21,5 @@ class ParaphraseService(SoffosAIService):
     
 
     def __call__(self, user:str, text:str):
-        self._args_dict = inspect_arguments(self.__call__, user, text)
-        return super().__call__()
+        payload = inspect_arguments(self.__call__, user, text)
+        return super().__call__(payload)

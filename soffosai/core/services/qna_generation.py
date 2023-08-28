@@ -24,5 +24,5 @@ class QuestionAndAnswerGenerationService(SoffosAIService):
     
 
     def __call__(self, user:str, text:str, sentence_split:int=3, sentence_overlap:bool=False):
-        self._args_dict = inspect_arguments(self.__call__, user, text, sentence_split, sentence_overlap)
-        return super().__call__()
+        payload = inspect_arguments(self.__call__, user, text, sentence_split, sentence_overlap)
+        return super().__call__(payload)

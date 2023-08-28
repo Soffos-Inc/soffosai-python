@@ -11,7 +11,8 @@ class DocumentsIngestIO(ServiceIO):
     input_structure = {
         "document_name": str,
         "meta": dict,
-        "text": str
+        "text": str,
+        "tagged_elements": [dict, dict]
     }
     # output_fields = ["success", "document_id"]
     output_structure = {
@@ -24,7 +25,7 @@ class DocumentsIngestIO(ServiceIO):
 class DocumentSearchIO(ServiceIO):
     service = ServiceString.DOCUMENTS_SEARCH
     required_input_fields = []
-    require_one_of_choice = [["document_ids", "query", "filters"]]
+    require_one_of_choice = []
     defaults = ["query"]
     optional_input_fields = [
         "query", "filters", "document_ids", "top_n_keywords", 
@@ -57,6 +58,17 @@ class DocumentSearchIO(ServiceIO):
         
         "text": str
     }
+
+    def special_validation(self, payload:dict):
+        payload_keys = payload.keys()
+        if 'query' not in payload_keys and 'filters' not in payload_keys:
+            return False, "If query is not provided, please provide 'filters' argument."
+        
+        if 'top_n_natural_language' in payload_keys:
+            if payload['top_n_natural_language'] > 0 and 'query' not in payload_keys and 'document_ids' not in payload_keys:
+                return False, "If document_ids are not defined: query is required if top_n_natural_language is defined and is greater than 0."
+
+        return super().special_validation(payload)
 
 
 class DocumentDeleteIO(ServiceIO):
