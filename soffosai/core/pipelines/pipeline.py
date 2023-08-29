@@ -26,9 +26,10 @@ class Pipeline:
     pipeline's user_input.  Also, the stages will only be supplied with the required fields + default
     of the require_one_of_choice fields.
     '''
-    def __init__(self, nodes:list, use_defaults:bool=False, **kwargs) -> None:
+    def __init__(self, nodes:list, use_defaults:bool=False, name=None, **kwargs) -> None:
         self._apikey = kwargs['apikey'] if kwargs.get('apikey') else soffosai.api_key
         self._stages = nodes
+        
         self._input:dict = {}
         self._infos = []
         self._use_defaults = use_defaults
@@ -39,14 +40,19 @@ class Pipeline:
         if not isinstance(nodes, list):
             error_messages.append('stages field should be a list of Service Nodes')
 
+        node_names = [node.name for node in nodes]
         for node in nodes:
-            if not isinstance(node, Node):
+            if not isinstance(node, Node) and not isinstance(node, Pipeline):
                 error_messages.append(f'{node} is not an instance of Node.')
+            
+            if node_names.count(node.name) > 1:
+                raise ValueError(f"Node name: {node.name} is not unique.")
 
         if len(error_messages) > 0:
             raise ValueError("\\n".join(error_messages))
 
-        self._outputfields = [list(stage.service._serviceio.output_structure.keys()) for stage in self._stages]
+        # when a pipeline is used as another pipeline's input, it needs a name
+        self.name = name
 
     
     def run(self, user_input):
@@ -58,7 +64,7 @@ class Pipeline:
 
         if "text" in user_input:
             user_input['document_text'] = user_input['text']
-        
+
         if self._use_defaults:
             stages = self.set_defaults(self._stages, user_input)
         else:
@@ -82,13 +88,27 @@ class Pipeline:
 
         # Execute per stage
         for stage in stages:
+            if isinstance(stage, Pipeline):
+                stage: Pipeline
+                response = stage.run(user_input)
+                print(f"Response ready for {stage.name}")
+                pipe_output = {}
+                for key, value in response.items():
+                    if key != 'total_cost':
+                        for subkey, subvalue in value.items():
+                            pipe_output[subkey] = subvalue
+                    else:
+                        total_cost += value
+                infos[stage.name] = pipe_output
+                continue
+
             stage: Node
             # premature termination
             if execution_code in self._termination_codes:
                 self._termination_codes.remove(execution_code)
                 self._execution_codes.remove(execution_code)
                 infos['total_cost'] = total_cost
-                infos['wargning'] = "This Soffos Pipeline has been prematurely terminated"
+                infos['warning'] = "This Soffos Pipeline has been prematurely terminated"
                 return infos
             
             # execute
@@ -100,7 +120,7 @@ class Pipeline:
                 if is_node_input(notation): # value is pointing to another node
                     value = infos[notation['source']][notation['field']]
                     if "pre_process" in notation:
-                        if callable(infos[notation['pre_process']]):
+                        if callable(notation['pre_process']):
                             payload[key] = notation['pre_process'](value)
                         else:
                             raise ValueError(f"{stage.name}: pre_process value should be a function.")
@@ -138,7 +158,6 @@ class Pipeline:
         executed successfully with the exception of database and server issues.
         '''
         error_messages = []
-        self._outputfields.insert(0, user_input.keys())
 
         for stage in stages:
             if isinstance(stage, Pipeline):
@@ -157,7 +176,7 @@ class Pipeline:
                 else:
                     sub_pipe_stages = stage._stages
 
-                stage.validate_pipeline(user_input, stage._stages)
+                stage.validate_pipeline(user_input, sub_pipe_stages)
                 continue
 
             # If stage is a Node:
@@ -194,13 +213,17 @@ class Pipeline:
                         if user_input_type != required_datatype:
                             error_messages.append(f"{stage.name}: {required_datatype} required on user_input '{key}' field but {user_input_type} is provided.")
                     else:
+                        source_found = False
                         for subnode in stages:
                             subnode: Node
                             if notation['source'] == subnode.name:
+                                source_found = True
                                 output_datatype = self.get_serviceio_datatype(subnode.service._serviceio.output_structure[notation['field']])
                                 if output_datatype != required_datatype:
                                     error_messages.append(f"On {stage.name} node: The input datatype required for field ${key} is {required_datatype}. This does not match the datatype to be given by node ${subnode.name}'s ${notation['field']} field which is ${output_datatype}.")
-                            break
+                                break
+                        if not source_found:
+                            error_messages.append(f"Cannot find node '{notation['source']}'")
                 
                 else:
                     if type(notation) != required_datatype:
@@ -213,7 +236,7 @@ class Pipeline:
 
 
     def add_node(self, node):
-        if isinstance(node, Node):
+        if isinstance(node, Node) or isinstance(node, Pipeline):
             self._stages.append(node)
         else:
             raise ValueError(f"{node} is not a Node instance")
@@ -222,6 +245,9 @@ class Pipeline:
     def set_defaults(self, stages, user_input):
         defaulted_stages = []
         for i, stage in enumerate(stages):
+            if isinstance(stage, Pipeline):
+                continue
+
             stage: Node
             stage_source = {}
             required_keys = stage.service._serviceio.required_input_fields

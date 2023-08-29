@@ -17,16 +17,16 @@ my_pipe = Pipeline(
     # define your nodes in order of execution
     nodes = [
         # This node's name is fileconv for reference of other nodes. It needs the argument file to come from user input 'file'
-        FileConverterNode(name="fileconv", file=("user_input", "file")), 
+        FileConverterNode(name="fileconv", file={"source": "user_input", "field": "file"}), 
         DocumentsIngestNode(
             name = 'ingest', 
-            document_name=("user_input", (get_filename, "file")), # this argument needs the return value of get_filename(user_input['file'])
+            document_name={"source": "user_input", "pre_process": get_filename, "field": "file"}, # this argument needs the return value of get_filename(user_input['file'])
             text=("fileconv", "text") # this node needs its text argument to come from fileconv output field named 'text'
         ),
         QuestionAnsweringNode(
             name="qa",
-            question=("user_input", "question"), 
-            document_ids=("ingest", (put_docid_inside_list, "document_id"))# this argument needs the return value of put_docid_inside_list(<output of ingest node with key 'document_id'>)
+            question={"source": "user_input", "field": "question"}, 
+            document_ids={"source": "ingest", "pre_process": put_docid_inside_list, "field": "document_id"}# this argument needs the return value of put_docid_inside_list(<output of ingest node with key 'document_id'>)
         )
     ]
 )

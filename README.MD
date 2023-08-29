@@ -265,4 +265,72 @@ class FileIngestPipeline(Pipeline):
 ### Pipelines Examples
 You can check how the Pipelines are created at [tests/pipelines](https://github.com/Soffos-Inc/soffosai-python/tree/master/tests/pipelines) and in [pipelines](https://github.com/Soffos-Inc/soffosai-python/tree/master/soffosai/core/pipelines)
 
+
+### Pipeline as Node Inside a Pipeline
+Pipelines can be Node inside a Pipeline.
+```
+# Define the Pipeline to be used as a Node
+class FileSummaryIngestPipeline(Pipeline):
+    '''
+    A Soffos Pipeline that takes a file, convert it to its text content, summarizes it
+    then saves it to Soffos db.
+    The output is a list containing the output object of file converter, summarization and document ingest
+    '''
+    # override the constructor of the Pipeline
+    def __init__(self, name=None, **kwargs) -> None:
+
+        # define your nodes
+        file_converter_node = FileConverterNode(
+            name = "fileconverter",
+            file = {"source":"user_input", "field": "file"}
+        )
+        summarization_node = SummarizationNode(
+            name = "summary",
+            text = {"source":"fileconverter", "field": "text"},
+            sent_length = {"source":"user_input", "field": "sent_length"}
+        )
+        document_ingest_node = DocumentsIngestNode(
+            name = "ingest",
+            text = {"source": "summary", "field": "summary"},
+            document_name = {"source": "user_input", "field": "file"}
+        )
+
+        # define the list of nodes in order of execution
+        nodes = [file_converter_node, summarization_node, document_ingest_node]
+        use_defaults = False
+        super().__init__(nodes=nodes, use_defaults=use_defaults, name=name,**kwargs)
+
+
+    # override the callable method and expose the output
+    def __call__(self, user, file, sent_length): # set the user_input keys as arguments here
+        user_input = inspect_arguments(self.__call__, user, file, sent_length)# convert the args to dict
+        response = super().__call__(user_input)
+
+
+
+def get_doc_ids(document_id):
+    return [document_id]
+
+class PipeInPipeSample(Pipeline):
+    def __init__(self, **kwargs) -> None:
+        
+        the_pipe = FileSummaryIngestPipeline(name="summary_id")
+        qa = QuestionAnsweringNode(
+            name='qa',
+            question='who is Neo',
+            document_ids={
+                "source": "summary_id",
+                "field": "document_id",
+                "pre_process": get_doc_ids
+            }
+        )
+        nodes = [the_pipe, qa]
+        super().__init__(nodes, **kwargs)
+
+
+    def __call__(self, user, file, sent_length, question):
+        user_input = inspect_arguments(self.__call__, user, file, sent_length, question)
+        return super().__call__(user_input)
+```
+
 Copyright (c)2023 - Soffos.ai - All rights reserved

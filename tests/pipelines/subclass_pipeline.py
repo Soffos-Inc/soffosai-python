@@ -19,17 +19,17 @@ class FileSummaryIngestPipeline(Pipeline):
         # define your nodes
         file_converter_node = FileConverterNode(
             name = "fileconverter",
-            file = ("user_input", "file")
+            file = {"source": "user_input", "field": "file"}
         )
         summarization_node = SummarizationNode(
             name = "summary",
-            text = ("fileconverter", "text"),
-            sent_length = ("user_input", "sent_length")
+            text = {"source": "fileconverter", "field": "text"},
+            sent_length = {"source": "user_input", "field": "sent_length"}
         )
         document_ingest_node = DocumentsIngestNode(
             name = "ingest",
-            text = ("summary", "summary"),
-            document_name = ("user_input", "file")
+            text = {"source": "summary", "field": "summary"},
+            document_name = {"source": "user_input", "field": "file"}
         )
 
         # define the list of nodes in order of execution
