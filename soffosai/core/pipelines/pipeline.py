@@ -46,7 +46,7 @@ class Pipeline:
                 error_messages.append(f'{node} is not an instance of Node.')
             
             if node_names.count(node.name) > 1:
-                raise ValueError(f"Node name: {node.name} is not unique.")
+                error_messages.append(f"Node name '{node.name}' is not unique.")
 
         if len(error_messages) > 0:
             raise ValueError("\\n".join(error_messages))
@@ -65,12 +65,15 @@ class Pipeline:
         if "text" in user_input:
             user_input['document_text'] = user_input['text']
 
+        if "question" in user_input:
+            user_input['message'] = user_input['question']
+
         if self._use_defaults:
             stages = self.set_defaults(self._stages, user_input)
         else:
             stages = self._stages
 
-        self.validate_pipeline(user_input, stages)
+        self.validate_pipeline(stages, user_input)
 
         # termination referencing
         execution_code = user_input.get("execution_code")
@@ -88,10 +91,18 @@ class Pipeline:
 
         # Execute per stage
         for stage in stages:
+            # premature termination
+            if execution_code in self._termination_codes:
+                self._termination_codes.remove(execution_code)
+                self._execution_codes.remove(execution_code)
+                infos['total_cost'] = total_cost
+                infos['warning'] = "This Soffos Pipeline has been prematurely terminated"
+                return infos
+
             if isinstance(stage, Pipeline):
                 stage: Pipeline
                 response = stage.run(user_input)
-                print(f"Response ready for {stage.name}")
+                print(f"Response ready for {stage.name}.")
                 pipe_output = {}
                 for key, value in response.items():
                     if key != 'total_cost':
@@ -103,14 +114,6 @@ class Pipeline:
                 continue
 
             stage: Node
-            # premature termination
-            if execution_code in self._termination_codes:
-                self._termination_codes.remove(execution_code)
-                self._execution_codes.remove(execution_code)
-                infos['total_cost'] = total_cost
-                infos['warning'] = "This Soffos Pipeline has been prematurely terminated"
-                return infos
-            
             # execute
             print(f"running {stage.service._service}.")
             tmp_source: dict = stage.source
@@ -152,31 +155,32 @@ class Pipeline:
         return infos
 
 
-    def validate_pipeline(self, user_input, stages):
+    def validate_pipeline(self, stages, user_input):
         '''
         Before running the first service, the Pipeline will validate all nodes if they will all be
         executed successfully with the exception of database and server issues.
         '''
+        if not isinstance(user_input, dict):
+            raise ValueError("User input should be a dictionary.")
+
+        if "user" not in user_input:
+            raise ReferenceError("'user' is not defined in the user_input.")
+
+        if "text" in user_input:
+            user_input['document_text'] = user_input['text']
+
         error_messages = []
 
         for stage in stages:
             if isinstance(stage, Pipeline):
                 stage:Pipeline
-                if not isinstance(user_input, dict):
-                    raise ValueError("User input should be a dictionary.")
-
-                if "user" not in user_input:
-                    raise ReferenceError("'user' is not defined in the user_input.")
-
-                if "text" in user_input:
-                    user_input['document_text'] = user_input['text']
                 
                 if stage._use_defaults:
                     sub_pipe_stages = stage.set_defaults(stage._stages, user_input)
                 else:
                     sub_pipe_stages = stage._stages
 
-                stage.validate_pipeline(user_input, sub_pipe_stages)
+                stage.validate_pipeline(sub_pipe_stages, user_input)
                 continue
 
             # If stage is a Node:
@@ -218,6 +222,8 @@ class Pipeline:
                             subnode: Node
                             if notation['source'] == subnode.name:
                                 source_found = True
+                                if isinstance(subnode, Pipeline):
+                                    break
                                 output_datatype = self.get_serviceio_datatype(subnode.service._serviceio.output_structure[notation['field']])
                                 if output_datatype != required_datatype:
                                     error_messages.append(f"On {stage.name} node: The input datatype required for field ${key} is {required_datatype}. This does not match the datatype to be given by node ${subnode.name}'s ${notation['field']} field which is ${output_datatype}.")

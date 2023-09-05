@@ -59,10 +59,10 @@ class DocumentSearchIO(ServiceIO):
         "text": str
     }
 
-    def special_validation(self, payload:dict):
+    def special_validation(payload:dict):
         payload_keys = payload.keys()
-        if 'query' not in payload_keys and 'filters' not in payload_keys:
-            return False, "If query is not provided, please provide 'filters' argument."
+        # if 'query' not in payload_keys and 'filters' not in payload_keys:
+        #     return False, "If query is not provided, please provide 'filters' argument."
         
         if 'top_n_natural_language' in payload_keys:
             if payload['top_n_natural_language'] > 0 and 'query' not in payload_keys and 'document_ids' not in payload_keys:

@@ -164,6 +164,8 @@ class SoffosAIService:
                     value_errors.append(f"{key} requires {input_structure[key]} but {wrong_type} is provided.")
         
         special_validation_passed, error_on_special_validation = self._serviceio.special_validation(payload)
+        if not special_validation_passed:
+            value_errors.append(error_on_special_validation)
         if len(value_errors) > 0:
             return False, value_errors
 
