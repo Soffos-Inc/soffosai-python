@@ -8,6 +8,14 @@ from soffosai.core import inspect_arguments
 from soffosai.core.nodes import DocumentsSearchNode, SummarizationNode
 from soffosai.core.pipelines import Pipeline
 
+
+def get_text_from_passages(passages):
+    text = ""
+    for passage in passages:
+        text = text + passage['content']
+    return text
+
+
 class DocumentSummaryPipeline(Pipeline):
     '''
     A Soffos Pipeline that takes document_ids, then summarizes the content.
@@ -21,7 +29,7 @@ class DocumentSummaryPipeline(Pipeline):
         
         summarization_node = SummarizationNode(
             name = "summarization",
-            text = {"source": "doc_search", "field": "text"},
+            text = {"source": "doc_search", "field": "passages", "pre_process": get_text_from_passages},
             sent_length = {"source": "user_input", "field": "sent_length"}
         )
 

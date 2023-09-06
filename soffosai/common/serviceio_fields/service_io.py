@@ -30,8 +30,8 @@ class ServiceIO:
                     self.primary_output_field = field
                     break
     
-    
-    def special_validation(payload):
+    @classmethod
+    def special_validation(self, payload):
         return True, None
 
 

@@ -1,6 +1,13 @@
 # CHANGELOG
 
 
+
+## 0.0.9
+- bugfixes 
+
+## 0.0.8
+- costs info format for pipeline used inside a pipeline.
+
 ## 0.0.7
 - special validation bug fix.
 

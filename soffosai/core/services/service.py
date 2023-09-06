@@ -6,7 +6,7 @@ Purpose: The base Service class
 '''
 import inspect
 import soffosai
-import json, io
+import io
 import abc, requests, os, mimetypes, uuid
 from soffosai.common.constants import SOFFOS_SERVICE_URL, FORM_DATA_REQUIRED
 from soffosai.common.service_io_map import SERVICE_IO_MAP
@@ -91,9 +91,8 @@ class SoffosAIService:
         self._apikey = apikey
         self._service = service
         self._serviceio:ServiceIO = SERVICE_IO_MAP.get(service)
+        # In a pipeline, some payload properties are constants and should be related to the Service's instance
         self._payload = {}
-        self._payload_keys = self._payload.keys()
-        self._args_dict = {}
 
 
     @property
@@ -169,7 +168,7 @@ class SoffosAIService:
         if len(value_errors) > 0:
             return False, value_errors
 
-        if "document_ids" in self._payload:
+        if "document_ids" in payload:
             if isinstance(payload['document_ids'], list):
                 for _id in payload["document_ids"]:
                     valid_uuid = is_valid_uuid(_id)

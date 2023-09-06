@@ -23,7 +23,8 @@ class EmotionDetectionIO(ServiceIO):
         ]
     }
 
-    def special_validation(payload):
+    @classmethod
+    def special_validation(self, payload):
         if payload.get("sentence_split"):
             if payload["sentence_split"] < 1 and payload["sentence_split"] > 10:
                 return [False, "sentence_split must be between 1 and 10."]

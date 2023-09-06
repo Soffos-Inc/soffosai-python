@@ -103,11 +103,20 @@ class Pipeline:
                 stage: Pipeline
                 response = stage.run(user_input)
                 print(f"Response ready for {stage.name}.")
-                pipe_output = {}
+                pipe_output = {
+                    'costs': {}
+                }
                 for key, value in response.items():
-                    if key != 'total_cost':
+                    if key != 'total_call_cost':
                         for subkey, subvalue in value.items():
-                            pipe_output[subkey] = subvalue
+                            if subkey == 'cost':
+                                pipe_output['costs'][key] = subvalue
+                            elif subkey == 'charged_character_count':
+                                pipe_output['costs'][key]['charged_character_count'] = subvalue
+                            elif subkey == 'unit_price':
+                                pipe_output['costs'][key]['unit_price'] = subvalue
+                            else:
+                                pipe_output[subkey] = subvalue
                     else:
                         total_cost += value
                 infos[stage.name] = pipe_output

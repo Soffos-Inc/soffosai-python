@@ -42,7 +42,7 @@ class DocumentsSearchService(SoffosAIService):
         response:dict = super().__call__(payload)
         text = ""
         for passage in response.get('passages'):
-            text = text + passage
+            text = text + passage['content']
         response['text'] = text
         return response
 
@@ -84,7 +84,16 @@ class DocumentsService(SoffosAIService):
         self._serviceio:ServiceIO = SERVICE_IO_MAP.get(self._service)
         payload = inspect_arguments(self.search, user, query, filters, document_ids, top_n_keywords,
         top_n_natural_language, date_from, date_until)
-        return self.get_response(payload=payload)
+
+        response = self.get_response(payload=payload)
+        text = ""
+        
+        for passage in response.get('passages'):
+            text = text + passage['content']
+
+        response['text'] = text
+        return response
+
 
 
     def ingest(self, user:str, document_name:str, text:str=None, tagged_elements:list=None, meta:dict=None):
@@ -100,13 +109,3 @@ class DocumentsService(SoffosAIService):
         self._serviceio:ServiceIO = SERVICE_IO_MAP.get(self._service)
         payload = inspect_arguments(self.delete, user, document_ids)
         return self.get_response(payload)
-
-
-    def get_response(self, payload:dict, **kwargs) -> dict:
-        response = super().get_response(payload, **kwargs)
-        text = ""
-        if response.get('passages'):
-            for passage in response.get['passages']:
-                text = text + passage
-            response['text'] = text
-        return response
