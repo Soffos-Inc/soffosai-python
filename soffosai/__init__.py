@@ -4,6 +4,7 @@ Soffos Inc. Python SDK package
 
 from .client import SoffosAiResponse
 from .common.constants import ServiceString
+from .core.pipelines import Pipeline, FileIngestPipeline, FileSummaryPipeline, DocumentSummaryPipeline
 from .core.services import (
     AmbiguityDetectionService, 
     AnswerScoringService, 
@@ -61,7 +62,12 @@ __all__ = [
     "SummarizationService",
     "TableGeneratorService",
     "TagGenerationService",
-    "TranscriptCorrectionService"
+    "TranscriptCorrectionService",
+
+    "Pipeline", 
+    "FileIngestPipeline", 
+    "FileSummaryPipeline", 
+    "DocumentSummaryPipeline"
 ]
 
 __title__ = "soffosai"
