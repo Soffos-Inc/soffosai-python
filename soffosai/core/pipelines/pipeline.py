@@ -149,7 +149,9 @@ class Pipeline:
 
             response = stage.service.get_response(payload)
             if "error" in response:
-                raise ValueError(response)
+                infos[stage.name] = response
+                infos['total_cost'] = total_cost
+                return infos
             
             print(f"Response ready for {stage.name}")
             infos[stage.name] = response
@@ -215,6 +217,9 @@ class Pipeline:
                 try:
                     required_datatype = self.get_serviceio_datatype(stage.service._serviceio.input_structure[key])
                 except KeyError: # If there are user_input fields not required by the pipeline
+                    continue
+                
+                if not required_datatype:
                     continue
                 
                 if is_node_input(notation):

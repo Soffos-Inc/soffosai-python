@@ -145,7 +145,7 @@ print(json.dumps(output, indent=4))
 # But there is a better way
 ```
 
-### Better way to define your own Custom Pipeline
+### More advanced and conigurable way to create a Pipeline
 As an example, this is the a custom pipeline included in the package as one of the standard Pipelines:
 ```
 '''

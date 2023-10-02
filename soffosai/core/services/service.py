@@ -260,10 +260,12 @@ class SoffosAIService:
                         }
 
             else:
-                filename = file_obj.name
+                if hasattr(file_obj, "filename"): # handle Flask and Fast API
+                    filename = file_obj.filename
+                elif hasattr(file_obj, "name"): # django. Flask also have name attribute so we checked filename first
+                    filename = file_obj.name
                 mime_type, _ = mimetypes.guess_type(filename)
-                files = self.handle_file(file_obj, filename, mime_type)
-
+                files = {'file': (filename, file_obj, mime_type)}
                 try:
                     response = requests.post(
                         url = SOFFOS_SERVICE_URL + self._service + "/",

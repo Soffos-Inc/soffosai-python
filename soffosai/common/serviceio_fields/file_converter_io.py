@@ -6,7 +6,7 @@ class FileConverterIO(ServiceIO):
     required_input_fields = ["file"]
     optional_input_fields = ["normalize"]
     input_structure = {
-        "file": str,
+        # "file": str,
         "normalize": int
     }
     output_structure = {

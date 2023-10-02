@@ -1,6 +1,11 @@
 # CHANGELOG
 
 
+## 0.1.0
+- Django, Flask, Fast API support
+
+## 0.0.10
+- optimization on pipeline validation
 
 ## 0.0.9
 - bugfixes 
