@@ -17,7 +17,7 @@ class Node:
     '''
     _service_io: ServiceIO
 
-    def __init__(self, name, service:Union[ServiceString, SoffosAIService], source:dict={}) -> None:
+    def __init__(self, name, service:Union[ServiceString, SoffosAIService], source:dict={}, **kwargs) -> None:
         
         self._raw_service = service
         self.name = name
