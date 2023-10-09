@@ -4,9 +4,8 @@ Created at: 2023-06-30
 Purpose: Define the standard Pipeline for converting, summarizing an ingested document
 -----------------------------------------------------
 '''
-from soffosai.core import inspect_arguments
-from soffosai.core.nodes import DocumentsSearchNode, SummarizationNode
-from soffosai.core.pipelines import Pipeline
+from soffosai.core.services import DocumentsSearchService, SummarizationService, InputConfig
+from soffosai.core.pipelines import SoffosPipeline
 
 
 def get_text_from_passages(passages):
@@ -16,28 +15,27 @@ def get_text_from_passages(passages):
     return text
 
 
-class DocumentSummaryPipeline(Pipeline):
+class DocumentSummaryPipeline(SoffosPipeline):
     '''
     A Soffos Pipeline that takes document_ids, then summarizes the content.
     The output is a list containing the output object of file converter and summarization.
     '''
     def __init__(self, **kwargs) -> None:
-        document_search_node = DocumentsSearchNode(
+        document_search = DocumentsSearchService().set_input_configs(
             name = "doc_search",
             document_ids= {"source": "user_input", "field": "document_ids"}
         )
         
-        summarization_node = SummarizationNode(
+        summarization = SummarizationService().set_input_configs(
             name = "summarization",
-            text = {"source": "doc_search", "field": "passages", "pre_process": get_text_from_passages},
-            sent_length = {"source": "user_input", "field": "sent_length"}
+            text = InputConfig("doc_search", "passages", get_text_from_passages),
+            sent_length = InputConfig("user_input", "sent_length")
         )
 
-        nodes = [document_search_node, summarization_node]
+        services = [document_search, summarization]
         use_defaults = False
-        super().__init__(nodes=nodes, use_defaults=use_defaults, **kwargs)
+        super().__init__(services=services, use_defaults=use_defaults, **kwargs)
 
 
     def __call__(self, user, document_ids, sent_length):
-        user_input = inspect_arguments(self.__call__, user, document_ids, sent_length)
-        return super().__call__(user_input)
+        return super().__call__(user=user, document_ids=document_ids, sent_length=sent_length)

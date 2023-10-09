@@ -73,7 +73,7 @@ print(json.dumps(output, indent=4))
 ```
 
 ### Samples
-Sample code for each service can be found on [tests/services](https://github.com/Soffos-Inc/soffosai-python/tree/master/tests/services)
+Sample code for each service can be found on [samples/services](https://github.com/Soffos-Inc/soffosai-python/tree/master/samples/services)
 
 ### Where to get the required fields for Services
 To know the required fields of each SoffosAIService, they are defined in:
@@ -84,15 +84,27 @@ To know the required fields of each SoffosAIService, they are defined in:
 A Pipeline is a collection of services working together to generate a required output given a set of inputs.
 
 ### Node
-- To easily create a pipeline, you need to create Nodes.  A Node is a service configured for Pipeline use. It tells the Pipeline what the service is to be used and where in the pipeline would it get its input:
+- To easily create a pipeline, you need to create Nodes.  A Node is a service configured for Pipeline use. It tells the Pipeline what the service is to be used and where in the pipeline would it get its input. You can define a constant as an input of a Node or create an InputConfig to define where to get the input of this Node.
+#### InputConfig
+- To define an input for a Node that depends on the output of other Nodes, you should create an InputConfig:
+```
+from soffosai.core.nodes import InputConfig
+```
+- It takes 3 arguments: source, file, pre_process
+    source: The name of the Node or Pipeline from where the input of the current Node should be taken from.
+    field: The name of the output field of the "source".
+    pre_process (optional): A function to pre-processes the data from source[field] before supplying it as the Node's argument.
+
+#### Node declaration
 ```
 import json
-from soffosai.core.nodes import FileConverterNode
+from soffosai.core.nodes import FileConverterNode, InputConfig
 
+file_input_config = InputConfig(source="user_input", field="file")# this argument will take the value from user_input['file]
 
 file_converter_node = FileConverterNode( # this node uses the FileConverterService
     name = "fileconverter", # for reference of the entire pipeline, this node is named "fileconverter"
-    file = file = {"source":"user_input", "field": "file"} # this node will take from the user_input, the value of the element "file"
+    file = file_input_config
 )
 ```
 
@@ -100,7 +112,7 @@ file_converter_node = FileConverterNode( # this node uses the FileConverterServi
 ```
 import json
 from soffosai.core.pipelines import Pipeline
-from soffosai.core.nodes import FileConverterNode, DocumentsIngestNode, QuestionAnsweringNode
+from soffosai.core.nodes import FileConverterNode, DocumentsIngestNode, QuestionAnsweringNode, InputConfig
 
 # a helper function to get the filename provided the file is in the same directory
 def get_filename(full_file_name:str):
@@ -112,23 +124,25 @@ def get_filename(full_file_name:str):
 def put_docid_inside_list(doc_id):
     return [doc_id]
 
+
 # initialize the generic Pipeling
 my_pipe = Pipeline(
     # define your nodes in order of execution
     nodes = [
         FileConverterNode(
             name="fileconv", # This node will be referenced by other nodes as "fileconv"
-            file = {"source":"user_input", "field": "file"} #  It needs the argument file to come from user_input 'file'
+            file = InputConfig("user_input", "file") #  get user_input['file']
         ), 
         DocumentsIngestNode(
             name = 'ingest', 
-            document_name={"source": "user_input", "pre_process": get_filename, "field": "file"}, # this argument needs the return value of get_filename(user_input['file'])
-            text={"source": "fileconv", "field": "text"} # this node needs its text argument to come from fileconv output field named 'text'
+            document_name=InputConfig("user_input", "file", get_filename)# this argument needs the 
+                    #return value of get_filename(user_input['file'])
+            text=InputConfig("fileconv", "text") # this node needs its text argument to come from fileconv output field 'text'.
         ),
         QuestionAnsweringNode(
             name="qa",
-            question={"source": "user_input", "field": "question"}, 
-            document_ids={"source": "ingest", "pre_process": put_docid_inside_list, "field": "document_id"}# this argument needs the return value of put_docid_inside_list(<output of ingest node with key 'document_id'>)
+            question=InputConfig("user_input", "question"), 
+            document_ids=InputConfig("ingest", "document_id", "put_docid_inside_list")# this argument needs the return value of put_docid_inside_list(<output of "ingest" node with key "document_id">)
         )
     ]
 )
@@ -154,7 +168,7 @@ The __call__ method gives you the power to put the arguments and makes calling y
 '''
 import json
 from soffosai.core import inspect_arguments
-from soffosai.core.nodes import FileConverterNode, SummarizationNode, DocumentsIngestNode
+from soffosai.core.nodes import FileConverterNode, SummarizationNode, DocumentsIngestNode, InputConfig
 from soffosai.core.pipelines import Pipeline
 
 class FileSummaryIngestPipeline(Pipeline):
@@ -169,17 +183,17 @@ class FileSummaryIngestPipeline(Pipeline):
         # define your nodes
         file_converter_node = FileConverterNode(
             name = "fileconverter",
-            file = {"source":"user_input", "field": "file"}
+            file = InputConfig("user_input", "file"()
         )
         summarization_node = SummarizationNode(
             name = "summary",
-            text = {"source":"fileconverter", "field": "text"},
-            sent_length = {"source":"user_input", "field": "sent_length"}
+            text = InputConfig("fileconverter", "text"),
+            sent_length = InputConfig("user_input", "sent_length")
         )
         document_ingest_node = DocumentsIngestNode(
             name = "ingest",
-            text = {"source": "summary", "field": "summary"},
-            document_name = {"source": "user_input", "field": "file"}
+            text = InputConfig("summary", "summary"),
+            document_name = InputConfig("user_input", "file")
         )
 
         # define the list of nodes in order of execution
@@ -188,7 +202,7 @@ class FileSummaryIngestPipeline(Pipeline):
         super().__init__(nodes=nodes, use_defaults=use_defaults, **kwargs)
 
 
-    # override the callable method
+    # override the __call__ method
     def __call__(self, user, file, sent_length): # set the user_input keys as arguments here
         user_input = inspect_arguments(self.__call__, user, file, sent_length)# convert the args to dict
         return super().__call__(user_input)
@@ -219,12 +233,11 @@ def put_docid_inside_list(doc_id):
 
 QuestionAnsweringNode(
     name="qa",
-    question={"source": "user_input", "field": "question"}, 
-    document_ids={"source": "ingest", "pre_process": put_docid_inside_list, "field": "document_id"}# this argument needs the return value of put_docid_inside_list(<output of ingest node with key 'document_id'>)
+    question=InputConfig("user_input", "question"), 
+    document_ids=InputConfig("ingest", "document_id", put_docid_inside_list)# this argument needs the return value of put_docid_inside_list(<output of ingest node with key 'document_id'>)
 )
 ```
-When you use a helper function, the field will not be checked for datatype.  The keys will still be checked if
-complete.
+When you use a helper function, the field will not be checked for datatype.  The fields will still be checked if complete.
 
 ### Use Defaults
 The Pipeline has a use_defaults argument that defaults to False. If set to True:
@@ -263,7 +276,7 @@ class FileIngestPipeline(Pipeline):
         return super().__call__(user_input)
 ```
 ### Pipelines Examples
-You can check how the Pipelines are created at [tests/pipelines](https://github.com/Soffos-Inc/soffosai-python/tree/master/tests/pipelines) and in [pipelines](https://github.com/Soffos-Inc/soffosai-python/tree/master/soffosai/core/pipelines)
+You can check how the Pipelines are created at [samples/pipelines](https://github.com/Soffos-Inc/soffosai-python/tree/master/samples/pipelines) and in [pipelines](https://github.com/Soffos-Inc/soffosai-python/tree/master/soffosai/core/pipelines)
 
 
 ### Pipeline as Node Inside a Pipeline
@@ -282,17 +295,17 @@ class FileSummaryIngestPipeline(Pipeline):
         # define your nodes
         file_converter_node = FileConverterNode(
             name = "fileconverter",
-            file = {"source":"user_input", "field": "file"}
+            file = InputConfig("user_input", "file")
         )
         summarization_node = SummarizationNode(
-            name = "summary",
-            text = {"source":"fileconverter", "field": "text"},
-            sent_length = {"source":"user_input", "field": "sent_length"}
+            name = "summary_node",
+            text = InputConfig("fileconverter", "text"),
+            sent_length = InputConfig("user_input", "sent_length")
         )
         document_ingest_node = DocumentsIngestNode(
             name = "ingest",
-            text = {"source": "summary", "field": "summary"},
-            document_name = {"source": "user_input", "field": "file"}
+            text = InputConfig("summary_node", "summary"),
+            document_name = InputConfig("user_input", "file")
         )
 
         # define the list of nodes in order of execution
@@ -317,12 +330,12 @@ class PipeInPipeSample(Pipeline):
         the_pipe = FileSummaryIngestPipeline(name="summary_id")
         qa = QuestionAnsweringNode(
             name='qa',
-            question='who is Neo',
-            document_ids={
-                "source": "summary_id",
-                "field": "document_id",
-                "pre_process": get_doc_ids
-            }
+            question=InputConfig("user_input", "question"),
+            document_ids=InputConfig(
+                source = "summary_id",
+                field = "document_id",
+                pre_process = get_doc_ids
+            )
         )
         nodes = [the_pipe, qa]
         super().__init__(nodes, **kwargs)

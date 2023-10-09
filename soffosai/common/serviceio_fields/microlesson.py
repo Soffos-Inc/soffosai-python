@@ -1,3 +1,9 @@
+'''
+Copyright (c)2022 - Soffos.ai - All rights reserved
+Updated at: 2023-10-09
+Purpose: Input/Output description for Microlesson Service
+-----------------------------------------------------
+'''
 from .service_io import ServiceIO
 from ..constants import ServiceString
 
@@ -5,15 +11,27 @@ from ..constants import ServiceString
 class MicrolessonIO(ServiceIO):
     service = ServiceString.MICROLESSON
     required_input_fields = ["content"]
+    optional_input_fields = []
     input_structure = {
-    "content": [
-            {
-            "source": str,
-            "text": str
-            },
-        ],
-    "user": "b5601df8-6af3-4c1a-9ded-b7df4c506eab"
+        "content": list
     }
+
     output_structure = {
-        "microlesson": str
+        "microlesson": dict
     }
+
+
+    @classmethod
+    def special_validation(self, payload):
+        
+        for i, d in enumerate(payload['content']):
+            if 'source' not in d:
+                return False, f"'source' field missing from element at index {i} in 'content'."
+            elif not isinstance(d['source'], str):
+                return False, f"'source' field at index {i} in 'content' has wrong type. Expecting str."
+            if 'text' not in d:
+                return False, f"'text' field missing from element at index {i} in 'content'."
+            elif not isinstance(d['text'], str):
+                return False, f"'text' field at index {i} in 'content' has wrong type. Expecting str."
+
+        return super().special_validation(payload)

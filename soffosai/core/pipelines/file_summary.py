@@ -4,32 +4,30 @@ Created at: 2023-06-30
 Purpose: Define the standard Pipeline for converting and summarizing a file
 -----------------------------------------------------
 '''
-from soffosai.core import Node, inspect_arguments
-from soffosai.core.nodes import FileConverterNode, SummarizationNode
-from soffosai.core.pipelines import Pipeline
+from soffosai.core.services import FileConverterService, SummarizationService, InputConfig
+from soffosai.core.pipelines import SoffosPipeline
 
-class FileSummaryPipeline(Pipeline):
+class FileSummaryPipeline(SoffosPipeline):
     '''
     A Soffos Pipeline that takes a file, convert it to its text content then summarizes it.
     The output is a list containing the output object of file converter and summarization.
     '''
     def __init__(self, **kwargs) -> None:
 
-        file_converter_node = FileConverterNode(
+        file_converter = FileConverterService().set_input_configs(
             name = "fileconverter",
-            file = {"source":"user_input", "field": "file"}
+            file = InputConfig("user_input", "file")
         )
-        summarization_node = SummarizationNode(
+        summarization = SummarizationService().set_input_configs(
             name = "summary",
-            text = {"source":"fileconverter", "field": "text"},
-            sent_length = {"source":"user_input", "field": "sent_length"}
+            text = InputConfig("fileconverter", "text"),
+            sent_length = InputConfig("user_input", "sent_length")
         )
 
-        nodes = [file_converter_node, summarization_node]
+        services = [file_converter, summarization]
         use_defaults = False
-        super().__init__(nodes=nodes, use_defaults=use_defaults, **kwargs)
+        super().__init__(services=services, use_defaults=use_defaults, **kwargs)
 
 
     def __call__(self, user, file, sent_length):
-        user_input = inspect_arguments(self.__call__, user, file, sent_length)
-        return super().__call__(user_input)
+        return super().__call__(user=user, file=file, sent_length=sent_length)

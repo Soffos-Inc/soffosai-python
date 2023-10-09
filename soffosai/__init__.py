@@ -4,7 +4,7 @@ Soffos Inc. Python SDK package
 
 from .client import SoffosAiResponse
 from .common.constants import ServiceString
-from .core.pipelines import Pipeline, FileIngestPipeline, FileSummaryPipeline, DocumentSummaryPipeline
+from .core.pipelines import SoffosPipeline, FileIngestPipeline, FileSummaryPipeline, DocumentSummaryPipeline
 from .core.services import (
     AmbiguityDetectionService, 
     AnswerScoringService, 
@@ -31,7 +31,8 @@ from .core.services import (
     TranscriptCorrectionService,
 )
 from .common.constants import ServiceString
-
+from .core import services as SoffosAIServices
+from .core import pipelines as SoffosAIPipelines
 import os
 
 api_key = os.environ.get("SOFFOSAI_API_KEY")
@@ -40,6 +41,8 @@ __all__ = [
     "api_key",
     "ServiceString",
     "SoffosAiResponse",
+    "SoffosAIServices",
+    "SoffosAIPipelines",
     "AmbiguityDetectionService",
     "AnswerScoringService",
     "ContradictionDetectionService",
@@ -64,7 +67,7 @@ __all__ = [
     "TagGenerationService",
     "TranscriptCorrectionService",
 
-    "Pipeline", 
+    "SoffosPipeline", 
     "FileIngestPipeline", 
     "FileSummaryPipeline", 
     "DocumentSummaryPipeline"

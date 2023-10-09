@@ -93,6 +93,7 @@ class SoffosAIService:
         self._serviceio:ServiceIO = SERVICE_IO_MAP.get(service)
         # In a pipeline, some payload properties are constants and should be related to the Service's instance
         self._payload = {}
+        self.name = None # name is required if called in a pipeline
 
 
     @property
@@ -153,14 +154,20 @@ class SoffosAIService:
         for key, value in payload.items():
             if key in input_structure.keys():
 
-                if not isinstance(input_structure[key], type):
-                    input_type = type(input_structure[key])
+                if isinstance(input_structure[key], tuple):
+                    allowed_types = input_structure[key]
+                    allowed_types_str = "or ".join([t.__name__ for t in allowed_types])
+                    if type(value) not in allowed_types:
+                        value_errors.append(f"{key} can have {allowed_types_str} but {type(value)} is provided")
                 else:
-                    input_type = input_structure[key]
+                    if not isinstance(input_structure[key], type):
+                        input_type = type(input_structure[key])
+                    else:
+                        input_type = input_structure[key]
 
-                if not isinstance(value, input_type) and value != input_type: # the second condition is for pipeline
-                    wrong_type = value if isinstance(value, type) else type(value)
-                    value_errors.append(f"{key} requires {input_structure[key]} but {wrong_type} is provided.")
+                    if not isinstance(value, input_type) and value != input_type: # the second condition is for pipeline
+                        wrong_type = value if isinstance(value, type) else type(value)
+                        value_errors.append(f"{key} requires {input_structure[key]} but {wrong_type} is provided.")
         
         special_validation_passed, error_on_special_validation = self._serviceio.special_validation(payload)
         if not special_validation_passed:
@@ -200,7 +207,7 @@ class SoffosAIService:
         return file_tuple
 
 
-    def get_response(self, payload:dict={}, **kwargs) -> dict:
+    def get_response(self, payload:dict={}) -> dict:
         '''
         Based on the knowledge/context, Soffos AI will now give you the data you need
         '''
@@ -216,6 +223,10 @@ class SoffosAIService:
 
         response = None
         data = self.get_data(payload)
+        apikey = payload.get("apikey")
+        if apikey:
+            self.headers["x-api-key"] = apikey
+            payload.pop("apikey")
 
         if self._service not in FORM_DATA_REQUIRED:
             self.headers["content-type"] = "application/json"
@@ -291,8 +302,32 @@ class SoffosAIService:
             }
 
 
-    def __call__(self, payload:dict, **kwargs)->dict:
-        return self.get_response(payload=payload,**kwargs)
+    def clean_payload(self, raw_payload):
+        payload = {}
+        if len(raw_payload) == 0:
+            raise ValueError("There is no payload")
+
+        for k, v in raw_payload.items():
+            if v != None: # if the value is None, we don't pass it to the payload
+                payload[k] = v
+                if k == "document_name":
+                    payload["name"] = v
+                elif k == "question":
+                    payload['message'] = v
+        
+        return payload
+
+
+    def __call__(self, **kwargs:dict)->dict:
+        payload = self.clean_payload(kwargs)
+        return self.get_response(payload=payload)
+
+
+    @classmethod
+    def call(cls, **kwargs):
+        instance = cls()
+        payload = instance.clean_payload(kwargs)
+        return instance.get_response(payload)
 
 
     def __str__(self) -> str:
@@ -318,3 +353,10 @@ class SoffosAIService:
         '''
         Sends back the output type of the service
         '''
+
+    def set_input_configs(self, name, **source):
+        '''
+        Before using a SoffosAIService into a SoffosPipeline, you must setup the service's input configuration.
+        '''
+        self.name = name
+        self.source = source

@@ -29,3 +29,4 @@ from .summarization import SummarizationService
 from .table_generator import TableGeneratorService
 from .tag_generation import TagGenerationService
 from .transcript_correction import TranscriptCorrectionService
+from .input_config import InputConfig

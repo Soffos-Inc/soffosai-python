@@ -4,17 +4,18 @@ Created at: 2023-08-14
 Purpose: Define the basic pipeline object
 -----------------------------------------------------
 '''
+from typing import List
 import soffosai
-from soffosai.core.nodes.node import Node
+from soffosai.core.services import SoffosAIService
+from ..services import InputConfig
 
-
-def is_node_input(value):
+def is_service_input(value):
     if not isinstance(value, dict):
         return False
     return "source" in value and "field" in value
 
 
-class Pipeline:
+class SoffosPipeline:
     '''
     A controller for consuming multiple Services called stages.
     It validates all inputs of all stages before sending the first Soffos API request to ensure
@@ -26,9 +27,9 @@ class Pipeline:
     pipeline's user_input.  Also, the stages will only be supplied with the required fields + default
     of the require_one_of_choice fields.
     '''
-    def __init__(self, nodes:list, use_defaults:bool=False, name=None, **kwargs) -> None:
+    def __init__(self, services:List[SoffosAIService], use_defaults:bool=False, name=None, **kwargs) -> None:
         self._apikey = kwargs['apikey'] if kwargs.get('apikey') else soffosai.api_key
-        self._stages = nodes
+        self._stages = services
         
         self._input:dict = {}
         self._infos = []
@@ -37,16 +38,16 @@ class Pipeline:
         self._termination_codes = []
 
         error_messages = []
-        if not isinstance(nodes, list):
-            error_messages.append('stages field should be a list of Service Nodes')
+        if not isinstance(services, list):
+            error_messages.append('stages field should be a list of SoffosAIService instances')
 
-        node_names = [node.name for node in nodes]
-        for node in nodes:
-            if not isinstance(node, Node) and not isinstance(node, Pipeline):
-                error_messages.append(f'{node} is not an instance of Node.')
+        service_names = [service.name for service in services]
+        for service in services:
+            if not isinstance(service, SoffosAIService) and not isinstance(service, SoffosPipeline):
+                error_messages.append(f'{service} is not an instance of SoffosAIService or SoffosPipeline.')
             
-            if node_names.count(node.name) > 1:
-                error_messages.append(f"Node name '{node.name}' is not unique.")
+            if service_names.count(service.name) > 1:
+                error_messages.append(f"Service name '{service.name}' is not unique.")
 
         if len(error_messages) > 0:
             raise ValueError("\\n".join(error_messages))
@@ -56,6 +57,7 @@ class Pipeline:
 
     
     def run(self, user_input):
+        original_user_input = user_input.copy()
         if not isinstance(user_input, dict):
             raise ValueError("User input should be a dictionary.")
 
@@ -97,10 +99,11 @@ class Pipeline:
                 self._execution_codes.remove(execution_code)
                 infos['total_cost'] = total_cost
                 infos['warning'] = "This Soffos Pipeline has been prematurely terminated"
+                infos['user_input'] = original_user_input
                 return infos
 
-            if isinstance(stage, Pipeline):
-                stage: Pipeline
+            if isinstance(stage, SoffosPipeline):
+                stage: SoffosPipeline
                 response = stage.run(user_input)
                 print(f"Response ready for {stage.name}.")
                 pipe_output = {
@@ -122,14 +125,23 @@ class Pipeline:
                 infos[stage.name] = pipe_output
                 continue
 
-            stage: Node
+            stage: SoffosAIService
             # execute
-            print(f"running {stage.service._service}.")
+            print(f"running {stage.name}.")
             tmp_source: dict = stage.source
             payload = {}
             for key, notation in tmp_source.items():
                 # prepare payload
-                if is_node_input(notation): # value is pointing to another node
+                if isinstance(notation, InputConfig):
+                    input_dict = {
+                        "source": notation.source,
+                        "field": notation.field,
+                    }
+                    if notation.pre_process:
+                        input_dict['pre_process'] = notation.pre_process
+                    notation = input_dict
+                
+                if is_service_input(notation): # value is pointing to another Service
                     value = infos[notation['source']][notation['field']]
                     if "pre_process" in notation:
                         if callable(notation['pre_process']):
@@ -146,8 +158,8 @@ class Pipeline:
                 payload["user"] = user_input['user']
             
             payload['apikey'] = self._apikey
-
-            response = stage.service.get_response(payload)
+            cleaned_payload = stage.clean_payload(payload)
+            response = stage.get_response(cleaned_payload)
             if "error" in response:
                 infos[stage.name] = response
                 infos['total_cost'] = total_cost
@@ -158,6 +170,7 @@ class Pipeline:
             total_cost += response['cost']['total_cost']
 
         infos['total_cost'] = total_cost
+        infos["user_input"] = original_user_input
 
         # remove this execution code from execution codes in effect:
         if execution_code:
@@ -168,7 +181,7 @@ class Pipeline:
 
     def validate_pipeline(self, stages, user_input):
         '''
-        Before running the first service, the Pipeline will validate all nodes if they will all be
+        Before running the first service, the Pipeline will validate all SoffosAIServices if they will all be
         executed successfully with the exception of database and server issues.
         '''
         if not isinstance(user_input, dict):
@@ -183,8 +196,8 @@ class Pipeline:
         error_messages = []
 
         for stage in stages:
-            if isinstance(stage, Pipeline):
-                stage:Pipeline
+            if isinstance(stage, SoffosPipeline):
+                stage:SoffosPipeline
                 
                 if stage._use_defaults:
                     sub_pipe_stages = stage.set_defaults(stage._stages, user_input)
@@ -194,10 +207,10 @@ class Pipeline:
                 stage.validate_pipeline(sub_pipe_stages, user_input)
                 continue
 
-            # If stage is a Node:
-            stage: Node
-            serviceio = stage.service._serviceio
-            # checking required_input_fields is already handled in the Node's constructor
+            # If stage is a SoffosAIService:
+            stage: SoffosAIService
+            serviceio = stage._serviceio
+            # checking required_input_fields is already handled in the Service's set_input_configs method
 
             # check if require_one_of_choices is present and not more than one
             if len(serviceio.require_one_of_choice) > 0:
@@ -214,40 +227,85 @@ class Pipeline:
             
             # check if datatypes are correct:
             for key, notation in stage.source.items():
-                try:
-                    required_datatype = self.get_serviceio_datatype(stage.service._serviceio.input_structure[key])
-                except KeyError: # If there are user_input fields not required by the pipeline
-                    continue
-                
+                required_datatype = stage._serviceio.input_structure.get(key)
                 if not required_datatype:
                     continue
+                required_datatype = self.get_serviceio_datatype(required_datatype)
                 
-                if is_node_input(notation):
+                # convert InputConfig to dict
+                if isinstance(notation, InputConfig): # backwards compatibility
+                    input_dict = {
+                        "source": notation.source,
+                        "field": notation.field,
+                    }
+                    if notation.pre_process:
+                        input_dict['pre_process'] = notation.pre_process
+                    notation = input_dict
+
+                if is_service_input(notation):
                     if "pre_process" in notation:
                         continue # will not check for type if there is a helper function
                     
                     if notation['source'] == "user_input":
                         user_input_type = type(user_input[notation['field']])
-                        if user_input_type != required_datatype:
-                            error_messages.append(f"{stage.name}: {required_datatype} required on user_input '{key}' field but {user_input_type} is provided.")
+                        if required_datatype == tuple:
+                            allowed_data_types = list(stage._serviceio.input_structure[key])
+                            allowed_data_types_str = " or ".join([t.__name__ for t in allowed_data_types])
+                            if user_input_type not in allowed_data_types:
+                                if notation['field'] == "file":
+                                    # TODO: special handling because django, flask, fast api, and regular python has different datatypes for in memory files.
+                                    # TODO: should create list of datatypes and put in on file fields of serviceio of all services accepting file
+                                    pass
+                                else:
+                                    error_messages.append(f"{stage.name}:  {user_input_type} required for '{key}' field: but {user_input_type} is provided.")
+                        else:
+                            if user_input_type != required_datatype:
+                                if notation['field'] == "file":
+                                    # TODO: special handling because django, flask, fast api, and regular python has different datatypes for in memory files.
+                                    pass
+                                else:
+                                    error_messages.append(f"{stage.name}: {required_datatype} required on user_input '{key}' field but {user_input_type} is provided.")
                     else:
                         source_found = False
-                        for subnode in stages:
-                            subnode: Node
-                            if notation['source'] == subnode.name:
+                        for subservice in stages:
+                            subservice: SoffosAIService
+                            if notation['source'] == subservice.name:
                                 source_found = True
-                                if isinstance(subnode, Pipeline):
-                                    break
-                                output_datatype = self.get_serviceio_datatype(subnode.service._serviceio.output_structure[notation['field']])
-                                if output_datatype != required_datatype:
-                                    error_messages.append(f"On {stage.name} node: The input datatype required for field ${key} is {required_datatype}. This does not match the datatype to be given by node ${subnode.name}'s ${notation['field']} field which is ${output_datatype}.")
+                                if isinstance(subservice, SoffosPipeline):
+                                    break  
+                                output_datatype = self.get_serviceio_datatype(subservice._serviceio.output_structure[notation['field']])
+                                
+                                if type(output_datatype) == tuple:
+                                    allowed_data_types = list(stage._serviceio.input_structure[key])
+                                    allowed_data_types_str = " or ".join([t.__name__ for t in allowed_data_types])
+                                    if user_input_type not in allowed_data_types:
+                                        if notation['field'] == "file":
+                                            # TODO: special handling because django, flask, fast api, and regular python has different datatypes for in memory files.
+                                            # TODO: should create list of datatypes and put in on file fields of serviceio of all services accepting file
+                                            pass
+                                        else:
+                                            error_messages.append(f"{stage.name}:  {user_input_type} required for '{key}' field: but {user_input_type} is provided.")
+
+                                elif output_datatype != required_datatype:
+                                    error_messages.append(f"On {stage.name} service: The input datatype required for field ${key} is {required_datatype}. This does not match the datatype to be given by service {subservice.name}'s {notation['field']} field which is {output_datatype}.")
                                 break
                         if not source_found:
-                            error_messages.append(f"Cannot find node '{notation['source']}'")
+                            error_messages.append(f"Cannot find service '{notation['source']}'")
                 
                 else:
-                    if type(notation) != required_datatype:
-                        error_messages.append(f"On {stage.name} node: {key} requires ${required_datatype} but ${type(notation)} is provided.")
+                    if required_datatype == tuple:
+                        allowed_data_types = list(stage.service._serviceio.input_structure[key])
+                        allowed_data_types_str = " or ".join([t.__name__ for t in allowed_data_types])
+                        if notation['field'] == "file":
+                            # TODO: special handling because django, flask, fast api, and regular python has different datatypes for in memory files.
+                            # TODO: should create list of datatypes and put in on file fields of serviceio of all services accepting file
+                            pass
+                        else:
+                            if type(notation) not in allowed_data_types:
+                                error_messages.append(f"{stage.name}: {allowed_data_types_str} required for user_input '{key}' field:  but {type(notation).__name__} is provided.")
+                    else:
+                        if type(notation) != required_datatype and notation!= None:
+                            error_messages.append(f"On {stage.name} service: {key} requires ${required_datatype} but ${type(notation)} is provided.")
 
         if len(error_messages) > 0:
             raise ValueError(error_messages)
@@ -255,23 +313,23 @@ class Pipeline:
         return True
 
 
-    def add_node(self, node):
-        if isinstance(node, Node) or isinstance(node, Pipeline):
-            self._stages.append(node)
+    def add_service(self, service):
+        if isinstance(service, SoffosAIService) or isinstance(service, SoffosPipeline):
+            self._stages.append(service)
         else:
-            raise ValueError(f"{node} is not a Node instance")
+            raise ValueError(f"{service} is not a SoffosAIService instance")
 
     
     def set_defaults(self, stages, user_input):
         defaulted_stages = []
         for i, stage in enumerate(stages):
-            if isinstance(stage, Pipeline):
+            if isinstance(stage, SoffosPipeline):
                 continue
 
-            stage: Node
+            stage: SoffosAIService
             stage_source = {}
-            required_keys = stage.service._serviceio.required_input_fields
-            require_one_choices = stage.service._serviceio.require_one_of_choice
+            required_keys = stage._serviceio.required_input_fields
+            require_one_choices = stage._serviceio.require_one_of_choice
             if len(require_one_choices) > 0:
                 for choices in require_one_choices:
                     required_keys.append(choices[0]) # the default argument is the first one
@@ -284,8 +342,8 @@ class Pipeline:
 
                 found_input = False
                 for j in range(i-1, -1, -1):
-                    stage_for_output:Node = stages[j]
-                    stage_for_output_output_fields = stage_for_output.service._serviceio.output_structure
+                    stage_for_output:SoffosAIService = stages[j]
+                    stage_for_output_output_fields = stage_for_output._serviceio.output_structure
                     if required_key in stage_for_output_output_fields:
                         stage_source[required_key] = {
                             "source": stage_for_output.name,
@@ -316,9 +374,9 @@ class Pipeline:
                             "field": required_key
                         }
                     else:
-                        raise ReferenceError(f"Please add {required_key} to user input. The previous Nodes' outputs do not provide this data.")
+                        raise ReferenceError(f"Please add {required_key} to user input. The previous Services' outputs do not provide this data.")
 
-            defaulted_stage = Node(stage.name, stage.service, stage_source)
+            defaulted_stage = stage.set_input_configs(stage.name, stage_source)
             defaulted_stages.append(defaulted_stage)
         
         return defaulted_stages
@@ -337,5 +395,5 @@ class Pipeline:
             return key
         return type(key)
     
-    def __call__(self, user_input):
-        return self.run(user_input)
+    def __call__(self, **kwargs):
+        return self.run(kwargs)
