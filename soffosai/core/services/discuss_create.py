@@ -38,7 +38,7 @@ class DiscussCreateService(SoffosAIService):
         :param context: The content to discuss about.
         :return: 
         :Examples
-        Detailed examples can be found at `Soffos Github Repository <https://github.com/Soffos-Inc/soffosai-python/tree/master/samples/services/discuss_create.py>`_
+        Detailed examples can be found at `Soffos Github Repository <https://github.com/Soffos-Inc/soffosai-python/tree/master/samples/services/discuss.py>`_
         '''
         return super().__call__(user=user, context=context)
 
@@ -57,7 +57,7 @@ class DiscussCreateService(SoffosAIService):
         :param context: The content to discuss about.
         :return: 
         :Examples
-        Detailed examples can be found at `Soffos Github Repository <https://github.com/Soffos-Inc/soffosai-python/tree/master/samples/services/discuss_create.py>`_
+        Detailed examples can be found at `Soffos Github Repository <https://github.com/Soffos-Inc/soffosai-python/tree/master/samples/services/discuss.py>`_
         '''
         return super().call(user=user, context=context)
 

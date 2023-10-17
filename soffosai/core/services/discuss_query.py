@@ -44,7 +44,7 @@ class DiscussQueryService(SoffosAIService):
             The message. source: The source of the message, which is either the user
             or Soffos.
         :Examples
-        Detailed examples can be found at `Soffos Github Repository <https://github.com/Soffos-Inc/soffosai-python/tree/master/samples/services/discuss_query.py>`_
+        Detailed examples can be found at `Soffos Github Repository <https://github.com/Soffos-Inc/soffosai-python/tree/master/samples/services/discuss.py>`_
         '''
         return super().__call__(user=user, query=query)
 
@@ -69,7 +69,7 @@ class DiscussQueryService(SoffosAIService):
             The message. source: The source of the message, which is either the user
             or Soffos.
         :Examples
-        Detailed examples can be found at `Soffos Github Repository <https://github.com/Soffos-Inc/soffosai-python/tree/master/samples/services/discuss_query.py>`_
+        Detailed examples can be found at `Soffos Github Repository <https://github.com/Soffos-Inc/soffosai-python/tree/master/samples/services/discuss.py>`_
         '''
         return super().call(user=user, query=query)
 

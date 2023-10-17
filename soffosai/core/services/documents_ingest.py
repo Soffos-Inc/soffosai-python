@@ -46,7 +46,7 @@ class DocumentsIngestService(SoffosAIService):
         success: Flag that identifies if the API call succeeded or not.
         filtered: List of passages not included in ingestion due to some profanity or errors.
         :Examples
-        Detailed examples can be found at `Soffos Github Repository <https://github.com/Soffos-Inc/soffosai-python/tree/master/samples/services/documents_ingest.py>`_
+        Detailed examples can be found at `Soffos Github Repository <https://github.com/Soffos-Inc/soffosai-python/tree/master/samples/services/documents.py>`_
         '''
         return super().__call__(user=user, document_id=document_id, meta=meta, document_name=document_name, text=text, tagged_elements=tagged_elements)
 
@@ -72,7 +72,7 @@ class DocumentsIngestService(SoffosAIService):
         success: Flag that identifies if the API call succeeded or not.
         filtered: List of passages not included in ingestion due to some profanity or errors.
         :Examples
-        Detailed examples can be found at `Soffos Github Repository <https://github.com/Soffos-Inc/soffosai-python/tree/master/samples/services/documents_ingest.py>`_
+        Detailed examples can be found at `Soffos Github Repository <https://github.com/Soffos-Inc/soffosai-python/tree/master/samples/services/documents.py>`_
         '''
         return super().call(user=user, document_id=document_id, meta=meta, document_name=document_name, text=text, tagged_elements=tagged_elements)
 

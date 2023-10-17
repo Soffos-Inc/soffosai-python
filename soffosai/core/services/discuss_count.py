@@ -47,7 +47,7 @@ class DiscussCountService(SoffosAIService):
         session_count: The count of sessions for your organization. It is important to map
             sessions to your users at the application level.
         :Examples
-        Detailed examples can be found at `Soffos Github Repository <https://github.com/Soffos-Inc/soffosai-python/tree/master/samples/services/discuss_count.py>`_
+        Detailed examples can be found at `Soffos Github Repository <https://github.com/Soffos-Inc/soffosai-python/tree/master/samples/services/discuss.py>`_
         '''
         return super().__call__(user=user, return_messages=return_messages)
 
@@ -75,7 +75,7 @@ class DiscussCountService(SoffosAIService):
         session_count: The count of sessions for your organization. It is important to map
             sessions to your users at the application level.
         :Examples
-        Detailed examples can be found at `Soffos Github Repository <https://github.com/Soffos-Inc/soffosai-python/tree/master/samples/services/discuss_count.py>`_
+        Detailed examples can be found at `Soffos Github Repository <https://github.com/Soffos-Inc/soffosai-python/tree/master/samples/services/discuss.py>`_
         '''
         return super().call(user=user, return_messages=return_messages)
 

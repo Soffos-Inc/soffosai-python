@@ -38,7 +38,7 @@ class DiscussDeleteService(SoffosAIService):
         :param session_ids: A list with the IDs of the sessions to be deleted.
         :return: success: Indicates whether the sessions have been successfuly deleted.
         :Examples
-        Detailed examples can be found at `Soffos Github Repository <https://github.com/Soffos-Inc/soffosai-python/tree/master/samples/services/discuss_delete.py>`_
+        Detailed examples can be found at `Soffos Github Repository <https://github.com/Soffos-Inc/soffosai-python/tree/master/samples/services/discuss.py>`_
         '''
         return super().__call__(user=user, session_ids=session_ids)
 
@@ -57,7 +57,7 @@ class DiscussDeleteService(SoffosAIService):
         :param session_ids: A list with the IDs of the sessions to be deleted.
         :return: success: Indicates whether the sessions have been successfuly deleted.
         :Examples
-        Detailed examples can be found at `Soffos Github Repository <https://github.com/Soffos-Inc/soffosai-python/tree/master/samples/services/discuss_delete.py>`_
+        Detailed examples can be found at `Soffos Github Repository <https://github.com/Soffos-Inc/soffosai-python/tree/master/samples/services/discuss.py>`_
         '''
         return super().call(user=user, session_ids=session_ids)
 

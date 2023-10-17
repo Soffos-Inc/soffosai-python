@@ -31,7 +31,7 @@ class DocumentsDeleteService(SoffosAIService):
         :param document_ids: A list of the document_ids of the documents to be deleted.
         :return: success: Flag that identifies if the API call succeeded or not.
         :Examples
-        Detailed examples can be found at `Soffos Github Repository <https://github.com/Soffos-Inc/soffosai-python/tree/master/samples/services/documents_delete.py>`_
+        Detailed examples can be found at `Soffos Github Repository <https://github.com/Soffos-Inc/soffosai-python/tree/master/samples/services/documents.py>`_
         '''
         return super().__call__(user=user, document_ids=document_ids)
 
@@ -50,7 +50,7 @@ class DocumentsDeleteService(SoffosAIService):
         :param document_ids: A list of the document_ids of the documents to be deleted.
         :return: success: Flag that identifies if the API call succeeded or not.
         :Examples
-        Detailed examples can be found at `Soffos Github Repository <https://github.com/Soffos-Inc/soffosai-python/tree/master/samples/services/documents_delete.py>`_
+        Detailed examples can be found at `Soffos Github Repository <https://github.com/Soffos-Inc/soffosai-python/tree/master/samples/services/documents.py>`_
         '''
         return super().call(user=user, document_ids=document_ids)
 
