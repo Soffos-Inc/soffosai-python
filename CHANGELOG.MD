@@ -1,6 +1,9 @@
 # CHANGELOG
 
 
+## 0.1.1
+- added Audio Converter, Natural Language SQL Generation, Search Recommendations, and Translation services.
+
 ## 0.1.0
 - Django, Flask, Fast API support
 

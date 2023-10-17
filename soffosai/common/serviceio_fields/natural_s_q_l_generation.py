@@ -34,14 +34,9 @@ class NaturalSQLGenerationIO(ServiceIO):
     @classmethod
     def special_validation(self, payload):
         
-        
         if payload.get('query') and payload.get('messages'):
             return False, 'Only one of "messages" and "query" can be provided.'
         if not payload.get('query') and not payload.get('messages'):
             return False, 'Please provide either "messages" or "query".'
-        if payload['boost']:
-            payload['chat_engine'] = 'gpt-4'
-        else:
-            payload['chat_engine'] = 'gpt-3.5-turbo-16k'
 
         return super().special_validation(payload)

@@ -227,7 +227,7 @@ class SoffosPipeline:
             
             # check if datatypes are correct:
             for key, notation in stage.source.items():
-                required_datatype = stage._serviceio.input_structure.get(key)
+                required_datatype = serviceio.input_structure.get(key)
                 if not required_datatype:
                     continue
                 required_datatype = self.get_serviceio_datatype(required_datatype)

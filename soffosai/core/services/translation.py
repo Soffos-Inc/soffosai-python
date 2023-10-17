@@ -19,7 +19,7 @@ class TranslationService(SoffosAIService):
         service = ServiceString.TRANSLATION
         super().__init__(service, **kwargs)
     
-    def __call__(self, user:str, text:str, auto_detect:bool=None, source_language_code:str=None, target_language_code:str=None) -> dict:
+    def __call__(self, user:str, text:str, auto_detect:bool=True, source_language_code:str=None, target_language_code:str=None) -> dict:
         '''
         Call the Translation Service
         

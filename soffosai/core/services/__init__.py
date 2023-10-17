@@ -6,27 +6,42 @@ Purpose: Soffos Services Objects
 '''
 
 from .service import SoffosAIService, inspect_arguments
+from .input_config import InputConfig
+
 from .ambiguity_detection import AmbiguityDetectionService
 from .answer_scoring import AnswerScoringService
+from .audio_converter import AudioConverterService
 from .contradiction_detection import ContradictionDetectionService
-from .documents import DocumentsIngestService, DocumentsSearchService, DocumentsDeleteService, DocumentsService
+from .documents_count import DocumentsCountService
+from .documents_delete import DocumentsDeleteService
+from .documents_ingest import DocumentsIngestService
+from .documents_search import DocumentsSearchService
 from .email_analysis import EmailAnalysisService
 from .emotion_detection import EmotionDetectionService
 from .file_converter import FileConverterService
 from .language_detection import LanguageDetectionService
-from .lets_discuss import LetsDiscussService, LetsDiscussCreateService, LetsDiscussRetrieveService, LetsDiscussDeleteService
+from .discuss_count import DiscussCountService
+from .discuss_create import DiscussCreateService
+from .discuss_delete import DiscussDeleteService
+from .discuss_query import DiscussQueryService
 from .logical_error_detection import LogicalErrorDetectionService
 from .microlesson import MicrolessonService
-from .NER import NamedEntityRecognitionService
+from .named_entity_recognition import NERService
+from .natural_s_q_l_generation import NaturalSQLGenerationService
 from .paraphrase import ParaphraseService
 from .profanity import ProfanityService
-from .qna_generation import QuestionAndAnswerGenerationService
+from .qna_generation import QnAGenerationService
 from .question_answering import QuestionAnsweringService
 from .review_tagger import ReviewTaggerService
+from .search_recommendations import SearchRecommendationsService
 from .sentiment_analysis import SentimentAnalysisService
 from .simplify import SimplifyService
+from .string_similarity import StringSimilarityService
 from .summarization import SummarizationService
+from .table_delete import TableDeleteService
+from .table_get import TableGetService
+from .table_ingest import TableIngestService
 from .table_generator import TableGeneratorService
-from .tag_generation import TagGenerationService
+from .tag import TagService
 from .transcript_correction import TranscriptCorrectionService
-from .input_config import InputConfig
+from .translation import TranslationService

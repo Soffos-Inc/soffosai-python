@@ -38,7 +38,6 @@ class QuestionAnsweringIO(ServiceIO):
     @classmethod
     def special_validation(self, payload):
         
-
         document_text: t.Optional[str] = payload.get('document_text')
         document_ids: t.Optional[t.List[str]] = payload.get('document_ids')
         client_id: t.Optional[str] = payload.get('client_id')
