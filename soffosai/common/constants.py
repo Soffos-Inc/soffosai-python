@@ -4,7 +4,7 @@ Created at: 2023-04-19
 Purpose: Organize the constants
 -----------------------------------------------------
 '''
-SOFFOS_SERVICE_URL = "https://dev-api.soffos.ai/service/"
+SOFFOS_SERVICE_URL = "https://api.soffos.ai/service/"
 # SOFFOS_SERVICE_URL = "http://localhost:8000/service/"
 
 SERVICES_LIST = [
