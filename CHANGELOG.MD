@@ -1,6 +1,9 @@
 # CHANGELOG
 
 
+## 0.1.2
+- bugfixes
+
 ## 0.1.1
 - added Audio Converter, Natural Language SQL Generation, Search Recommendations, and Translation services.
 
