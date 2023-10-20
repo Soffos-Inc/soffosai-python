@@ -27,9 +27,7 @@ The SoffosAIService class handles validation and execution of specified endpoint
 Here is the list of SoffosAIService Subclasses:
 ```
 [
-    "AmbiguityDetectionService",
     "AnswerScoringService",
-    "ContradictionDetectionService",
     "DocumentsService",
     "DocumentsIngestService", 
     "DocumentsSearchService", 

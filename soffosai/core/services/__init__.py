@@ -8,10 +8,8 @@ Purpose: Soffos Services Objects
 from .service import SoffosAIService, inspect_arguments
 from .input_config import InputConfig
 
-from .ambiguity_detection import AmbiguityDetectionService
 from .answer_scoring import AnswerScoringService
 from .audio_converter import AudioConverterService
-from .contradiction_detection import ContradictionDetectionService
 from .documents_count import DocumentsCountService
 from .documents_delete import DocumentsDeleteService
 from .documents_ingest import DocumentsIngestService

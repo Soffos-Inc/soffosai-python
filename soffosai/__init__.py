@@ -6,10 +6,8 @@ from .client import SoffosAiResponse
 from .common.constants import ServiceString
 from .core.pipelines import SoffosPipeline, FileIngestPipeline, FileSummaryPipeline, DocumentSummaryPipeline
 from .core.services import (
-    AmbiguityDetectionService, 
     AnswerScoringService, 
     AudioConverterService,
-    ContradictionDetectionService,
     DiscussQueryService,
     DiscussCountService,
     DiscussCreateService,
@@ -58,10 +56,9 @@ __all__ = [
     "SoffosAiResponse",
     "SoffosAIServices",
     "SoffosAIPipelines",
-    "AmbiguityDetectionService",
+
     "AnswerScoringService",
     "AudioConverterService",
-    "ContradictionDetectionService",
     "DiscussQueryService",
     "DiscussCountService",
     "DiscussCreateService",
@@ -108,4 +105,4 @@ __all__ = [
 
 __title__ = "soffosai"
 __description__ = "Python SDK for Soffos.ai API"
-__version__ = "0.0.3"
+__version__ = "0.1.3"

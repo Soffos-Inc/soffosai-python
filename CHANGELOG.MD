@@ -1,6 +1,9 @@
 # CHANGELOG
 
 
+## 0.1.3
+- removed Ambiguity detection and Contradiction detection
+
 ## 0.1.2
 - bugfixes
 

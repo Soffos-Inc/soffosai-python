@@ -8,10 +8,8 @@ SOFFOS_SERVICE_URL = "https://api.soffos.ai/service/"
 # SOFFOS_SERVICE_URL = "http://localhost:8000/service/"
 
 SERVICES_LIST = [
-    'ambiguity-detection',
     'answer-scoring', 
     'audio_converter',
-    'contradiction-detection', 
     'discuss/create',
     'discuss', 
     'discuss/count',
@@ -55,10 +53,8 @@ class ServiceString:
     '''
     Contains the list of Soffos services as attributes
     '''
-    AMBIGUITY_DETECTION = 'ambiguity-detection'
     ANSWER_SCORING = 'answer-scoring'
     AUDIO_CONVERTER = 'audio-converter'
-    CONTRADICTION_DETECTION = 'contradiction-detection'
     DISCUSS_CREATE = 'discuss/create'
     DISCUSS_QUERY = 'discuss'
     DISCUSS_RETRIEVE = 'discuss/count'
