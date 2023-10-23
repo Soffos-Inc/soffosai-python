@@ -22,7 +22,7 @@ class EmotionDetectionService(SoffosAIService):
         service = ServiceString.EMOTION_DETECTION
         super().__init__(service, **kwargs)
     
-    def __call__(self, user:str, text:str, sentence_split:int, sentence_overlap:bool, emotion_choices:str=['joy', 'trust', 'fear', 'surprise', 'sadness', 'disgust', 'anger', 'anticipation']) -> dict:
+    def __call__(self, user:str, text:str, sentence_split:int=None, sentence_overlap:bool=True, emotion_choices:list=['joy', 'trust', 'fear', 'surprise', 'sadness', 'disgust', 'anger', 'anticipation']) -> dict:
         '''
         Call the Emotion Detection Service
         
@@ -54,7 +54,7 @@ class EmotionDetectionService(SoffosAIService):
         super().set_input_configs(name=name, text=text, sentence_split=sentence_split, sentence_overlap=sentence_overlap, emotion_choices=emotion_choices)
 
     @classmethod
-    def call(self, user:str, text:str, sentence_split:int, sentence_overlap:bool, emotion_choices:str=['joy', 'trust', 'fear', 'surprise', 'sadness', 'disgust', 'anger', 'anticipation']) -> dict:
+    def call(self, user:str, text:str, sentence_split:int=None, sentence_overlap:bool=True, emotion_choices:list=['joy', 'trust', 'fear', 'surprise', 'sadness', 'disgust', 'anger', 'anticipation']) -> dict:
         '''
         Call the Emotion Detection Service
         

@@ -1,3 +1,16 @@
+# Welcome to the Soffos Platform SDK
+At Soffos Inc., our specialty is helping organizations create pioneering apps with conversational artificial intelligence (CAI) and natural language processing (NLP) at their core.
+
+NLP and conversational AI are at the heart of everything Soffos does. Using Soffos’ technology, we offer a suite of unique application programming interfaces (APIs) so businesses can choose the natural language and generative AI functionalities they would like to include in any kind of application.
+
+What sets Soffos apart is we’ve taken the most advanced technology, enhanced it with our own R&D, and made it easy to use and accessible to everyone.
+
+Our solution provides you with the ‘building blocks’ and core technologies required to build countless novel NLP applications, with minimal coding, from learning and assessment tools to knowledge management platforms and beyond. The opportunities with Soffos Platform are infinite.
+
+Sign up for a [Free Trial](https://platform.soffos.ai) and start building your first generative AI application today!
+
+Join our Discord channel: [SoffosAI](https://discord.gg/Q2yTEuFG2B)
+
 # Soffosai.py
 A Python software development kit for using Soffos AI's APIs.
 
@@ -50,6 +63,7 @@ Here is the list of SoffosAIService Subclasses:
     "TableGeneratorService",
     "TagGenerationService",
     "TranscriptCorrectionService",
+    "TranslationService"
 ]
 
 ```
