@@ -17,7 +17,5 @@ class SimplifyIO(ServiceIO):
     }
 
     output_structure = {
-        "paraphrase": str,
-        "simplify": bool
+        "simplify": str
     }
-

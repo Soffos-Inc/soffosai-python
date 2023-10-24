@@ -23,6 +23,5 @@ class DocumentsSearchIO(ServiceIO):
     }
 
     output_structure = {
-        "items": list
+        "passages": list
     }
-
