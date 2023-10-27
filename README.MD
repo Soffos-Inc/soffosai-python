@@ -85,7 +85,10 @@ print(json.dumps(output, indent=4))
 ```
 
 ### Samples
-Sample code for each service can be found on [samples/services](https://github.com/Soffos-Inc/soffosai-python/tree/master/samples/services)
+- Sample code for each service can be found on [samples/services](https://github.com/Soffos-Inc/soffosai-python/tree/master/samples/services)
+- Google Colab notebooks:
+    - [Document ingestion and question-answering example](https://colab.research.google.com/drive/18BWXlPjLWaFzvzqU6TP_cMAGubQOWxzP?usp=sharing)
+    - [Question generation and answer scoring.](https://colab.research.google.com/drive/1aY9k_GzPFu99Dr-EELeBPFOc3fayUytR?usp=sharing)
 
 ### Where to get the required fields for Services
 To know the required fields of each SoffosAIService, they are defined in:
