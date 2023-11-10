@@ -4,12 +4,19 @@ Created at: 2023-04-19
 Purpose: Organize the constants
 -----------------------------------------------------
 '''
-SOFFOS_SERVICE_URL = "https://api.soffos.ai/service/"
+# SOFFOS_SERVICE_URL = "https://api.soffos.ai/service/"
 # SOFFOS_SERVICE_URL = "http://localhost:8000/service/"
+SOFFOS_SERVICE_URL = "https://dev-api.soffos.ai/service/"
 
 SERVICES_LIST = [
     'answer-scoring', 
     'audio_converter',
+    'chatbot/create',
+    'chatbot',
+    'chatbot/get',
+    'chatbot/delete',
+    'chatbot/sessions/get',
+    'chatbot/sessions/delete',
     'discuss/create',
     'discuss', 
     'discuss/count',
@@ -55,6 +62,12 @@ class ServiceString:
     '''
     ANSWER_SCORING = 'answer-scoring'
     AUDIO_CONVERTER = 'audio-converter'
+    CHAT_BOT_CREATE = 'chatbot/create'
+    CHAT_BOT = 'chatbot'
+    CHAT_BOTS_GET = 'chatbot/get'
+    CHAT_BOTS_DELETE = 'chatbot/delete'
+    CHAT_BOT_GET_USER_SESSIONS = 'chatbot/sessions/get'
+    CHAT_BOT_DELETE_USER_SESSIONS = 'chatbot/sessions/delete'
     DISCUSS_CREATE = 'discuss/create'
     DISCUSS_QUERY = 'discuss'
     DISCUSS_RETRIEVE = 'discuss/count'
@@ -94,4 +107,4 @@ class ServiceString:
     BATCH_SERVICE = 'batch-service2'
 
 
-FORM_DATA_REQUIRED = [ServiceString.FILE_CONVERTER,]
+FORM_DATA_REQUIRED = [ServiceString.FILE_CONVERTER, ServiceString.AUDIO_CONVERTER]

@@ -240,10 +240,15 @@ class SoffosAIService:
                 response.raise_for_status()
             except (requests.exceptions.HTTPError, requests.exceptions.ConnectionError, 
                     requests.exceptions.Timeout, requests.exceptions.RequestException) as err:
-                return {
+                return_value = {
                     "status": 'Error',
                     "error": str(err)
                 }
+                try:
+                    return_value['detail'] = response.text
+                except AttributeError:
+                    pass
+                return return_value
             
         else:
             file_obj = payload.get('file')
@@ -310,7 +315,7 @@ class SoffosAIService:
         for k, v in raw_payload.items():
             if v != None: # if the value is None, we don't pass it to the payload
                 payload[k] = v
-                if k == "document_name":
+                if k == "document_name" or k == "chatbot_name":
                     payload["name"] = v
                 elif k == "question":
                     payload['message'] = v

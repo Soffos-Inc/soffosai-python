@@ -10,6 +10,12 @@ from .input_config import InputConfig
 
 from .answer_scoring import AnswerScoringService
 from .audio_converter import AudioConverterService
+from .chat_bot_create import ChatBotCreateService
+from .chat_bot import ChatBotService
+from .chat_bots_get import ChatBotsGetService
+from .chat_bots_delete import ChatBotsDeleteService
+from .chat_bot_get_user_sessions import ChatBotGetUserSessionsService
+from .chat_bot_delete_user_sessions import ChatBotDeleteUserSessionsService
 from .documents_count import DocumentsCountService
 from .documents_delete import DocumentsDeleteService
 from .documents_ingest import DocumentsIngestService

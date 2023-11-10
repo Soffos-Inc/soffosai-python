@@ -1,6 +1,6 @@
 '''
 Copyright (c)2022 - Soffos.ai - All rights reserved
-Updated at: 2023-11-08
+Updated at: 2023-11-10
 Purpose: Easily use Chat Bot Delete User Sessions Service
 -----------------------------------------------------
 '''
@@ -8,7 +8,6 @@ from .service import SoffosAIService
 from .input_config import InputConfig
 from soffosai.common.constants import ServiceString
 from typing import Union
-
 
 
 class ChatBotDeleteUserSessionsService(SoffosAIService):
@@ -25,13 +24,13 @@ class ChatBotDeleteUserSessionsService(SoffosAIService):
         Call the Chat Bot Delete User Sessions Service
         
         :param user: The ID of the user accessing the Soffos API.
+            This string will be used for throttling and profanity tracking.
             Soffos assumes that the owner of the api is an application (app) and that app has users.
             Soffos API will accept any string."
-        
-        :param chatbot_id: None
-        :param user_id: None
+        :param chatbot_id: The chatbot's id.
+        :param user_id: A unique user id. It is recommended that your provide a UUID.
         :param session_ids: List of the ids of the user sessions to be deleted.
-        :return: success: None
+        :return: success: Determines if the API call is successful or not.
         :Examples
         Detailed examples can be found at `Soffos Github Repository <https://github.com/Soffos-Inc/soffosai-python/tree/master/samples/services/chat_bot_delete_user_sessions.py>`_
         '''
@@ -46,13 +45,13 @@ class ChatBotDeleteUserSessionsService(SoffosAIService):
         Call the Chat Bot Delete User Sessions Service
         
         :param user: The ID of the user accessing the Soffos API.
+            This string will be used for throttling and profanity tracking.
             Soffos assumes that the owner of the api is an application (app) and that app has users.
             Soffos API will accept any string."
-        
-        :param chatbot_id: None
-        :param user_id: None
+        :param chatbot_id: The chatbot's id.
+        :param user_id: A unique user id. It is recommended that your provide a UUID.
         :param session_ids: List of the ids of the user sessions to be deleted.
-        :return: success: None
+        :return: success: Determines if the API call is successful or not.
         :Examples
         Detailed examples can be found at `Soffos Github Repository <https://github.com/Soffos-Inc/soffosai-python/tree/master/samples/services/chat_bot_delete_user_sessions.py>`_
         '''

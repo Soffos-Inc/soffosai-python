@@ -67,7 +67,6 @@ __all__ = [
     "DocumentsIngestService", 
     "DocumentsSearchService", 
     "DocumentsDeleteService", 
-    "DocumentsService",
     "EmailAnalysisService",
     "EmotionDetectionService",
     "FileConverterService",

@@ -1,6 +1,6 @@
 '''
 Copyright (c)2022 - Soffos.ai - All rights reserved
-Updated at: 2023-11-08
+Updated at: 2023-11-10
 Purpose: Easily use Chat Bot Get User Sessions Service
 -----------------------------------------------------
 '''
@@ -8,7 +8,6 @@ from .service import SoffosAIService
 from .input_config import InputConfig
 from soffosai.common.constants import ServiceString
 from typing import Union
-
 
 
 class ChatBotGetUserSessionsService(SoffosAIService):
@@ -25,11 +24,11 @@ class ChatBotGetUserSessionsService(SoffosAIService):
         Call the Chat Bot Get User Sessions Service
         
         :param user: The ID of the user accessing the Soffos API.
+            This string will be used for throttling and profanity tracking.
             Soffos assumes that the owner of the api is an application (app) and that app has users.
             Soffos API will accept any string."
-        
-        :param chatbot_id: None
-        :param user_id: None
+        :param chatbot_id: The chatbot's id.
+        :param user_id: A unique user id. It is recommended that your provide a UUID.
         :param session_ids: Specify the id of the sessions you need to get.
         :return: sessions: None
         :Examples
@@ -46,11 +45,11 @@ class ChatBotGetUserSessionsService(SoffosAIService):
         Call the Chat Bot Get User Sessions Service
         
         :param user: The ID of the user accessing the Soffos API.
+            This string will be used for throttling and profanity tracking.
             Soffos assumes that the owner of the api is an application (app) and that app has users.
             Soffos API will accept any string."
-        
-        :param chatbot_id: None
-        :param user_id: None
+        :param chatbot_id: The chatbot's id.
+        :param user_id: A unique user id. It is recommended that your provide a UUID.
         :param session_ids: Specify the id of the sessions you need to get.
         :return: sessions: None
         :Examples

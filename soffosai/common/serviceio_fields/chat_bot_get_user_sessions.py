@@ -1,6 +1,6 @@
 '''
 Copyright (c)2022 - Soffos.ai - All rights reserved
-Updated at: 2023-11-08
+Updated at: 2023-11-10
 Purpose: Input/Output description for Chat Bot Get User Sessions Service
 -----------------------------------------------------
 '''
