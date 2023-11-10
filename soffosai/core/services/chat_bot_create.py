@@ -38,7 +38,6 @@ class ChatBotCreateService(SoffosAIService):
         :return: chatbot_id: The chatbot's id. Provided when you create the chatbot. If you
             provide this, the chatbot with this ID's will be updated. The
             role and name will be updated.
-        success: Determines if the API call is successful or not.
         :Examples
         Detailed examples can be found at `Soffos Github Repository <https://github.com/Soffos-Inc/soffosai-python/tree/master/samples/services/chat_bot_create.py>`_
         '''
@@ -66,8 +65,8 @@ class ChatBotCreateService(SoffosAIService):
         :return: chatbot_id: The chatbot's id. Provided when you create the chatbot. If you
             provide this, the chatbot with this ID's will be updated. The
             role and name will be updated.
-        success: Determines if the API call is successful or not.
         :Examples
         Detailed examples can be found at `Soffos Github Repository <https://github.com/Soffos-Inc/soffosai-python/tree/master/samples/services/chat_bot_create.py>`_
         '''
         return super().call(user=user, role=role, chatbot_name=chatbot_name, chatbot_id=chatbot_id)
+

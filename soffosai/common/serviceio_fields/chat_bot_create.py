@@ -19,6 +19,6 @@ class ChatBotCreateIO(ServiceIO):
     }
 
     output_structure = {
-        "chatbot_id": str,
-        "success": bool
+        "chatbot_id": str
     }
+
