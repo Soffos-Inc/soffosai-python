@@ -16,7 +16,7 @@ class EmotionDetectionIO(ServiceIO):
         "text": str, 
         "sentence_split": int, 
         "sentence_overlap": bool, 
-        "emotion_choices": str
+        "emotion_choices": list
     }
 
     output_structure = {
