@@ -1,5 +1,9 @@
 # CHANGELOG
 
+
+## 0.1.6
+- emotion detection bugfix
+
 ## 0.1.5
 - chatbot service added
 
