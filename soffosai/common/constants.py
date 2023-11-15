@@ -4,9 +4,7 @@ Created at: 2023-04-19
 Purpose: Organize the constants
 -----------------------------------------------------
 '''
-# SOFFOS_SERVICE_URL = "https://api.soffos.ai/service/"
-# SOFFOS_SERVICE_URL = "http://localhost:8000/service/"
-SOFFOS_SERVICE_URL = "https://dev-api.soffos.ai/service/"
+SOFFOS_SERVICE_URL = "https://api.soffos.ai/service/"
 
 SERVICES_LIST = [
     'answer-scoring', 
@@ -53,6 +51,7 @@ SERVICES_LIST = [
     'tag',
     'transcript-correction',
     'translation',
+    'website-converter',
     'batch-service/'
 ]
 
@@ -104,6 +103,7 @@ class ServiceString:
     TAG = 'tag'
     TRANSCRIPT_CORRECTION = 'transcript-correction'
     TRANSLATION = 'translation'
+    WEBSITE_CONVERTER = 'website-converter'
     BATCH_SERVICE = 'batch-service2'
 
 

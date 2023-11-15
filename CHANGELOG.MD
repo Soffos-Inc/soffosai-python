@@ -1,5 +1,7 @@
 # CHANGELOG
 
+## 0.1.7
+- added website converter service
 
 ## 0.1.6
 - emotion detection bugfix

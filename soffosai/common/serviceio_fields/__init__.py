@@ -38,3 +38,4 @@ from .table_generator import TableGeneratorIO
 from .tag import TagIO
 from .transcript_correction import TranscriptCorrectionIO
 from .translation import TranslationIO
+from .website_converter import WebsiteConverterIO

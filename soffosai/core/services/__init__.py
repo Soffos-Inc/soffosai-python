@@ -49,3 +49,4 @@ from .table_generator import TableGeneratorService
 from .tag import TagService
 from .transcript_correction import TranscriptCorrectionService
 from .translation import TranslationService
+from .website_converter import WebsiteConverterService

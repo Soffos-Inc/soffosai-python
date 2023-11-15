@@ -8,6 +8,12 @@ from .core.pipelines import SoffosPipeline, FileIngestPipeline, FileSummaryPipel
 from .core.services import (
     AnswerScoringService, 
     AudioConverterService,
+    ChatBotCreateService,
+    ChatBotDeleteUserSessionsService,
+    ChatBotGetUserSessionsService,
+    ChatBotsDeleteService,
+    ChatBotService,
+    ChatBotsGetService,
     DiscussQueryService,
     DiscussCountService,
     DiscussCreateService,
@@ -42,6 +48,7 @@ from .core.services import (
     TableIngestService,
     TranscriptCorrectionService,
     TranslationService,
+    WebsiteConverterService
 )
 from .common.constants import ServiceString
 from .core import services as SoffosAIServices
@@ -59,6 +66,12 @@ __all__ = [
 
     "AnswerScoringService",
     "AudioConverterService",
+    "ChatBotCreateService",
+    "ChatBotDeleteUserSessionsService",
+    "ChatBotGetUserSessionsService",
+    "ChatBotsDeleteService",
+    "ChatBotService",
+    "ChatBotsGetService",
     "DiscussQueryService",
     "DiscussCountService",
     "DiscussCreateService",
@@ -93,6 +106,7 @@ __all__ = [
     "TableIngestService",
     "TranscriptCorrectionService",
     "TranslationService",
+    "WebsiteConverterService",
 
     "SoffosPipeline", 
     "FileIngestPipeline", 
@@ -104,4 +118,4 @@ __all__ = [
 
 __title__ = "soffosai"
 __description__ = "Python SDK for Soffos.ai API"
-__version__ = "0.1.3"
+__version__ = "0.1.7"
