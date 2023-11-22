@@ -4,7 +4,6 @@ Created at: 2023-04-19
 Purpose: Maps the input and output fields of services
 -----------------------------------------------------
 '''
-from typing import IO
 from ..constants import ServiceString
 
 

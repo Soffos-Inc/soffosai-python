@@ -1,5 +1,9 @@
 # CHANGELOG
 
+
+## 0.1.8
+- renamed LetsDiscuss service to Discuss
+
 ## 0.1.7
 - added website converter service
 

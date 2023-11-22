@@ -1,6 +1,8 @@
 import json
+import soffosai
 from soffosai import *
 
+soffosai.api_key = "Token 0d1d8cc5-ccd5-47dc-be99-a8153def24f3"
 service = AnswerScoringService()
 output = service(
     user = "client_user_id",

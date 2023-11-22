@@ -84,7 +84,6 @@ __all__ = [
     "EmotionDetectionService",
     "FileConverterService",
     "LanguageDetectionService",
-    "LetsDiscussService",
     "LogicalErrorDetectionService",
     "MicrolessonService",
     "NERService",
@@ -118,4 +117,4 @@ __all__ = [
 
 __title__ = "soffosai"
 __description__ = "Python SDK for Soffos.ai API"
-__version__ = "0.1.7"
+__version__ = "0.1.8"

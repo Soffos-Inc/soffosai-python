@@ -13,7 +13,7 @@ from typing import Union
 
 class ProfanityService(SoffosAIService):
     '''
-    Profanity related serializer
+    Detects profanity in the given text.
     '''
 
     def __init__(self, **kwargs) -> None:

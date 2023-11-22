@@ -12,7 +12,7 @@ from typing import Union
 
 class TranslationService(SoffosAIService):
     '''
-    General HTTP service client.
+    Translates text from one language to another.
     '''
 
     def __init__(self, **kwargs) -> None:

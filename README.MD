@@ -60,7 +60,6 @@ Here is the list of SoffosAIService Subclasses:
     "EmotionDetectionService",
     "FileConverterService",
     "LanguageDetectionService",
-    "LetsDiscussService",
     "LogicalErrorDetectionService",
     "MicrolessonService",
     "NERService",
