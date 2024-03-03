@@ -1,6 +1,6 @@
 '''
 Copyright (c)2022 - Soffos.ai - All rights reserved
-Updated at: 2023-10-09
+Updated at: 2024-03-03
 Purpose: Input/Output description for Documents Search Service
 -----------------------------------------------------
 '''
@@ -11,8 +11,9 @@ from ..constants import ServiceString
 class DocumentsSearchIO(ServiceIO):
     service = ServiceString.DOCUMENTS_SEARCH
     required_input_fields = []
-    optional_input_fields = ["query","document_ids","top_n_keyword","top_n_natural_language","filters","date_from","date_until"]
+    optional_input_fields = ["engine","query","document_ids","top_n_keyword","top_n_natural_language","filters","date_from","date_until"]
     input_structure = {
+        "engine": str, 
         "query": str, 
         "document_ids": list, 
         "top_n_keyword": int, 
@@ -23,5 +24,6 @@ class DocumentsSearchIO(ServiceIO):
     }
 
     output_structure = {
+        "engine": str,
         "passages": list
     }

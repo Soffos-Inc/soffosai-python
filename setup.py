@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = "soffosai",
-    version = "0.1.8",
+    version = "0.1.9",
     author = "Soffosai",
     author_email = "Soffos@soffos.ai",
     description = "A Python software development kit for using Soffos AI's APIs.",

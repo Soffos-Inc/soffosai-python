@@ -1,6 +1,6 @@
 '''
 Copyright (c)2022 - Soffos.ai - All rights reserved
-Updated at: 2023-10-09
+Updated at: 2024-03-03
 Purpose: Input/Output description for Answer Scoring Service
 -----------------------------------------------------
 '''
@@ -11,8 +11,9 @@ from ..constants import ServiceString
 class AnswerScoringIO(ServiceIO):
     service = ServiceString.ANSWER_SCORING
     required_input_fields = ["context","question","user_answer"]
-    optional_input_fields = ["answer"]
+    optional_input_fields = ["engine","answer"]
     input_structure = {
+        "engine": str, 
         "context": str, 
         "question": str, 
         "answer": str, 
@@ -20,6 +21,7 @@ class AnswerScoringIO(ServiceIO):
     }
 
     output_structure = {
+        "engine": str,
         "score": float,
         "reasoning": str
     }

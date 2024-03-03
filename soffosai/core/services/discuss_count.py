@@ -1,6 +1,6 @@
 '''
 Copyright (c)2022 - Soffos.ai - All rights reserved
-Updated at: 2023-10-09
+Updated at: 2024-03-03
 Purpose: Easily use Discuss Count Service
 -----------------------------------------------------
 '''
@@ -8,7 +8,6 @@ from .service import SoffosAIService
 from .input_config import InputConfig
 from soffosai.common.constants import ServiceString
 from typing import Union
-
 
 
 class DiscussCountService(SoffosAIService):
@@ -27,55 +26,63 @@ class DiscussCountService(SoffosAIService):
         service = ServiceString.DISCUSS_COUNT
         super().__init__(service, **kwargs)
     
-    def __call__(self, user:str, return_messages:bool) -> dict:
+    def __call__(self, user:str, return_messages:bool, engine:str=None) -> dict:
         '''
         Call the Discuss Count Service
         
         :param user: The ID of the user accessing the Soffos API.
+            This string will be used for throttling and profanity tracking.
             Soffos assumes that the owner of the api is an application (app) and that app has users.
             Soffos API will accept any string."
-        
-        :param return_messages: When set to true, in addition to returning all the session records, it
-            will also return all the messages associated with each session.
-        :return: sessions: List of sessions. Each session contains the following data: context: The
-            content discussed in the session. session_id: Session's ID. messages: If
-            return_messages is true, this list will contain a list of dictionaries
-            representing the interactions between the system and the user. Each
-            dictionary contains the user's query, the system's response and the
-            interaction's ID as message_id, which is an integer indicating their
-            order.
-        session_count: The count of sessions for your organization. It is important to map
-            sessions to your users at the application level.
+        :param return_messages: When set to true, in addition to returning all the session
+            records, it will also return all the messages associated with
+            each session.
+        :param engine: The LLM engine to be used.
+        :return: engine: The LLM engine used.
+        sessions: List of sessions. Each session contains the following data:
+            context: The content discussed in the session. session_id:
+            Session's ID. messages: If return_messages is true, this list
+            will contain a list of dictionaries representing the
+            interactions between the system and the user. Each dictionary
+            contains the user's query, the system's response and the
+            interaction's ID as message_id, which is an integer indicating
+            their order.
+        session_count: The count of sessions for your organization. It is important to
+            map sessions to your users at the application level.
         :Examples
-        Detailed examples can be found at `Soffos Github Repository <https://github.com/Soffos-Inc/soffosai-python/tree/master/samples/services/discuss.py>`_
+        Detailed examples can be found at `Soffos Github Repository <https://github.com/Soffos-Inc/soffosai-python/tree/master/samples/services/discuss_count.py>`_
         '''
-        return super().__call__(user=user, return_messages=return_messages)
+        return super().__call__(user=user, return_messages=return_messages, engine=engine)
 
-    def set_input_configs(self, name:str, return_messages:Union[bool, InputConfig]):
-        super().set_input_configs(name=name, return_messages=return_messages)
+    def set_input_configs(self, name:str, return_messages:Union[bool, InputConfig], engine:Union[str, InputConfig]=None):
+        super().set_input_configs(name=name, return_messages=return_messages, engine=engine)
 
     @classmethod
-    def call(self, user:str, return_messages:bool) -> dict:
+    def call(self, user:str, return_messages:bool, engine:str=None) -> dict:
         '''
         Call the Discuss Count Service
         
         :param user: The ID of the user accessing the Soffos API.
+            This string will be used for throttling and profanity tracking.
             Soffos assumes that the owner of the api is an application (app) and that app has users.
             Soffos API will accept any string."
-        
-        :param return_messages: When set to true, in addition to returning all the session records, it
-            will also return all the messages associated with each session.
-        :return: sessions: List of sessions. Each session contains the following data: context: The
-            content discussed in the session. session_id: Session's ID. messages: If
-            return_messages is true, this list will contain a list of dictionaries
-            representing the interactions between the system and the user. Each
-            dictionary contains the user's query, the system's response and the
-            interaction's ID as message_id, which is an integer indicating their
-            order.
-        session_count: The count of sessions for your organization. It is important to map
-            sessions to your users at the application level.
+        :param return_messages: When set to true, in addition to returning all the session
+            records, it will also return all the messages associated with
+            each session.
+        :param engine: The LLM engine to be used.
+        :return: engine: The LLM engine used.
+        sessions: List of sessions. Each session contains the following data:
+            context: The content discussed in the session. session_id:
+            Session's ID. messages: If return_messages is true, this list
+            will contain a list of dictionaries representing the
+            interactions between the system and the user. Each dictionary
+            contains the user's query, the system's response and the
+            interaction's ID as message_id, which is an integer indicating
+            their order.
+        session_count: The count of sessions for your organization. It is important to
+            map sessions to your users at the application level.
         :Examples
-        Detailed examples can be found at `Soffos Github Repository <https://github.com/Soffos-Inc/soffosai-python/tree/master/samples/services/discuss.py>`_
+        Detailed examples can be found at `Soffos Github Repository <https://github.com/Soffos-Inc/soffosai-python/tree/master/samples/services/discuss_count.py>`_
         '''
-        return super().call(user=user, return_messages=return_messages)
+        return super().call(user=user, return_messages=return_messages, engine=engine)
 

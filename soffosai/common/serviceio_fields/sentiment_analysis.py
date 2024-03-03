@@ -1,6 +1,6 @@
 '''
 Copyright (c)2022 - Soffos.ai - All rights reserved
-Updated at: 2023-10-09
+Updated at: 2024-03-03
 Purpose: Input/Output description for Sentiment Analysis Service
 -----------------------------------------------------
 '''
@@ -11,17 +11,18 @@ from ..constants import ServiceString
 class SentimentAnalysisIO(ServiceIO):
     service = ServiceString.SENTIMENT_ANALYSIS
     required_input_fields = ["text"]
-    optional_input_fields = ["sentence_split","sentence_overlap"]
+    optional_input_fields = ["engine","sentence_split","sentence_overlap"]
     input_structure = {
+        "engine": str, 
         "text": str, 
         "sentence_split": int, 
         "sentence_overlap": bool
     }
 
     output_structure = {
+        "engine": str,
         "sentiment_breakdown": dict,
-        "sentiment_overall": dict,
-        "sentiment": str
+        "sentiment_overall": dict
     }
 
 

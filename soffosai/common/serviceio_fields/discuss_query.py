@@ -1,6 +1,6 @@
 '''
 Copyright (c)2022 - Soffos.ai - All rights reserved
-Updated at: 2023-10-09
+Updated at: 2024-03-03
 Purpose: Input/Output description for Discuss Query Service
 -----------------------------------------------------
 '''
@@ -11,12 +11,14 @@ from ..constants import ServiceString
 class DiscussQueryIO(ServiceIO):
     service = ServiceString.DISCUSS_QUERY
     required_input_fields = ["query"]
-    optional_input_fields = []
+    optional_input_fields = ["engine"]
     input_structure = {
+        "engine": str, 
         "query": str
     }
 
     output_structure = {
+        "engine": str,
         "response": str,
         "context": str,
         "messages": list

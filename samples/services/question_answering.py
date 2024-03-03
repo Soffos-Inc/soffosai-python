@@ -1,8 +1,11 @@
 import json
-from soffosai import *
+import soffosai
+from soffosai import SoffosAIServices
+
+soffosai.api_key = "<your API key>"
 
 
-service = QuestionAnsweringService()
+service = SoffosAIServices.QuestionAnsweringService()
 output = service(
     user = "client_id",
     question = "What is the topic?",

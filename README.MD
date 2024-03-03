@@ -81,9 +81,12 @@ Here is the list of SoffosAIService Subclasses:
 ```
 - Instantiate the SoffosAIService that you need:
 ```
-from soffosai import *
+import soffosai
+from soffosai import SoffosAIServices
 
-service = SummarizationService()
+soffosai.api_key = "<your API key>"
+
+service = SoffosAIServices.SummarizationService()
 ```
 
 - Call the service and print the output:

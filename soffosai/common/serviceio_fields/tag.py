@@ -1,6 +1,6 @@
 '''
 Copyright (c)2022 - Soffos.ai - All rights reserved
-Updated at: 2023-10-09
+Updated at: 2024-03-03
 Purpose: Input/Output description for Tag Service
 -----------------------------------------------------
 '''
@@ -11,13 +11,15 @@ from ..constants import ServiceString
 class TagIO(ServiceIO):
     service = ServiceString.TAG
     required_input_fields = ["text"]
-    optional_input_fields = ["types","n"]
+    optional_input_fields = ["engine","types","n"]
     input_structure = {
+        "engine": str, 
         "text": str, 
-        "types": str, 
+        "types": list, 
         "n": int
     }
 
     output_structure = {
+        "engine": str,
         "tags": dict
     }

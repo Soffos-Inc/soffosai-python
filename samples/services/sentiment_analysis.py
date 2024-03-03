@@ -1,8 +1,11 @@
 import json
-from soffosai import *
+import soffosai
+from soffosai import SoffosAIServices
+
+soffosai.api_key = "<your API key>"
 
 
-service = SentimentAnalysisService()
+service = SoffosAIServices.SentimentAnalysisService()
 output = service(
     user = "client_id",
     text = "Avocado shake tastes great!"

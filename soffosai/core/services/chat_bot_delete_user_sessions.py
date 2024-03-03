@@ -1,6 +1,6 @@
 '''
 Copyright (c)2022 - Soffos.ai - All rights reserved
-Updated at: 2023-11-10
+Updated at: 2024-03-03
 Purpose: Easily use Chat Bot Delete User Sessions Service
 -----------------------------------------------------
 '''
@@ -19,7 +19,7 @@ class ChatBotDeleteUserSessionsService(SoffosAIService):
         service = ServiceString.CHAT_BOT_DELETE_USER_SESSIONS
         super().__init__(service, **kwargs)
     
-    def __call__(self, user:str, chatbot_id:str, user_id:str, session_ids:list=None) -> dict:
+    def __call__(self, user:str, chatbot_id:str, user_id:str, engine:str=None, session_ids:list=None) -> dict:
         '''
         Call the Chat Bot Delete User Sessions Service
         
@@ -29,18 +29,20 @@ class ChatBotDeleteUserSessionsService(SoffosAIService):
             Soffos API will accept any string."
         :param chatbot_id: The chatbot's id.
         :param user_id: A unique user id. It is recommended that your provide a UUID.
+        :param engine: The LLM engine to be used.
         :param session_ids: List of the ids of the user sessions to be deleted.
-        :return: success: Determines if the API call is successful or not.
+        :return: engine: The LLM engine used.
+        success: Determines if the API call is successful or not.
         :Examples
         Detailed examples can be found at `Soffos Github Repository <https://github.com/Soffos-Inc/soffosai-python/tree/master/samples/services/chat_bot_delete_user_sessions.py>`_
         '''
-        return super().__call__(user=user, chatbot_id=chatbot_id, user_id=user_id, session_ids=session_ids)
+        return super().__call__(user=user, chatbot_id=chatbot_id, user_id=user_id, engine=engine, session_ids=session_ids)
 
-    def set_input_configs(self, name:str, chatbot_id:Union[str, InputConfig], user_id:Union[str, InputConfig], session_ids:Union[list, InputConfig]=None):
-        super().set_input_configs(name=name, chatbot_id=chatbot_id, user_id=user_id, session_ids=session_ids)
+    def set_input_configs(self, name:str, chatbot_id:Union[str, InputConfig], user_id:Union[str, InputConfig], engine:Union[str, InputConfig]=None, session_ids:Union[list, InputConfig]=None):
+        super().set_input_configs(name=name, chatbot_id=chatbot_id, user_id=user_id, engine=engine, session_ids=session_ids)
 
     @classmethod
-    def call(self, user:str, chatbot_id:str, user_id:str, session_ids:list=None) -> dict:
+    def call(self, user:str, chatbot_id:str, user_id:str, engine:str=None, session_ids:list=None) -> dict:
         '''
         Call the Chat Bot Delete User Sessions Service
         
@@ -50,10 +52,12 @@ class ChatBotDeleteUserSessionsService(SoffosAIService):
             Soffos API will accept any string."
         :param chatbot_id: The chatbot's id.
         :param user_id: A unique user id. It is recommended that your provide a UUID.
+        :param engine: The LLM engine to be used.
         :param session_ids: List of the ids of the user sessions to be deleted.
-        :return: success: Determines if the API call is successful or not.
+        :return: engine: The LLM engine used.
+        success: Determines if the API call is successful or not.
         :Examples
         Detailed examples can be found at `Soffos Github Repository <https://github.com/Soffos-Inc/soffosai-python/tree/master/samples/services/chat_bot_delete_user_sessions.py>`_
         '''
-        return super().call(user=user, chatbot_id=chatbot_id, user_id=user_id, session_ids=session_ids)
+        return super().call(user=user, chatbot_id=chatbot_id, user_id=user_id, engine=engine, session_ids=session_ids)
 

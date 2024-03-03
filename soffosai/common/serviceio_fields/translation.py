@@ -1,6 +1,6 @@
 '''
 Copyright (c)2022 - Soffos.ai - All rights reserved
-Updated at: 2023-10-09
+Updated at: 2024-03-03
 Purpose: Input/Output description for Translation Service
 -----------------------------------------------------
 '''
@@ -11,8 +11,9 @@ from ..constants import ServiceString
 class TranslationIO(ServiceIO):
     service = ServiceString.TRANSLATION
     required_input_fields = ["text"]
-    optional_input_fields = ["auto_detect","source_language_code","target_language_code"]
+    optional_input_fields = ["engine","auto_detect","source_language_code","target_language_code"]
     input_structure = {
+        "engine": str, 
         "text": str, 
         "auto_detect": bool, 
         "source_language_code": str, 
@@ -20,6 +21,7 @@ class TranslationIO(ServiceIO):
     }
 
     output_structure = {
+        "engine": str,
         "target_language_code": str,
         "translation": dict
     }

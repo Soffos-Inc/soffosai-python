@@ -1,6 +1,6 @@
 '''
 Copyright (c)2022 - Soffos.ai - All rights reserved
-Updated at: 2023-10-09
+Updated at: 2024-03-03
 Purpose: Easily use Discuss Delete Service
 -----------------------------------------------------
 '''
@@ -8,7 +8,6 @@ from .service import SoffosAIService
 from .input_config import InputConfig
 from soffosai.common.constants import ServiceString
 from typing import Union
-
 
 
 class DiscussDeleteService(SoffosAIService):
@@ -27,37 +26,41 @@ class DiscussDeleteService(SoffosAIService):
         service = ServiceString.DISCUSS_DELETE
         super().__init__(service, **kwargs)
     
-    def __call__(self, user:str, session_ids:list=None) -> dict:
+    def __call__(self, user:str, engine:str=None, session_ids:list=None) -> dict:
         '''
         Call the Discuss Delete Service
         
         :param user: The ID of the user accessing the Soffos API.
+            This string will be used for throttling and profanity tracking.
             Soffos assumes that the owner of the api is an application (app) and that app has users.
             Soffos API will accept any string."
-        
+        :param engine: The LLM engine to be used.
         :param session_ids: A list with the IDs of the sessions to be deleted.
-        :return: success: Indicates whether the sessions have been successfuly deleted.
+        :return: engine: The LLM engine used.
+        success: Indicates whether the sessions have been successfuly deleted.
         :Examples
-        Detailed examples can be found at `Soffos Github Repository <https://github.com/Soffos-Inc/soffosai-python/tree/master/samples/services/discuss.py>`_
+        Detailed examples can be found at `Soffos Github Repository <https://github.com/Soffos-Inc/soffosai-python/tree/master/samples/services/discuss_delete.py>`_
         '''
-        return super().__call__(user=user, session_ids=session_ids)
+        return super().__call__(user=user, engine=engine, session_ids=session_ids)
 
-    def set_input_configs(self, name:str, session_ids:Union[list, InputConfig]=None):
-        super().set_input_configs(name=name, session_ids=session_ids)
+    def set_input_configs(self, name:str, engine:Union[str, InputConfig]=None, session_ids:Union[list, InputConfig]=None):
+        super().set_input_configs(name=name, engine=engine, session_ids=session_ids)
 
     @classmethod
-    def call(self, user:str, session_ids:list=None) -> dict:
+    def call(self, user:str, engine:str=None, session_ids:list=None) -> dict:
         '''
         Call the Discuss Delete Service
         
         :param user: The ID of the user accessing the Soffos API.
+            This string will be used for throttling and profanity tracking.
             Soffos assumes that the owner of the api is an application (app) and that app has users.
             Soffos API will accept any string."
-        
+        :param engine: The LLM engine to be used.
         :param session_ids: A list with the IDs of the sessions to be deleted.
-        :return: success: Indicates whether the sessions have been successfuly deleted.
+        :return: engine: The LLM engine used.
+        success: Indicates whether the sessions have been successfuly deleted.
         :Examples
-        Detailed examples can be found at `Soffos Github Repository <https://github.com/Soffos-Inc/soffosai-python/tree/master/samples/services/discuss.py>`_
+        Detailed examples can be found at `Soffos Github Repository <https://github.com/Soffos-Inc/soffosai-python/tree/master/samples/services/discuss_delete.py>`_
         '''
-        return super().call(user=user, session_ids=session_ids)
+        return super().call(user=user, engine=engine, session_ids=session_ids)
 

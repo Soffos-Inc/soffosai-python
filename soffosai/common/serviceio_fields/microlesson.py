@@ -1,6 +1,6 @@
 '''
 Copyright (c)2022 - Soffos.ai - All rights reserved
-Updated at: 2023-10-09
+Updated at: 2024-03-03
 Purpose: Input/Output description for Microlesson Service
 -----------------------------------------------------
 '''
@@ -11,12 +11,14 @@ from ..constants import ServiceString
 class MicrolessonIO(ServiceIO):
     service = ServiceString.MICROLESSON
     required_input_fields = ["content"]
-    optional_input_fields = []
+    optional_input_fields = ["engine"]
     input_structure = {
+        "engine": str, 
         "content": list
     }
 
     output_structure = {
+        "engine": str,
         "microlesson": dict
     }
 

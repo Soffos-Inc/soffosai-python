@@ -1,6 +1,6 @@
 '''
 Copyright (c)2022 - Soffos.ai - All rights reserved
-Updated at: 2023-10-09
+Updated at: 2024-03-03
 Purpose: Input/Output description for Emotion Detection Service
 -----------------------------------------------------
 '''
@@ -11,8 +11,9 @@ from ..constants import ServiceString
 class EmotionDetectionIO(ServiceIO):
     service = ServiceString.EMOTION_DETECTION
     required_input_fields = ["text","sentence_split","sentence_overlap"]
-    optional_input_fields = ["emotion_choices"]
+    optional_input_fields = ["engine","emotion_choices"]
     input_structure = {
+        "engine": str, 
         "text": str, 
         "sentence_split": int, 
         "sentence_overlap": bool, 
@@ -20,6 +21,7 @@ class EmotionDetectionIO(ServiceIO):
     }
 
     output_structure = {
+        "engine": str,
         "spans": dict
     }
 
@@ -27,18 +29,14 @@ class EmotionDetectionIO(ServiceIO):
     @classmethod
     def special_validation(self, payload):
         
-        choices = ['joy','trust','fear','surprise','sadness','disgust','anger','anticipation']
-
+        
         if payload["sentence_split"] == 1 and payload["sentence_overlap"] == True:
             return False, 'Value "sentence_overlap" must be false when "sentence_split" is set to 1.'
         
         if 'emotion_choices' in payload:
-            unsupported_emotion = []
-            for emotion in payload['emotion_choices']:
-                if emotion not in choices:
-                    unsupported_emotion.append(emotion)
-            if len(unsupported_emotion) > 0:
-                return False, f'unsupported emotions: [{", ".join(unsupported_emotion)}].'
+            payload['emotion_choices'] = list(payload['emotion_choices'])
+            if not payload['emotion_choices']:
+                payload['emotion_choices'] = choices
             
         payload['sentence_overlap'] = 1 if payload['sentence_overlap'] else 0
 

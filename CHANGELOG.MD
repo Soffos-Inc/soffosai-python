@@ -1,5 +1,7 @@
 # CHANGELOG
 
+## 0.1.9
+- added "engine" on fields, implementing the LLM selector feature
 
 ## 0.1.8
 - renamed LetsDiscuss service to Discuss

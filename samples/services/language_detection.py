@@ -1,6 +1,10 @@
 import json
-from soffosai import *
+import soffosai
+from soffosai import SoffosAIServices
 
-service = LanguageDetectionService()
+soffosai.api_key = "<your API key>"
+
+
+service = SoffosAIServices.LanguageDetectionService()
 output = service("client_user_id", "φιλόσοφος, που θεωρείται ο ιδρυτής της Δυτικής φιλοσοφίας και")
 print(json.dumps(output, indent=4))

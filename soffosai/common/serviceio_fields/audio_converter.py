@@ -1,6 +1,6 @@
 '''
 Copyright (c)2022 - Soffos.ai - All rights reserved
-Updated at: 2023-10-09
+Updated at: 2024-03-03
 Purpose: Input/Output description for Audio Converter Service
 -----------------------------------------------------
 '''
@@ -11,12 +11,13 @@ from io import BufferedReader
 
 class AudioConverterIO(ServiceIO):
     service = ServiceString.AUDIO_CONVERTER
-    required_input_fields = []
+    required_input_fields = ["diarize"]
     optional_input_fields = ["file","url","model"]
     input_structure = {
-        # "file": (BufferedReader, str), 
+        "file": (BufferedReader, str), 
         "url": str, 
-        "model": str
+        "model": str, 
+        "diarize": bool
     }
 
     output_structure = {
@@ -34,12 +35,12 @@ class AudioConverterIO(ServiceIO):
             return False, "Please provide file or url, not both."
         
         if not payload.get("file") and not payload.get('url'):
-            return False, "Please provide the auido file or url of the audio file."
+            return (False, "Please provide the auido file or url of the audio file.")
 
         AVAILABLE_MODELS = ("whisper", "nova 2")
 
         if payload.get("model"):
             if (payload.get("model")).lower() not in AVAILABLE_MODELS:
-                return False, "model field's value can only be 'whisper' or 'nova 2'."
+                return (False, "model field's value can only be 'whisper' or 'nova 2'.")
 
         return super().special_validation(payload)

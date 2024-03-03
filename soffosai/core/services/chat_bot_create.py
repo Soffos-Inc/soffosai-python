@@ -1,6 +1,6 @@
 '''
 Copyright (c)2022 - Soffos.ai - All rights reserved
-Updated at: 2023-11-10
+Updated at: 2024-03-03
 Purpose: Easily use Chat Bot Create Service
 -----------------------------------------------------
 '''
@@ -20,7 +20,7 @@ class ChatBotCreateService(SoffosAIService):
         service = ServiceString.CHAT_BOT_CREATE
         super().__init__(service, **kwargs)
     
-    def __call__(self, user:str, role:str, chatbot_name:str, chatbot_id:str=None) -> dict:
+    def __call__(self, user:str, role:str, chatbot_name:str, engine:str=None, chatbot_id:str=None) -> dict:
         '''
         Call the Chat Bot Create Service
         
@@ -32,22 +32,24 @@ class ChatBotCreateService(SoffosAIService):
             tone when responding. The system may not be able to follow
             complex instructions specified in this field.
         :param chatbot_name: The name/identity of your chatbot.
+        :param engine: The LLM engine to be used.
         :param chatbot_id: The chatbot's id. Provided when you create the chatbot. If you
             provide this, the chatbot with this ID's will be updated. The
             role and name will be updated.
-        :return: chatbot_id: The chatbot's id. Provided when you create the chatbot. If you
+        :return: engine: The LLM engine used.
+        chatbot_id: The chatbot's id. Provided when you create the chatbot. If you
             provide this, the chatbot with this ID's will be updated. The
             role and name will be updated.
         :Examples
         Detailed examples can be found at `Soffos Github Repository <https://github.com/Soffos-Inc/soffosai-python/tree/master/samples/services/chat_bot_create.py>`_
         '''
-        return super().__call__(user=user, role=role, chatbot_name=chatbot_name, chatbot_id=chatbot_id)
+        return super().__call__(user=user, role=role, chatbot_name=chatbot_name, engine=engine, chatbot_id=chatbot_id)
 
-    def set_input_configs(self, name:str, role:Union[str, InputConfig], chatbot_name:Union[str, InputConfig], chatbot_id:Union[str, InputConfig]=None):
-        super().set_input_configs(name=name, role=role, chatbot_name=chatbot_name, chatbot_id=chatbot_id)
+    def set_input_configs(self, name:str, role:Union[str, InputConfig], chatbot_name:Union[str, InputConfig], engine:Union[str, InputConfig]=None, chatbot_id:Union[str, InputConfig]=None):
+        super().set_input_configs(name=name, role=role, chatbot_name=chatbot_name, engine=engine, chatbot_id=chatbot_id)
 
     @classmethod
-    def call(self, user:str, role:str, chatbot_name:str, chatbot_id:str=None) -> dict:
+    def call(self, user:str, role:str, chatbot_name:str, engine:str=None, chatbot_id:str=None) -> dict:
         '''
         Call the Chat Bot Create Service
         
@@ -59,14 +61,16 @@ class ChatBotCreateService(SoffosAIService):
             tone when responding. The system may not be able to follow
             complex instructions specified in this field.
         :param chatbot_name: The name/identity of your chatbot.
+        :param engine: The LLM engine to be used.
         :param chatbot_id: The chatbot's id. Provided when you create the chatbot. If you
             provide this, the chatbot with this ID's will be updated. The
             role and name will be updated.
-        :return: chatbot_id: The chatbot's id. Provided when you create the chatbot. If you
+        :return: engine: The LLM engine used.
+        chatbot_id: The chatbot's id. Provided when you create the chatbot. If you
             provide this, the chatbot with this ID's will be updated. The
             role and name will be updated.
         :Examples
         Detailed examples can be found at `Soffos Github Repository <https://github.com/Soffos-Inc/soffosai-python/tree/master/samples/services/chat_bot_create.py>`_
         '''
-        return super().call(user=user, role=role, chatbot_name=chatbot_name, chatbot_id=chatbot_id)
+        return super().call(user=user, role=role, chatbot_name=chatbot_name, engine=engine, chatbot_id=chatbot_id)
 

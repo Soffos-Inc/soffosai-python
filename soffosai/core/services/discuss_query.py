@@ -1,6 +1,6 @@
 '''
 Copyright (c)2022 - Soffos.ai - All rights reserved
-Updated at: 2023-10-09
+Updated at: 2024-03-03
 Purpose: Easily use Discuss Query Service
 -----------------------------------------------------
 '''
@@ -8,7 +8,6 @@ from .service import SoffosAIService
 from .input_config import InputConfig
 from soffosai.common.constants import ServiceString
 from typing import Union
-
 
 
 class DiscussQueryService(SoffosAIService):
@@ -27,49 +26,55 @@ class DiscussQueryService(SoffosAIService):
         service = ServiceString.DISCUSS_QUERY
         super().__init__(service, **kwargs)
     
-    def __call__(self, user:str, query:str) -> dict:
+    def __call__(self, user:str, query:str, engine:str=None) -> dict:
         '''
         Call the Discuss Query Service
         
         :param user: The ID of the user accessing the Soffos API.
+            This string will be used for throttling and profanity tracking.
             Soffos assumes that the owner of the api is an application (app) and that app has users.
             Soffos API will accept any string."
-        
         :param query: User's message.
-        :return: response: None
-        context: None
-        messages: A list of dictionaries representing all the messages exchanged between the
-            user and the system for the specific session. The messages are sorted in
-            chronological order. Each dictionary contains the following fields: text:
-            The message. source: The source of the message, which is either the user
-            or Soffos.
+        :param engine: The LLM engine to be used.
+        :return: engine: The LLM engine used.
+        response: Module's response to the user's query.
+        context: The context discussed about provided by the user during session
+            creation.
+        messages: A list of dictionaries representing all the messages exchanged
+            between the user and the system for the specific session. The
+            messages are sorted in chronological order. Each dictionary
+            contains the following fields: text: The message. source: The
+            source of the message, which is either the user or Soffos.
         :Examples
-        Detailed examples can be found at `Soffos Github Repository <https://github.com/Soffos-Inc/soffosai-python/tree/master/samples/services/discuss.py>`_
+        Detailed examples can be found at `Soffos Github Repository <https://github.com/Soffos-Inc/soffosai-python/tree/master/samples/services/discuss_query.py>`_
         '''
-        return super().__call__(user=user, query=query)
+        return super().__call__(user=user, query=query, engine=engine)
 
-    def set_input_configs(self, name:str, query:Union[str, InputConfig]):
-        super().set_input_configs(name=name, query=query)
+    def set_input_configs(self, name:str, query:Union[str, InputConfig], engine:Union[str, InputConfig]=None):
+        super().set_input_configs(name=name, query=query, engine=engine)
 
     @classmethod
-    def call(self, user:str, query:str) -> dict:
+    def call(self, user:str, query:str, engine:str=None) -> dict:
         '''
         Call the Discuss Query Service
         
         :param user: The ID of the user accessing the Soffos API.
+            This string will be used for throttling and profanity tracking.
             Soffos assumes that the owner of the api is an application (app) and that app has users.
             Soffos API will accept any string."
-        
         :param query: User's message.
-        :return: response: None
-        context: None
-        messages: A list of dictionaries representing all the messages exchanged between the
-            user and the system for the specific session. The messages are sorted in
-            chronological order. Each dictionary contains the following fields: text:
-            The message. source: The source of the message, which is either the user
-            or Soffos.
+        :param engine: The LLM engine to be used.
+        :return: engine: The LLM engine used.
+        response: Module's response to the user's query.
+        context: The context discussed about provided by the user during session
+            creation.
+        messages: A list of dictionaries representing all the messages exchanged
+            between the user and the system for the specific session. The
+            messages are sorted in chronological order. Each dictionary
+            contains the following fields: text: The message. source: The
+            source of the message, which is either the user or Soffos.
         :Examples
-        Detailed examples can be found at `Soffos Github Repository <https://github.com/Soffos-Inc/soffosai-python/tree/master/samples/services/discuss.py>`_
+        Detailed examples can be found at `Soffos Github Repository <https://github.com/Soffos-Inc/soffosai-python/tree/master/samples/services/discuss_query.py>`_
         '''
-        return super().call(user=user, query=query)
+        return super().call(user=user, query=query, engine=engine)
 

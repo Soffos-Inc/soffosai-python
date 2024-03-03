@@ -1,6 +1,6 @@
 '''
 Copyright (c)2022 - Soffos.ai - All rights reserved
-Updated at: 2023-10-09
+Updated at: 2024-03-03
 Purpose: Easily use File Converter Service
 -----------------------------------------------------
 '''
@@ -34,71 +34,79 @@ class FileConverterService(SoffosAIService):
         service = ServiceString.FILE_CONVERTER
         super().__init__(service, **kwargs)
     
-    def __call__(self, user:str, file:BufferedReader, normalize:str) -> dict:
+    def __call__(self, user:str, file:BufferedReader, normalize:str, engine:str=None) -> dict:
         '''
         Call the File Converter Service
         
         :param user: The ID of the user accessing the Soffos API.
+            This string will be used for throttling and profanity tracking.
             Soffos assumes that the owner of the api is an application (app) and that app has users.
             Soffos API will accept any string."
-        
         :param file: None
         :param normalize: None
-        :return: normalize: None
+        :param engine: The LLM engine to be used.
+        :return: engine: The LLM engine used.
+        normalize: None
         text: Raw text extracted from the document.
-        tagged_elements: A list of dictionaries of all the extracted text snippets and their tags.
-            Each dictionary has the following fields: text: The text of the snippet.
-            tag: A tag. Detectable elements: paragraph, heading, bullet_list,
-            table_of_contents. headings: A list of dictionaries representing the
-            headings which this element is under. Each dictionary contains the text
-            and tag fields of each heading. This is useful for sorting and labelling
-            the content. Other element-specific fields: bullets: Available only
-            bullet_list elements. Contains all bullets and their sub-bullets in a
-            nested structure. contents: Available only in table_of_content elements.
-            Contains the headings and sub-headings of the document's table of
-            contents. heading: Available only in table_of_content elements. It is the
-            heading of the document's table of contents.
+        tagged_elements: A list of dictionaries of all the extracted text snippets and
+            their tags. Each dictionary has the following fields: text: The
+            text of the snippet. tag: A tag. Detectable elements: paragraph,
+            heading, bullet_list, table_of_contents. headings: A list of
+            dictionaries representing the headings which this element is
+            under. Each dictionary contains the text and tag fields of each
+            heading. This is useful for sorting and labelling the content.
+            Other element-specific fields: bullets: Available only
+            bullet_list elements. Contains all bullets and their sub-bullets
+            in a nested structure. contents: Available only in
+            table_of_content elements. Contains the headings andn
+            sub-headings of the document's table of contents. heading:
+            Available only in table_of_content elements. It is the heading
+            of the document's table of contents.
         normalized_text: Resulting text after normalization.
-        normalized_tagged_elements: Similar to the standard tagged_elements. Detectable elements: paragraph,
-            heading, bullet_list, quote.
+        normalized_tagged_elements: Similar to the standard tagged_elements. Detectable elements:
+            paragraph, heading, bullet_list, quote.
         :Examples
         Detailed examples can be found at `Soffos Github Repository <https://github.com/Soffos-Inc/soffosai-python/tree/master/samples/services/file_converter.py>`_
         '''
-        return super().__call__(user=user, file=file, normalize=normalize)
+        return super().__call__(user=user, file=file, normalize=normalize, engine=engine)
 
-    def set_input_configs(self, name:str, file:Union[str, BufferedReader, InputConfig], normalize:Union[str, InputConfig]):
-        super().set_input_configs(name=name, file=file, normalize=normalize)
+    def set_input_configs(self, name:str, file:Union[str, BufferedReader, InputConfig], normalize:Union[str, InputConfig], engine:Union[str, InputConfig]=None):
+        super().set_input_configs(name=name, file=file, normalize=normalize, engine=engine)
 
     @classmethod
-    def call(self, user:str, file:BufferedReader, normalize:str) -> dict:
+    def call(self, user:str, file:BufferedReader, normalize:str, engine:str=None) -> dict:
         '''
         Call the File Converter Service
         
         :param user: The ID of the user accessing the Soffos API.
+            This string will be used for throttling and profanity tracking.
             Soffos assumes that the owner of the api is an application (app) and that app has users.
             Soffos API will accept any string."
-        
         :param file: None
         :param normalize: None
-        :return: normalize: None
+        :param engine: The LLM engine to be used.
+        :return: engine: The LLM engine used.
+        normalize: None
         text: Raw text extracted from the document.
-        tagged_elements: A list of dictionaries of all the extracted text snippets and their tags.
-            Each dictionary has the following fields: text: The text of the snippet.
-            tag: A tag. Detectable elements: paragraph, heading, bullet_list,
-            table_of_contents. headings: A list of dictionaries representing the
-            headings which this element is under. Each dictionary contains the text
-            and tag fields of each heading. This is useful for sorting and labelling
-            the content. Other element-specific fields: bullets: Available only
-            bullet_list elements. Contains all bullets and their sub-bullets in a
-            nested structure. contents: Available only in table_of_content elements.
-            Contains the headings and sub-headings of the document's table of
-            contents. heading: Available only in table_of_content elements. It is the
-            heading of the document's table of contents.
+        tagged_elements: A list of dictionaries of all the extracted text snippets and
+            their tags. Each dictionary has the following fields: text: The
+            text of the snippet. tag: A tag. Detectable elements: paragraph,
+            heading, bullet_list, table_of_contents. headings: A list of
+            dictionaries representing the headings which this element is
+            under. Each dictionary contains the text and tag fields of each
+            heading. This is useful for sorting and labelling the content.
+            Other element-specific fields: bullets: Available only
+            bullet_list elements. Contains all bullets and their sub-bullets
+            in a nested structure. contents: Available only in
+            table_of_content elements. Contains the headings andn
+            sub-headings of the document's table of contents. heading:
+            Available only in table_of_content elements. It is the heading
+            of the document's table of contents.
         normalized_text: Resulting text after normalization.
-        normalized_tagged_elements: Similar to the standard tagged_elements. Detectable elements: paragraph,
-            heading, bullet_list, quote.
+        normalized_tagged_elements: Similar to the standard tagged_elements. Detectable elements:
+            paragraph, heading, bullet_list, quote.
         :Examples
         Detailed examples can be found at `Soffos Github Repository <https://github.com/Soffos-Inc/soffosai-python/tree/master/samples/services/file_converter.py>`_
         '''
-        return super().call(user=user, file=file, normalize=normalize)
+        return super().call(user=user, file=file, normalize=normalize, engine=engine)
 
