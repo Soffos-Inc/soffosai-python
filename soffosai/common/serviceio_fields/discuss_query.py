@@ -11,10 +11,11 @@ from ..constants import ServiceString
 class DiscussQueryIO(ServiceIO):
     service = ServiceString.DISCUSS_QUERY
     required_input_fields = ["query"]
-    optional_input_fields = ["engine"]
+    optional_input_fields = ["engine", "session_id"]
     input_structure = {
         "engine": str, 
-        "query": str
+        "query": str,
+        "session_id": str,
     }
 
     output_structure = {

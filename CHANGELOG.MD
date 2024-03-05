@@ -1,5 +1,8 @@
 # CHANGELOG
 
+## 1.2.0
+- official release of the feature: LLM Selector
+
 ## 0.1.9
 - added "engine" on fields, implementing the LLM selector feature
 

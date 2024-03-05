@@ -26,7 +26,7 @@ class DiscussQueryService(SoffosAIService):
         service = ServiceString.DISCUSS_QUERY
         super().__init__(service, **kwargs)
     
-    def __call__(self, user:str, query:str, engine:str=None) -> dict:
+    def __call__(self, user:str, query:str, session_id:str, engine:str=None) -> dict:
         '''
         Call the Discuss Query Service
         
@@ -48,13 +48,13 @@ class DiscussQueryService(SoffosAIService):
         :Examples
         Detailed examples can be found at `Soffos Github Repository <https://github.com/Soffos-Inc/soffosai-python/tree/master/samples/services/discuss_query.py>`_
         '''
-        return super().__call__(user=user, query=query, engine=engine)
+        return super().__call__(user=user, query=query, session_id=session_id, engine=engine)
 
     def set_input_configs(self, name:str, query:Union[str, InputConfig], engine:Union[str, InputConfig]=None):
         super().set_input_configs(name=name, query=query, engine=engine)
 
     @classmethod
-    def call(self, user:str, query:str, engine:str=None) -> dict:
+    def call(self, user:str, query:str, session_id:str, engine:str=None) -> dict:
         '''
         Call the Discuss Query Service
         
@@ -76,5 +76,5 @@ class DiscussQueryService(SoffosAIService):
         :Examples
         Detailed examples can be found at `Soffos Github Repository <https://github.com/Soffos-Inc/soffosai-python/tree/master/samples/services/discuss_query.py>`_
         '''
-        return super().call(user=user, query=query, engine=engine)
+        return super().call(user=user, query=query, session_id=session_id, engine=engine)
 
