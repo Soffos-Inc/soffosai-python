@@ -27,11 +27,14 @@ SERVICES_LIST = [
     'emotion-detection', 
     'file-converter', 
     'flashcard-generation', 
+    'image-analysis',
+    'image-generation',
     'intent-classification/confirmation', 
     'intent-classification', 
     'language-detection', 
     'logical-error-detection',
-    'microlesson', 
+    'microlesson',
+    'multiple_choice_qna',
     'natural-sql-generation',
     'natural-sql-generation/table/delete',
     'natural-sql-generation/table/get',
@@ -80,10 +83,13 @@ class ServiceString:
     EMOTION_DETECTION = 'emotion-detection'
     FILE_CONVERTER = 'file-converter'
     FLASHCARD_GENERATION = 'flashcard-generation'
+    IMAGE_ANALYSIS = 'image-analysis'
+    IMAGE_GENERATION = 'image-generation'
     INTENT_CLASSIFICATION = 'intent-classification'
     LANGUAGE_DETECTION = 'language-detection'
     LOGICAL_ERROR_DETECTION = 'logical-error-detection'
     MICROLESSON = 'microlesson'
+    MULTIPLE_CHOICE_QN_A_GENERATOR = 'multiple_choice_qna'
     NATURAL_S_Q_L_GENERATION = 'natural-sql-generation'
     N_E_R = 'ner'
     PARAPHRASE = 'paraphrase'

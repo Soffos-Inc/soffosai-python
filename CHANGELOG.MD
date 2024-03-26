@@ -1,6 +1,8 @@
 # CHANGELOG
 
-## 1.2.0
+## 0.2.1
+
+## 0.2.0
 - official release of the feature: LLM Selector
 
 ## 0.1.9

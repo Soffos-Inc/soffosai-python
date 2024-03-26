@@ -17,9 +17,12 @@ from .documents_search import DocumentsSearchIO
 from .email_analysis import EmailAnalysisIO
 from .emotion_detection import EmotionDetectionIO
 from .file_converter import FileConverterIO
+from .image_analysis import ImageAnalysisIO
+from .image_generation import ImageGenerationIO
 from .language_detection import LanguageDetectionIO
 from .logical_error_detection import LogicalErrorDetectionIO
 from .microlesson import MicrolessonIO
+from .multiple_choice_qn_a_generator import MultipleChoiceQnAGeneratorIO
 from .named_entity_recognition import NERIO
 from .paraphrase import ParaphraseIO
 from .profanity import ProfanityIO

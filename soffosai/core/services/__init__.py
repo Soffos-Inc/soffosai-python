@@ -23,6 +23,8 @@ from .documents_search import DocumentsSearchService
 from .email_analysis import EmailAnalysisService
 from .emotion_detection import EmotionDetectionService
 from .file_converter import FileConverterService
+from .image_analysis import ImageAnalysisService
+from .image_generation import ImageGenerationService
 from .language_detection import LanguageDetectionService
 from .discuss_count import DiscussCountService
 from .discuss_create import DiscussCreateService
@@ -30,6 +32,7 @@ from .discuss_delete import DiscussDeleteService
 from .discuss_query import DiscussQueryService
 from .logical_error_detection import LogicalErrorDetectionService
 from .microlesson import MicrolessonService
+from .multiple_choice_qn_a_generator import MultipleChoiceQnAGeneratorService
 from .named_entity_recognition import NERService
 from .natural_s_q_l_generation import NaturalSQLGenerationService
 from .paraphrase import ParaphraseService
