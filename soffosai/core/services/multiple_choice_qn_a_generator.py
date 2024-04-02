@@ -30,8 +30,7 @@ class MultipleChoiceQnAGeneratorService(SoffosAIService):
         :param context: the prompt to be sent to the LLM
         :param num_questions: the location of the image to be processed
         :param num_choices: the location of the image to be processed
-        :param engine: The LLM engine to be used. Currently supports:
-            ['gpt-4-1106-preview', 'gpt-3.5-turbo-1106', 'gemini-1.0-pro']
+        :param engine: The LLM engine to be used.
         :return: qna_sets: The question and answer sets
         :Examples
         Detailed examples can be found at `Soffos Github Repository <https://github.com/Soffos-Inc/soffosai-python/tree/master/samples/services/multiple_choice_qn_a_generator.py>`_
@@ -53,8 +52,7 @@ class MultipleChoiceQnAGeneratorService(SoffosAIService):
         :param context: the prompt to be sent to the LLM
         :param num_questions: the location of the image to be processed
         :param num_choices: the location of the image to be processed
-        :param engine: The LLM engine to be used. Currently supports:
-            ['gpt-4-1106-preview', 'gpt-3.5-turbo-1106', 'gemini-1.0-pro']
+        :param engine: The LLM engine to be used.
         :return: qna_sets: The question and answer sets
         :Examples
         Detailed examples can be found at `Soffos Github Repository <https://github.com/Soffos-Inc/soffosai-python/tree/master/samples/services/multiple_choice_qn_a_generator.py>`_

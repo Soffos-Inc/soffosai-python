@@ -31,8 +31,7 @@ class ImageGenerationService(SoffosAIService):
             Soffos assumes that the owner of the api is an application (app) and that app has users.
             Soffos API will accept any string."
         :param prompt: the prompt to be sent to the LLM.
-        :param engine: The LLM engine to be used. Currently supports:
-            ['gpt-4-1106-preview', 'gpt-3.5-turbo-1106', 'gemini-1.0-pro']
+        :param engine: The LLM engine to be used.
         :param size: the required size of the image.
         :param quality: the quality of the image
         :param quantity: how many images should be created
@@ -55,8 +54,7 @@ class ImageGenerationService(SoffosAIService):
             Soffos assumes that the owner of the api is an application (app) and that app has users.
             Soffos API will accept any string."
         :param prompt: the prompt to be sent to the LLM.
-        :param engine: The LLM engine to be used. Currently supports:
-            ['gpt-4-1106-preview', 'gpt-3.5-turbo-1106', 'gemini-1.0-pro']
+        :param engine: The LLM engine to be used.
         :param size: the required size of the image.
         :param quality: the quality of the image
         :param quantity: how many images should be created

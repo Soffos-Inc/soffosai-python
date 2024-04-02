@@ -7,7 +7,8 @@ Purpose: Organize the constants
 SOFFOS_SERVICE_URL = "https://api.soffos.ai/service/"
 
 SERVICES_LIST = [
-    'answer-scoring', 
+    'answer-scoring',
+    'assessment',
     'audio_converter',
     'chatbot/create',
     'chatbot',
@@ -63,6 +64,7 @@ class ServiceString:
     Contains the list of Soffos services as attributes
     '''
     ANSWER_SCORING = 'answer-scoring'
+    ASSESSMENT_GENERATOR = 'assessment'
     AUDIO_CONVERTER = 'audio-converter'
     CHAT_BOT_CREATE = 'chatbot/create'
     CHAT_BOT = 'chatbot'

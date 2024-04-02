@@ -1,6 +1,14 @@
 # CHANGELOG
 
+## 0.2.2
+- AssessmentGeneratorService
+- bugfixes
+
 ## 0.2.1
+- MultipleChoiceQnAGeneratorService
+- ImageGenerationService
+- ImageAnalysisService
+- Strict LLM Selection Feature
 
 ## 0.2.0
 - official release of the feature: LLM Selector

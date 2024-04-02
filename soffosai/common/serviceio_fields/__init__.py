@@ -1,5 +1,6 @@
 from .service_io import ServiceIO
 from .answer_scoring import AnswerScoringIO
+from .assessment_generator import AssessmentGeneratorIO
 from .audio_converter import AudioConverterIO
 from .chat_bot_create import ChatBotCreateIO
 from .chat_bot import ChatBotIO

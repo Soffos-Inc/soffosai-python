@@ -9,6 +9,7 @@ from .service import SoffosAIService, inspect_arguments
 from .input_config import InputConfig
 
 from .answer_scoring import AnswerScoringService
+from .assessment_generator import AssessmentGeneratorService
 from .audio_converter import AudioConverterService
 from .chat_bot_create import ChatBotCreateService
 from .chat_bot import ChatBotService
