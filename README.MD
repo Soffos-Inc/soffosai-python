@@ -1,13 +1,14 @@
 # Welcome to the Soffos Platform SDK
-At Soffos Inc., our specialty is helping organizations create pioneering apps with conversational artificial intelligence (CAI) and natural language processing (NLP) at their core.
+At Soffos Inc., our mission is to make the creation of learning materials easier and more efficient, to enhance creativity using generative AI, and to accelerate the adoption of AI in education.
 
-NLP and conversational AI are at the heart of everything Soffos does. Using Soffos’ technology, we offer a suite of unique application programming interfaces (APIs) so businesses can choose the natural language and generative AI functionalities they would like to include in any kind of application.
+The Soffos platform features AI tools for L&D professionals with subscription options for individual users as well as enterprise teams, and a Pay-as-you-Go option for software developers using Soffos APIs and SDKs to build their own custom applications.
 
-What sets Soffos apart is we’ve taken the most advanced technology, enhanced it with our own R&D, and made it easy to use and accessible to everyone.
+# Develop simple to complex apps with our SDK
+The Soffos SDK is available for Python and JavaScript developers. It provides a minimal code approach for using Soffos modules in your apps. Included is a pipeline to chain multiple modules while providing asynchronous events to monitor NLP and generative AI operations to provide truly engaging user experiences.
 
-Our solution provides you with the ‘building blocks’ and core technologies required to build countless novel NLP applications, with minimal coding, from learning and assessment tools to knowledge management platforms and beyond. The opportunities with Soffos Platform are infinite.
+For L&D use cases, customer benchmark data proves the Soffos platform can reduce both time and cost of traditional training course development by an impressive 40%-60%.
 
-Sign up for a [Free Trial](https://platform.soffos.ai) and start building your first generative AI application today!
+Visit the [Soffos Platform](https://www.soffos.ai) and start building your first generative AI application today!
 
 Join our Discord channel: [SoffosAI](https://discord.gg/Q2yTEuFG2B)
 
@@ -65,12 +66,7 @@ Here is the list of SoffosAIService Subclasses:
     "MultipleChoiceQnAGeneratorService",
     "NERService",
     "NaturalSQLGenerationService",
-    "ParaphraseService",
-    "QnAGenerationService",
-    "SearchRecommendationsService",
-    "SentimentAnalysisService",
     "SimplifyService",
-    "StringSimilarityService",
     "SummarizationService",
     "TableGeneratorService",
     "TagService",
