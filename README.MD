@@ -1,12 +1,12 @@
 # Welcome to the Soffos Platform SDK
-At Soffos Inc., our mission is to make the creation of learning materials easier and more efficient, to enhance creativity using generative AI, and to accelerate the adoption of AI in education.
+The Soffos Generative AI platform is a revolutionary solution that empowers Edtech developers to create or enhance custom AI applications for learning and development, without the need for special AI skills. Additionally, the Soffos Platform provides generative AI tools that instructional designers can use directly to create training materials.
 
-The Soffos platform features AI tools for L&D professionals with subscription options for individual users as well as enterprise teams, and a Pay-as-you-Go option for software developers using Soffos APIs and SDKs to build their own custom applications.
+# Product Designers and Developers can create simple to complex apps with our SDK
+The Soffos Software Development Kit (SDK) and RESTful APIs are low-code tools that help L&D teams accelerate their AI adoption without the need for AI expertise, making the creation of generative AI solutions for L&D easier and faster.
 
-# Develop simple to complex apps with our SDK
-The Soffos SDK is available for Python and JavaScript developers. It provides a minimal code approach for using Soffos modules in your apps. Included is a pipeline to chain multiple modules while providing asynchronous events to monitor NLP and generative AI operations to provide truly engaging user experiences.
+The Soffos SDK is available for Python and JavaScript developers. It includes a pipeline to sequence and deploy multiple modules, while providing asynchronous events to monitor NLP and generative AI operations for truly engaging user experiences. The Soffos platform offers a selection of premier large language models and provides the convenience of automatic failover to alternative models should your preferred choice become unavailable.
 
-For L&D use cases, customer benchmark data proves the Soffos platform can reduce both time and cost of traditional training course development by an impressive 40%-60%.
+At Soffos, our mission is clear – to make the creation of learning materials easier and more efficient using generative AI.
 
 Visit the [Soffos Platform](https://www.soffos.ai) and start building your first generative AI application today!
 
