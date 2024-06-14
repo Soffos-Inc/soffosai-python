@@ -10,6 +10,7 @@ SERVICES_LIST = [
     'answer-scoring',
     'assessment',
     'audio_converter',
+    'chat',
     'chatbot/create',
     'chatbot',
     'chatbot/get',
@@ -66,6 +67,7 @@ class ServiceString:
     ANSWER_SCORING = 'answer-scoring'
     ASSESSMENT_GENERATOR = 'assessment'
     AUDIO_CONVERTER = 'audio-converter'
+    CHAT = 'chat'
     CHAT_BOT_CREATE = 'chatbot/create'
     CHAT_BOT = 'chatbot'
     CHAT_BOTS_GET = 'chatbot/get'
