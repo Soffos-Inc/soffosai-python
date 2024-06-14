@@ -1,5 +1,7 @@
 # CHANGELOG
 
+## 0.2.3
+- Soffos Chat
 ## 0.2.2
 - AssessmentGeneratorService
 - bugfixes
