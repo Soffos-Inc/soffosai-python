@@ -11,6 +11,7 @@ from .input_config import InputConfig
 from .answer_scoring import AnswerScoringService
 from .assessment_generator import AssessmentGeneratorService
 from .audio_converter import AudioConverterService
+from .chat import ChatService
 from .chat_bot_create import ChatBotCreateService
 from .chat_bot import ChatBotService
 from .chat_bots_get import ChatBotsGetService
